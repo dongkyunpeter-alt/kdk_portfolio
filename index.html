@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="강동균의 풀무원 메인 및 바른먹거리 웹 프로젝트 포트폴리오">
+  <title>강동균 | 풀무원 Web Portfolio</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <style type="text/tailwindcss">
+    @theme {
+      --color-ink: #0c0c0c; /* Figma portfolio node 53:6780 */
+      --color-paper: #fffef9; /* Figma portfolio node 53:6780, design-system 대응 변수 없음 */
+      --color-grid: #d7ddd1; /* Figma portfolio node 53:6781, design-system 대응 변수 없음 */
+      --color-note-green: #d8efad; /* Food brand adaptation of Figma note cards */
+      --color-note-lime: #b6d86b; /* food-color-brand-light 계열 */
+      --color-note-yellow: #ffe68c; /* Figma portfolio node 53:6861 */
+      --color-note-blue: #9ddcff; /* Figma portfolio node 53:6875 */
+      --color-note-pink: #ffc9f0; /* Figma portfolio node 53:6783 */
+      --color-brand: #8dc63f; /* assets/css/food-tokens.css --food-color-brand */
+      --color-brand-dark: #396f13; /* assets/css/food-tokens.css --food-color-brand-dark */
+      --color-muted: #535964; /* design system color/gray/600 */
+      --font-sans: "NanumSquare Neo", "NanumSquare Neo Variable", system-ui, sans-serif;
+      --font-hand: "Comic Sans MS", "Segoe Print", "NanumSquare Neo", "NanumSquare Neo Variable", cursive;
+      --shadow-note: 0.3rem 0.3rem 1.25rem color-mix(in srgb, var(--color-ink) 12%, transparent); /* Figma node 53:6861 */
+      --radius-card: 0.5rem; /* Figma node 53:6861 */
+      --radius-full: 9999px;
+      --spacing-page: 1.5rem; /* responsive page gutter */
+      --spacing-section: 7rem; /* Figma section rhythm adapted for web */
+      --text-hero: 4rem; /* Figma node 53:6847 */
+      --text-display: 2.25rem; /* Figma card title scale */
+      --spacing-pattern-dot: 0.08rem; /* Figma node 53:6781 */
+      --spacing-pattern-grid: 0.75rem; /* Figma node 53:6781 */
+      --spacing-marker-depth: 0.55em; /* Figma highlighted label treatment */
+      --spacing-reveal-offset: 1.5rem; /* portfolio motion offset */
+      --duration-fast: 180ms; /* portfolio interaction motion */
+      --duration-achievement: 60ms;
+      --duration-base: 500ms; /* portfolio reveal motion */
+      --duration-game-exit: 700ms;
+      --duration-toast: 2600ms;
+      --scale-card-image: 1.03; /* portfolio card hover */
+      --opacity-hidden: 0;
+      --opacity-visible: 1;
+      --opacity-locked: 0.24;
+      --blur-locked: 0.4rem;
+      --spacing-game-stage-height: 42rem;
+      --spacing-game-stage-viewport: 50vh;
+      --spacing-game-character: 4rem;
+      --spacing-game-hole-width: 7rem;
+      --spacing-game-hole-height: 3rem;
+      --spacing-game-hole-x: 78%;
+      --spacing-game-hole-y: 58%;
+      --spacing-game-move-step: 0.35rem;
+      --spacing-game-coin: 2rem;
+      --spacing-game-coin-one-x: 28%;
+      --spacing-game-coin-one-y: 24%;
+      --spacing-game-coin-two-x: 46%;
+      --spacing-game-coin-two-y: 70%;
+      --spacing-game-coin-three-x: 61%;
+      --spacing-game-coin-three-y: 32%;
+      --spacing-game-coin-four-x: 72%;
+      --spacing-game-coin-four-y: 78%;
+      --spacing-game-coin-five-x: 88%;
+      --spacing-game-coin-five-y: 28%;
+      --spacing-cursor-character: 5rem;
+      --spacing-unlock-card: 24rem;
+      --spacing-game-panel: 24rem;
+      --spacing-game-panel-height: 70vh;
+      --rotate-game-fall: 180deg;
+      --rotate-cursor-max: 360deg;
+      --rotate-cursor-lean-max: 48deg;
+      --scale-game-fall: 0;
+      --scale-cursor-min: 0.9;
+      --scale-cursor-max: 1.14;
+      --cursor-angular-spring: 0.07;
+      --cursor-angular-damping: 0.9;
+      --cursor-pointer-force: 0.65;
+      --cursor-target-return: 0.86;
+      --cursor-circle-force: 2.8;
+      --cursor-circle-min-motion: 2;
+      --cursor-max-angular-speed: 18;
+      --cursor-stretch-force: 0.012;
+      --cursor-stretch-spring: 0.16;
+      --game-coin-collection-range: 1.5;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--color-paper);
+      background-image: radial-gradient(var(--color-grid) var(--spacing-pattern-dot), transparent var(--spacing-pattern-dot));
+      background-size: var(--spacing-pattern-grid) var(--spacing-pattern-grid);
+      color: var(--color-ink);
+    }
+    .hand { font-family: var(--font-hand); }
+    .marker { box-shadow: inset 0 calc(var(--spacing-marker-depth) * -1) var(--color-note-green); }
+    .section-space { padding-block: var(--spacing-section); }
+    .note-card { box-shadow: var(--shadow-note); }
+    .project-card { transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease; }
+    .project-card:hover, .project-card:focus-within { transform: translateY(-0.5rem) rotate(-1deg); box-shadow: var(--shadow-note); }
+    .project-card img { transition: transform var(--duration-fast) ease; }
+    .project-card:hover img { transform: scale(var(--scale-card-image)); }
+    .reveal { opacity: var(--opacity-hidden); transform: translateY(var(--spacing-reveal-offset)); transition: opacity var(--duration-base) ease, transform var(--duration-base) ease; }
+    .reveal.is-visible { opacity: var(--opacity-visible); transform: translateY(0); }
+    .back-to-top { opacity: var(--opacity-hidden); pointer-events: none; transform: translateY(var(--spacing-reveal-offset)); transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease; }
+    .back-to-top.is-visible { opacity: var(--opacity-visible); pointer-events: auto; transform: translateY(0); }
+    body.game-locked { overflow: hidden; }
+    .game-intro { opacity: var(--opacity-visible); visibility: visible; transition: opacity var(--duration-game-exit) ease, visibility var(--duration-game-exit) ease; }
+    .game-intro.is-complete { opacity: var(--opacity-hidden); visibility: hidden; pointer-events: none; }
+    .game-stage { height: min(var(--spacing-game-stage-viewport), var(--spacing-game-stage-height)); touch-action: none; }
+    .game-character { position: absolute; left: 0; top: 0; width: var(--spacing-game-character); transform: translate3d(var(--game-x), var(--game-y), 0); image-rendering: pixelated; will-change: transform; }
+    .game-character.is-walking { animation: game-walk var(--duration-fast) steps(2, end) infinite; }
+    .game-character.is-falling { animation: game-fall var(--duration-game-exit) ease-in forwards; }
+    .game-hole { position: absolute; left: var(--spacing-game-hole-x); top: var(--spacing-game-hole-y); width: var(--spacing-game-hole-width); height: var(--spacing-game-hole-height); transform: translate(-50%, -50%); }
+    .game-coin { position: absolute; width: var(--spacing-game-coin); aspect-ratio: 1; transform: translate(-50%, -50%); transition: opacity var(--duration-fast) ease, scale var(--duration-fast) ease; }
+    .game-coin::after { content: "★"; display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; border-radius: var(--radius-full); border: calc(var(--spacing-pattern-dot) * 3) solid var(--color-ink); background: var(--color-note-yellow); color: var(--color-brand-dark); box-shadow: inset 0 0 0 var(--spacing-pattern-dot) var(--color-paper); animation: coin-spin calc(var(--duration-base) * 2) steps(4, end) infinite; }
+    .game-coin.is-collected { opacity: var(--opacity-hidden); scale: var(--scale-game-fall); pointer-events: none; }
+    .game-coin-one { left: var(--spacing-game-coin-one-x); top: var(--spacing-game-coin-one-y); }
+    .game-coin-two { left: var(--spacing-game-coin-two-x); top: var(--spacing-game-coin-two-y); }
+    .game-coin-three { left: var(--spacing-game-coin-three-x); top: var(--spacing-game-coin-three-y); }
+    .game-coin-four { left: var(--spacing-game-coin-four-x); top: var(--spacing-game-coin-four-y); }
+    .game-coin-five { left: var(--spacing-game-coin-five-x); top: var(--spacing-game-coin-five-y); }
+    .cursor-character { position: fixed; left: 0; top: 0; z-index: 41; width: var(--spacing-cursor-character); opacity: var(--opacity-hidden); pointer-events: none; transform: translate3d(var(--cursor-x), var(--cursor-y), 0) rotate(var(--cursor-rotate)) scaleY(var(--cursor-stretch)); transform-origin: top center; transition: opacity var(--duration-fast) ease; will-change: transform; }
+    .cursor-character img { width: 100%; image-rendering: pixelated; }
+    body.portfolio-ready .cursor-character.has-pointer { opacity: var(--opacity-visible); }
+    .coin-wallet { opacity: var(--opacity-hidden); pointer-events: none; transform: translateY(calc(var(--spacing-reveal-offset) * -1)); transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease; }
+    body.portfolio-ready .coin-wallet { opacity: var(--opacity-visible); pointer-events: auto; transform: translateY(0); }
+    .unlock-section { position: relative; }
+    .unlock-section > :not(.unlock-gate) { transition: filter var(--duration-base) ease, opacity var(--duration-base) ease; }
+    .unlock-section.is-locked > :not(.unlock-gate) { filter: blur(var(--blur-locked)); opacity: var(--opacity-locked); pointer-events: none; user-select: none; }
+    .unlock-gate { position: absolute; inset: 0; z-index: 10; display: flex; align-items: flex-start; justify-content: center; padding: var(--spacing-section) var(--spacing-page) var(--spacing-page); }
+    .unlock-section:not(.is-locked) .unlock-gate { display: none; }
+    .unlock-card { width: 100%; max-width: var(--spacing-unlock-card); border: calc(var(--spacing-pattern-dot) * 4) solid var(--color-ink); border-radius: var(--radius-card); background: var(--color-paper); padding: var(--spacing-page); text-align: center; box-shadow: var(--shadow-note); }
+    .unlock-button { margin-top: var(--spacing-page); border-radius: var(--radius-full); background: var(--color-ink); color: var(--color-paper); padding: calc(var(--spacing-page) / 2) var(--spacing-page); font-weight: 800; }
+    .unlock-button:hover:not(:disabled) { background: var(--color-brand-dark); }
+    .unlock-button:disabled { opacity: var(--opacity-locked); cursor: not-allowed; }
+    .game-hud { opacity: var(--opacity-hidden); visibility: hidden; pointer-events: none; transform: translateY(var(--spacing-reveal-offset)); transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease, visibility var(--duration-fast) ease; }
+    body.portfolio-ready .game-hud { opacity: var(--opacity-visible); visibility: visible; pointer-events: auto; transform: translateY(0); }
+    .game-panel { position: fixed; left: var(--spacing-page); bottom: calc(var(--spacing-page) * 4); z-index: 60; width: min(calc(100vw - var(--spacing-page) * 2), var(--spacing-game-panel)); max-height: var(--spacing-game-panel-height); overflow-y: auto; border: calc(var(--spacing-pattern-dot) * 4) solid var(--color-ink); border-radius: var(--radius-card); background: var(--color-paper); padding: var(--spacing-page); box-shadow: var(--shadow-note); }
+    .game-panel[hidden] { display: none; }
+    .progress-item { border: calc(var(--spacing-pattern-dot) * 2) solid var(--color-grid); border-radius: var(--radius-card); background: var(--color-paper); padding: calc(var(--spacing-page) / 2); }
+    .progress-item.is-complete { border-color: var(--color-brand-dark); background: var(--color-note-green); }
+    .inventory-item, .achievement-item { opacity: var(--opacity-locked); }
+    .inventory-item.is-found, .achievement-item.is-earned { opacity: var(--opacity-visible); border-color: var(--color-brand-dark); }
+    .achievement-toast { position: fixed; left: 50%; top: var(--spacing-page); z-index: 70; opacity: var(--opacity-hidden); pointer-events: none; transform: translate(-50%, calc(var(--spacing-reveal-offset) * -1)); transition: opacity var(--duration-achievement) ease, transform var(--duration-achievement) ease; }
+    .achievement-toast.is-visible { opacity: var(--opacity-visible); transform: translate(-50%, 0); }
+    @keyframes game-walk { 50% { margin-top: calc(var(--spacing-pattern-grid) * -1); } }
+    @keyframes game-fall { to { opacity: var(--opacity-hidden); scale: var(--scale-game-fall); rotate: var(--rotate-game-fall); } }
+    @keyframes coin-spin { 50% { transform: scaleX(var(--scale-game-fall)); } }
+    @media (pointer: coarse) { .cursor-character { display: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal, .project-card, .project-card img { opacity: var(--opacity-visible); transform: none; transition: none; }
+      .game-intro, .game-character, .game-coin, .game-coin::after, .cursor-character { animation: none; transition: none; }
+    }
+  </style>
+</head>
+<body class="game-locked font-sans antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-3 focus:text-white">본문 바로가기</a>
+
+  <section id="game-intro" class="game-intro fixed inset-0 z-50 flex min-h-screen flex-col items-center justify-center bg-paper px-page py-6" aria-labelledby="game-title" aria-describedby="game-guide">
+    <div class="mb-4 flex w-full max-w-6xl items-end justify-between gap-4">
+      <div>
+        <p class="hand text-sm font-bold text-brand-dark">Portfolio Entrance</p>
+        <h1 id="game-title" class="mt-1 text-2xl font-black sm:text-3xl">구멍을 찾아 포트폴리오로 들어가세요</h1>
+        <p id="game-guide" class="mt-1 text-sm font-semibold text-muted"><span class="hidden sm:inline">WASD 또는 방향키로 이동</span><span class="sm:hidden">화면 방향키로 이동</span></p>
+      </div>
+      <button id="skip-game" class="shrink-0 rounded-full bg-ink px-4 py-2 text-sm font-bold text-white hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-4" type="button">바로 보기</button>
+    </div>
+
+    <div id="game-stage" class="game-stage relative w-full max-w-6xl overflow-hidden rounded-card border-4 border-ink bg-note-green" role="application" aria-label="캐릭터를 움직여 구멍으로 들어가는 포트폴리오 입장 게임">
+      <div class="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-bold text-muted" aria-hidden="true">START</div>
+      <div class="absolute right-4 top-4 z-10 flex items-center gap-2 rounded-full border-4 border-ink bg-white px-3 py-1 font-black" aria-label="수집한 코인">
+        <span aria-hidden="true">★</span>
+        <output id="coin-count" aria-live="polite">0 / 5</output>
+      </div>
+      <div class="game-coin game-coin-one" data-coin aria-hidden="true"></div>
+      <div class="game-coin game-coin-two" data-coin aria-hidden="true"></div>
+      <div class="game-coin game-coin-three" data-coin aria-hidden="true"></div>
+      <div class="game-coin game-coin-four" data-coin aria-hidden="true"></div>
+      <div class="game-coin game-coin-five" data-coin aria-hidden="true"></div>
+      <output id="game-status" class="absolute bottom-4 left-4 rounded-full bg-white px-3 py-1 text-xs font-bold text-muted" aria-live="polite">코인 5개를 모으면 입장할 수 있습니다</output>
+      <div id="game-hole" class="game-hole flex items-center justify-center rounded-full bg-ink text-xs font-black text-white" aria-label="코인을 모두 모은 뒤 들어가는 포트폴리오 입구">ENTER</div>
+      <img id="game-character" class="game-character" src="assets/pixel-character.png" alt="초록색 재킷을 입은 남성 도트 캐릭터" width="128" height="192">
+    </div>
+
+    <div id="mobile-controls" class="mt-4 grid grid-cols-3 gap-2 sm:hidden" aria-label="캐릭터 이동 방향키">
+      <span aria-hidden="true"></span>
+      <button class="flex size-12 items-center justify-center rounded-card border-4 border-ink bg-white text-xl font-black active:bg-note-yellow" type="button" data-direction="up" aria-label="위로 이동">↑</button>
+      <span aria-hidden="true"></span>
+      <button class="flex size-12 items-center justify-center rounded-card border-4 border-ink bg-white text-xl font-black active:bg-note-yellow" type="button" data-direction="left" aria-label="왼쪽으로 이동">←</button>
+      <button class="flex size-12 items-center justify-center rounded-card border-4 border-ink bg-white text-xl font-black active:bg-note-yellow" type="button" data-direction="down" aria-label="아래로 이동">↓</button>
+      <button class="flex size-12 items-center justify-center rounded-card border-4 border-ink bg-white text-xl font-black active:bg-note-yellow" type="button" data-direction="right" aria-label="오른쪽으로 이동">→</button>
+    </div>
+  </section>
+
+  <div id="cursor-character" class="cursor-character" aria-hidden="true">
+    <img src="assets/pixel-character-grabbing-v2.png" alt="" width="128" height="192">
+  </div>
+
+  <aside id="coin-wallet" class="coin-wallet fixed right-6 top-6 z-30 flex items-center gap-2 rounded-full border-4 border-ink bg-note-yellow px-4 py-2 font-black shadow-note sm:right-12 sm:top-12" aria-label="콘텐츠 해금용 코인 지갑">
+    <span aria-hidden="true">★</span>
+    <output id="coin-balance" aria-live="polite">0</output>
+  </aside>
+
+  <nav class="game-hud fixed bottom-6 left-6 z-30 flex gap-2 sm:bottom-12 sm:left-12" aria-label="포트폴리오 게임 메뉴">
+    <button class="flex size-12 items-center justify-center rounded-full border-4 border-ink bg-note-green text-xl shadow-note focus-visible:outline-2 focus-visible:outline-offset-4" type="button" data-panel-toggle="quest-panel" aria-expanded="false" aria-controls="quest-panel" aria-label="퀘스트 로그 열기">☑</button>
+    <button class="flex size-12 items-center justify-center rounded-full border-4 border-ink bg-note-blue text-xl shadow-note focus-visible:outline-2 focus-visible:outline-offset-4" type="button" data-panel-toggle="inventory-panel" aria-expanded="false" aria-controls="inventory-panel" aria-label="인벤토리 열기">▣</button>
+    <button class="flex size-12 items-center justify-center rounded-full border-4 border-ink bg-note-yellow text-xl shadow-note focus-visible:outline-2 focus-visible:outline-offset-4" type="button" data-panel-toggle="achievement-panel" aria-expanded="false" aria-controls="achievement-panel" aria-label="업적 열기">★</button>
+  </nav>
+
+  <section id="quest-panel" class="game-panel" hidden aria-labelledby="quest-panel-title">
+    <div class="flex items-center justify-between gap-4"><h2 id="quest-panel-title" class="hand text-2xl font-bold">Quest Log</h2><button type="button" class="text-2xl font-black" data-panel-close aria-label="퀘스트 로그 닫기">×</button></div>
+    <p class="mt-2 text-sm text-muted">코인으로 콘텐츠를 해금해 프로젝트 기록을 완료하세요.</p>
+    <ol class="mt-5 grid gap-3">
+      <li class="progress-item" data-quest="about"><a class="flex items-center justify-between gap-3" href="#about"><span>프로젝트 역할 확인</span><span data-quest-status>미완료</span></a></li>
+      <li class="progress-item" data-quest="projects"><a class="flex items-center justify-between gap-3" href="#projects"><span>6개 구현 화면 탐색</span><span data-quest-status>미완료</span></a></li>
+      <li class="progress-item" data-quest="evidence"><a class="flex items-center justify-between gap-3" href="#evidence"><span>설계·자동화 증거 수집</span><span data-quest-status>미완료</span></a></li>
+      <li class="progress-item" data-quest="process"><a class="flex items-center justify-between gap-3" href="#process"><span>문제 해결 과정 확인</span><span data-quest-status>미완료</span></a></li>
+      <li class="progress-item" data-quest="contact"><a class="flex items-center justify-between gap-3" href="#contact"><span>최종 결과물로 이동</span><span data-quest-status>미완료</span></a></li>
+    </ol>
+  </section>
+
+  <section id="inventory-panel" class="game-panel" hidden aria-labelledby="inventory-panel-title">
+    <div class="flex items-center justify-between gap-4"><h2 id="inventory-panel-title" class="hand text-2xl font-bold">Evidence Inventory</h2><button type="button" class="text-2xl font-black" data-panel-close aria-label="인벤토리 닫기">×</button></div>
+    <p class="mt-2 text-sm text-muted">증거 카드를 화면에서 확인하면 아이템이 활성화됩니다.</p>
+    <ul class="mt-5 grid grid-cols-2 gap-3">
+      <li class="progress-item inventory-item" data-inventory="token"><a href="#evidence-token"><span class="block text-2xl" aria-hidden="true">◈</span><span class="font-bold">디자인 토큰</span></a></li>
+      <li class="progress-item inventory-item" data-inventory="harness"><a href="#evidence-harness"><span class="block text-2xl" aria-hidden="true">⌘</span><span class="font-bold">하네스</span></a></li>
+      <li class="progress-item inventory-item" data-inventory="skills"><a href="#evidence-skills"><span class="block text-2xl" aria-hidden="true">✦</span><span class="font-bold">역할별 스킬</span></a></li>
+      <li class="progress-item inventory-item" data-inventory="guardrail"><a href="#evidence-guardrail"><span class="block text-2xl" aria-hidden="true">◆</span><span class="font-bold">자동 검사</span></a></li>
+      <li class="progress-item inventory-item" data-inventory="automation"><a href="#evidence-automation"><span class="block text-2xl" aria-hidden="true">↻</span><span class="font-bold">회의록 자동화</span></a></li>
+      <li class="progress-item inventory-item" data-inventory="performance"><a href="#evidence-performance"><span class="block text-2xl" aria-hidden="true">↗</span><span class="font-bold">성능 보고서</span></a></li>
+    </ul>
+  </section>
+
+  <section id="achievement-panel" class="game-panel" hidden aria-labelledby="achievement-panel-title">
+    <div class="flex items-center justify-between gap-4"><h2 id="achievement-panel-title" class="hand text-2xl font-bold">Achievements</h2><button type="button" class="text-2xl font-black" data-panel-close aria-label="업적 닫기">×</button></div>
+    <ul class="mt-5 grid gap-3">
+      <li class="progress-item achievement-item" data-achievement="collector"><strong>코인 컬렉터</strong><span class="block text-sm text-muted">코인 5개 수집</span></li>
+      <li class="progress-item achievement-item" data-achievement="first-unlock"><strong>첫 번째 열쇠</strong><span class="block text-sm text-muted">콘텐츠 최초 해금</span></li>
+      <li class="progress-item achievement-item" data-achievement="explorer"><strong>프로젝트 탐험가</strong><span class="block text-sm text-muted">역할과 구현 화면 해금</span></li>
+      <li class="progress-item achievement-item" data-achievement="archivist"><strong>증거 수집가</strong><span class="block text-sm text-muted">인벤토리 6개 수집</span></li>
+      <li class="progress-item achievement-item" data-achievement="all-clear"><strong>Portfolio Clear</strong><span class="block text-sm text-muted">모든 콘텐츠 해금</span></li>
+    </ul>
+  </section>
+
+  <output id="achievement-toast" class="achievement-toast rounded-full border-4 border-ink bg-note-yellow px-5 py-3 font-black shadow-note" aria-live="polite"></output>
+
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-page py-8" aria-label="포트폴리오 헤더">
+    <a href="#top" class="hand text-3xl font-bold" aria-label="강동균 포트폴리오 홈">✦ 동균</a>
+    <nav aria-label="포트폴리오 탐색">
+      <ul class="flex items-center gap-6 text-sm font-semibold sm:text-base">
+        <li><a class="hover:text-brand-dark focus-visible:outline-2 focus-visible:outline-offset-4" href="#projects">Projects</a></li>
+        <li><a class="marker hover:text-brand-dark focus-visible:outline-2 focus-visible:outline-offset-4" href="#about">About me</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="top" class="mx-auto grid max-w-6xl items-center gap-14 px-page pb-20 pt-14 lg:grid-cols-2 lg:pt-24" aria-labelledby="hero-title">
+      <div class="reveal">
+        <p class="hand mb-8 inline-block rotate-2 bg-note-green px-3 py-1 text-2xl">Pulmuone Web Project ↗</p>
+        <h1 id="hero-title" class="text-4xl font-black leading-tight tracking-tight md:text-hero">
+          <span class="block whitespace-nowrap">풀무원 <span class="marker">메인과</span></span>
+          <span class="block whitespace-nowrap"><span class="marker">바른먹거리</span> 웹을</span>
+          <span class="block whitespace-nowrap">설계했습니다</span>
+        </h1>
+      </div>
+    </section>
+
+    <section id="about" class="unlock-section section-space mx-auto max-w-6xl px-page" aria-labelledby="about-title" data-unlock-section>
+      <div class="mb-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" aria-label="프로젝트 개요">
+        <div class="rounded-card border-4 border-ink bg-white p-5"><p class="hand text-sm text-brand-dark">Project · Period</p><p class="mt-2 text-xl font-extrabold">팀 프로젝트</p><p class="mt-2 text-sm font-semibold text-muted">2026.07.21 — 08.14</p></div>
+        <div class="rounded-card border-4 border-ink bg-note-green p-5"><p class="hand text-sm text-brand-dark">My Role</p><p class="mt-2 text-xl font-extrabold">바른먹거리 하위 5개 페이지 담당</p></div>
+        <div class="rounded-card border-4 border-ink bg-note-blue p-5"><p class="hand text-sm text-brand-dark">Collaboration</p><p class="mt-2 text-xl font-extrabold">메인 공동 작업</p></div>
+        <a class="rounded-card border-4 border-ink bg-note-yellow p-5 hover:shadow-note focus-visible:outline-2 focus-visible:outline-offset-4" href="https://github.com/icerence/kiwik-project" target="_blank" rel="noopener noreferrer"><p class="hand text-sm text-brand-dark">Result</p><p class="mt-2 text-xl font-extrabold">총 6개 페이지 ↗</p></a>
+      </div>
+      <div class="mb-14">
+        <h2 id="about-title" class="hand inline-block bg-note-green px-3 py-1 text-display font-bold">What I did?</h2>
+        <p class="mt-5 max-w-2xl text-lg leading-8 text-muted">Figma 시안을 토큰 기반 HTML로 구현하고, 공통 UI로 페이지 경험을 연결했습니다.</p>
+      </div>
+      <div class="grid gap-8 md:grid-cols-3">
+        <article class="note-card reveal rounded-card border-4 border-brand-dark bg-note-yellow p-8 md:-rotate-2">
+          <span class="text-4xl" aria-hidden="true">✎</span>
+          <p class="hand mt-8 inline-block bg-note-blue px-2 text-xl">Structure</p>
+          <h3 class="mt-5 text-2xl font-extrabold">콘텐츠 구조 설계</h3>
+          <p class="mt-4 leading-7"><span class="block">복잡한 정책과 캠페인 정보를</span><span class="block">사용자가 읽기 쉬운 섹션과</span><span class="block">카드 흐름으로 재구성했습니다.</span></p>
+        </article>
+        <article class="note-card reveal rounded-card border-4 border-brand-dark bg-note-blue p-8">
+          <span class="text-4xl" aria-hidden="true">◉</span>
+          <p class="hand mt-8 inline-block bg-note-pink px-2 text-xl">Figma</p>
+          <h3 class="mt-5 text-2xl font-extrabold">UI 구현</h3>
+          <p class="mt-4 leading-7"><span class="block">HTML5, Tailwind CSS, Vanilla JS로</span><span class="block">시안을 반응형 화면과</span><span class="block">실제 인터랙션으로 구현했습니다.</span></p>
+        </article>
+        <article class="note-card reveal rounded-card border-4 border-brand-dark bg-note-pink p-8 md:rotate-2">
+          <span class="text-4xl" aria-hidden="true">✧</span>
+          <p class="hand mt-8 inline-block bg-note-yellow px-2 text-xl">System</p>
+          <h3 class="mt-5 text-2xl font-extrabold">디자인 시스템</h3>
+          <p class="mt-4 leading-7"><span class="block">메인페이지의 5개 풀페이지 섹션을</span><span class="block">dot navigation과 연결하고,</span><span class="block">공통 토큰·헤더·푸터로</span><span class="block">전체 페이지의 경험을 통일했습니다.</span></p>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" class="unlock-section section-space mx-auto max-w-6xl px-page" aria-labelledby="projects-title" data-unlock-section>
+      <div class="mb-14 grid gap-6 md:grid-cols-3">
+        <div>
+          <h2 id="projects-title" class="hand inline-block bg-note-green px-3 py-1 text-display font-bold">Featured Pages</h2>
+        </div>
+        <p class="border-l-4 border-brand-dark bg-white p-6 text-lg font-semibold leading-8 text-ink shadow-note md:col-span-2"><span class="block">메인페이지를 포함해 총 6개 화면을 구현했습니다.</span><span class="block">각 카드는 실제 구현 페이지로 연결되며</span><span class="block">대표 이미지와 핵심 설계 의도를 함께 확인할 수 있습니다.</span></p>
+      </div>
+
+      <div class="grid gap-8 md:grid-cols-2">
+        <article class="project-card reveal overflow-hidden rounded-card border-4 border-ink bg-white p-4 md:col-span-2">
+          <a href="https://icerence.github.io/kiwik-project/" target="_blank" rel="noopener noreferrer" class="grid gap-6 focus-visible:outline-2 focus-visible:outline-offset-4 md:grid-cols-2">
+            <div class="overflow-hidden bg-note-green"><img src="assets/images/hero.webp" alt="풀무원 메인페이지의 자연 속 나무 히어로 화면" class="aspect-video h-full w-full object-cover" width="1920" height="1080"></div>
+            <div class="flex items-center justify-between gap-4 p-4 md:p-8"><div><p class="hand text-brand-dark">00 · Main Experience</p><h3 class="mt-2 text-2xl font-extrabold">풀무원 메인페이지</h3><p class="mt-3 leading-7 text-muted"><span class="block">팀원과 공동 작업한 메인 화면입니다.</span><span class="block">Eco-Caring, 환경 발자국, 지구식단, 뉴스룸, SNS를</span><span class="block">5개 풀페이지 섹션으로 구성하고</span><span class="block">스크롤·클릭·키보드 이동이 가능한</span><span class="block">dot navigation을 구현했습니다.</span></p></div><span class="rounded-full bg-note-green px-4 py-2 text-sm font-bold">공동 작업</span></div>
+          </a>
+        </article>
+
+        <article class="project-card reveal overflow-hidden rounded-card border-4 border-ink bg-white p-4">
+          <a href="https://icerence.github.io/kiwik-project/food.html" target="_blank" rel="noopener noreferrer" class="block focus-visible:outline-2 focus-visible:outline-offset-4">
+            <div class="overflow-hidden bg-note-green"><img src="assets/images/food-hero.webp" alt="지속가능 식생활 페이지의 채소와 식재료 히어로 화면" class="aspect-video w-full object-cover" width="800" height="450"></div>
+            <div class="px-2 pb-2 pt-6"><p class="hand text-brand-dark">01 · Sustainable Diet</p><h3 class="mt-2 text-2xl font-extrabold">지속가능 식생활</h3><p class="mt-2 text-muted">바른 식생활 원칙을 이야기 중심으로 전달</p></div>
+          </a>
+        </article>
+
+        <article class="project-card reveal overflow-hidden rounded-card border-4 border-ink bg-white p-4">
+          <a href="https://icerence.github.io/kiwik-project/food2.html" target="_blank" rel="noopener noreferrer" class="block focus-visible:outline-2 focus-visible:outline-offset-4">
+            <div class="overflow-hidden bg-note-blue"><img src="assets/images/food2-hero.webp" alt="지속가능식품 페이지의 푸른 들판 히어로 화면" class="aspect-video w-full object-cover" width="800" height="450" loading="lazy"></div>
+            <div class="px-2 pb-2 pt-6"><p class="hand text-brand-dark">02 · Framework</p><h3 class="mt-2 text-2xl font-extrabold">지속가능식품</h3><p class="mt-2 text-muted">식물성 지향과 동물복지 체계를 시각화</p></div>
+          </a>
+        </article>
+
+        <article class="project-card reveal overflow-hidden rounded-card border-4 border-ink bg-white p-4">
+          <a href="https://icerence.github.io/kiwik-project/food3.html" target="_blank" rel="noopener noreferrer" class="block focus-visible:outline-2 focus-visible:outline-offset-4">
+            <div class="overflow-hidden bg-note-yellow"><img src="assets/images/food3-hero.webp" alt="바른먹거리 원칙 페이지의 자연 풍경 히어로 화면" class="aspect-video w-full object-cover" width="800" height="450" loading="lazy"></div>
+            <div class="px-2 pb-2 pt-6"><p class="hand text-brand-dark">03 · Principle</p><h3 class="mt-2 text-2xl font-extrabold">바른먹거리 원칙</h3><p class="mt-2 text-muted">원칙과 이력 추적 정보를 단계적으로 구성</p></div>
+          </a>
+        </article>
+
+        <article class="project-card reveal overflow-hidden rounded-card border-4 border-ink bg-white p-4">
+          <a href="https://icerence.github.io/kiwik-project/food4.html" target="_blank" rel="noopener noreferrer" class="block focus-visible:outline-2 focus-visible:outline-offset-4">
+            <div class="overflow-hidden bg-note-pink"><img src="assets/images/food4-hero.webp" alt="바른먹거리 캠페인 페이지의 교육 활동 히어로 화면" class="aspect-video w-full object-cover" width="800" height="450" loading="lazy"></div>
+            <div class="px-2 pb-2 pt-6"><p class="hand text-brand-dark">04 · Campaign</p><h3 class="mt-2 text-2xl font-extrabold">바른먹거리 캠페인</h3><p class="mt-2 text-muted">대상별 교육 프로그램과 활동을 카드로 정리</p></div>
+          </a>
+        </article>
+
+        <article class="project-card reveal overflow-hidden rounded-card border-4 border-ink bg-white p-4 md:col-span-2">
+          <a href="https://icerence.github.io/kiwik-project/food5.html" target="_blank" rel="noopener noreferrer" class="grid gap-6 focus-visible:outline-2 focus-visible:outline-offset-4 md:grid-cols-2">
+            <div class="overflow-hidden bg-note-green"><img src="assets/images/food5-hero.webp" alt="식품안전 및 품질정책 페이지의 연구실 히어로 화면" class="aspect-video h-full w-full object-cover" width="800" height="450" loading="lazy"></div>
+            <div class="p-4 md:p-8"><p class="hand text-brand-dark">05 · Safety</p><h3 class="mt-2 text-2xl font-extrabold">식품안전 및 품질정책</h3><p class="mt-3 leading-7 text-muted">전문적인 안전관리 체계를 사용자가 이해할 수 있는 정보 위계로 정리했습니다.</p></div>
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section id="evidence" class="unlock-section section-space mx-auto max-w-6xl px-page" aria-labelledby="evidence-title" data-unlock-section>
+      <div class="mb-14">
+        <h2 id="evidence-title" class="hand inline-block bg-note-green px-3 py-1 text-display font-bold">System &amp; Evidence</h2>
+      </div>
+
+      <div class="grid min-w-0 gap-6 md:grid-cols-2">
+        <article id="evidence-token" class="reveal rounded-card border-4 border-ink bg-note-yellow p-7 md:p-9" data-inventory-source="token">
+          <p class="hand text-4xl font-bold">145</p>
+          <h3 class="mt-4 text-2xl font-extrabold">디자인 토큰 정의</h3>
+          <p class="mt-4 leading-7">메인페이지의 <code>@theme</code> 변수 132개와 바른먹거리 공통 색상 토큰 13개를 정의했습니다. 색상·간격·크기·타이포그래피·그림자·반응형 값을 이름 있는 변수로 관리합니다.</p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a class="rounded-full bg-white px-4 py-2 text-sm font-bold underline decoration-brand underline-offset-4" href="https://icerence.github.io/kiwik-project/" target="_blank" rel="noopener noreferrer">메인 @theme 확인 ↗</a>
+            <a class="rounded-full bg-white px-4 py-2 text-sm font-bold underline decoration-brand underline-offset-4" href="assets/css/food-tokens.css">바른먹거리 토큰 확인 ↗</a>
+          </div>
+        </article>
+
+        <article id="evidence-harness" class="reveal rounded-card border-4 border-ink bg-note-blue p-7 md:p-9" data-inventory-source="harness">
+          <p class="hand text-4xl font-bold">4 Step</p>
+          <h3 class="mt-4 text-2xl font-extrabold">디자인 시스템 하네스</h3>
+          <p class="mt-4 leading-7">Clarify → Reuse → Implement → Evaluate 절차와 토큰 규칙, CDN 허용 범위, 변경 범위를 하나의 하네스로 정의했습니다. 작업자가 달라도 같은 기준으로 구현하도록 만든 품질 계약입니다.</p>
+          <a class="mt-6 inline-flex rounded-full bg-white px-4 py-2 text-sm font-bold underline decoration-brand underline-offset-4" href="evidence/design-system-harness.md">하네스 원문 확인 ↗</a>
+        </article>
+
+        <article id="evidence-skills" class="reveal rounded-card border-4 border-ink bg-note-pink p-7 md:p-9" data-inventory-source="skills">
+          <p class="hand text-4xl font-bold">5 Skills · 4 Roles</p>
+          <h3 class="mt-4 text-2xl font-extrabold">업무별 스킬과 에이전트</h3>
+          <p class="mt-4 leading-7"><code>figma-to-code</code>, <code>sync-tokens</code>, <code>new-section</code>, <code>review-design</code> 등 목적별 스킬을 만들고, 구현·토큰·섹션·리뷰 역할을 분리했습니다.</p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a class="rounded-full bg-white px-4 py-2 text-sm font-bold underline decoration-brand underline-offset-4" href="evidence/skills/figma-to-code/SKILL.md">Figma 스킬 ↗</a>
+            <a class="rounded-full bg-white px-4 py-2 text-sm font-bold underline decoration-brand underline-offset-4" href="evidence/skills/review-design/SKILL.md">리뷰 스킬 ↗</a>
+          </div>
+        </article>
+
+        <article id="evidence-guardrail" class="reveal rounded-card border-4 border-ink bg-note-green p-7 md:p-9" data-inventory-source="guardrail">
+          <p class="hand text-4xl font-bold">Guardrail</p>
+          <h3 class="mt-4 text-2xl font-extrabold">하드코딩 자동 차단</h3>
+          <p class="mt-4 leading-7">색상 원시값, 임의 Tailwind 클래스, 허용되지 않은 CDN이 들어오면 편집 단계에서 탐지하는 훅을 연결했습니다. 리뷰 권고가 아니라 실제로 실행되는 자동 안전장치입니다.</p>
+          <a class="mt-6 inline-flex rounded-full bg-white px-4 py-2 text-sm font-bold underline decoration-brand underline-offset-4" href="evidence/hooks/check-hardcode.fixed.mjs">검사 코드 확인 ↗</a>
+        </article>
+
+        <article class="reveal min-w-0 rounded-card border-4 border-ink bg-white p-7 md:col-span-2 md:p-9">
+          <div class="grid min-w-0 items-center gap-10 lg:grid-cols-2">
+            <div class="min-w-0">
+              <p class="hand text-4xl font-bold">Reusable Component</p>
+              <h3 class="mt-4 text-2xl font-extrabold">Dot Navigation variants</h3>
+              <p class="mt-4 leading-7 text-muted">Figma에서 다음 5개 상태를 하나의 컴포넌트로 설계했습니다.</p>
+              <ul class="mt-3 flex flex-wrap gap-2" aria-label="Dot Navigation 상태 목록">
+                <li class="rounded-full bg-note-green px-3 py-1 text-sm font-bold">Plan</li>
+                <li class="rounded-full bg-note-green px-3 py-1 text-sm font-bold">Eco-Caring</li>
+                <li class="rounded-full bg-note-green px-3 py-1 text-sm font-bold">Footprint</li>
+                <li class="rounded-full bg-note-green px-3 py-1 text-sm font-bold">Newsroom</li>
+                <li class="rounded-full bg-note-green px-3 py-1 text-sm font-bold">SNS</li>
+              </ul>
+              <p class="mt-4 leading-7 text-muted">32px 활성 슬롯, 비활성 dot, 상태별 아이콘을 variants로 정의하고 메인페이지의 현재 섹션과 실시간으로 연결했습니다.</p>
+              <p class="mt-4 leading-7 text-muted">코드에서는 동일한 DOM을 재사용하면서 <code>aria-current</code>와 현재 인덱스만 갱신해 활성 아이콘이 이동하도록 구현했습니다.</p>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a class="rounded-full bg-note-green px-4 py-2 text-sm font-bold underline decoration-brand-dark underline-offset-4" href="https://www.figma.com/design/pCUhL08czrQ354AxPojfBX/?node-id=45-1146" target="_blank" rel="noopener noreferrer">Figma 컴포넌트 ↗</a>
+                <a class="rounded-full bg-note-yellow px-4 py-2 text-sm font-bold underline decoration-brand-dark underline-offset-4" href="https://icerence.github.io/kiwik-project/" target="_blank" rel="noopener noreferrer">실제 적용 화면 ↗</a>
+              </div>
+            </div>
+
+            <div class="min-w-0 max-w-full overflow-x-auto rounded-card bg-note-green p-6" aria-label="Dot Navigation 5개 상태 미리보기">
+              <div class="flex min-w-max justify-center gap-6">
+                <div class="text-center"><ul class="flex flex-col items-center gap-2" aria-label="Plan 활성 상태"><li class="flex size-8 items-center justify-center rounded-full bg-brand"><img src="assets/icons/dot-nav-calendar.svg" alt="" class="size-5"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li></ul><p class="hand mt-3 text-sm font-bold">Plan</p></div>
+                <div class="text-center"><ul class="flex flex-col items-center gap-2" aria-label="EcoCaring 활성 상태"><li class="size-3 rounded-full bg-muted"></li><li class="flex size-8 items-center justify-center rounded-full bg-brand"><img src="assets/icons/dot-nav-leaf.svg" alt="" class="size-5"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li></ul><p class="hand mt-3 text-sm font-bold">Eco</p></div>
+                <div class="text-center"><ul class="flex flex-col items-center gap-2" aria-label="Footprint 활성 상태"><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="flex size-8 items-center justify-center rounded-full bg-brand"><img src="assets/icons/dot-nav-globe.svg" alt="" class="size-5"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li></ul><p class="hand mt-3 text-sm font-bold">Footprint</p></div>
+                <div class="text-center"><ul class="flex flex-col items-center gap-2" aria-label="Newsroom 활성 상태"><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="flex size-8 items-center justify-center rounded-full bg-brand"><img src="assets/icons/dot-nav-newspaper.svg" alt="" class="size-5"></li><li class="size-3 rounded-full bg-muted"></li></ul><p class="hand mt-3 text-sm font-bold">News</p></div>
+                <div class="text-center"><ul class="flex flex-col items-center gap-2" aria-label="SNS 활성 상태"><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="size-3 rounded-full bg-muted"></li><li class="flex size-8 items-center justify-center rounded-full bg-brand"><img src="assets/icons/dot-nav-tv.svg" alt="" class="size-5"></li></ul><p class="hand mt-3 text-sm font-bold">SNS</p></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="evidence-automation" class="reveal min-w-0 rounded-card border-4 border-ink bg-note-blue p-7 md:col-span-2 md:p-9" aria-labelledby="meeting-automation-title" data-inventory-source="automation">
+          <div class="grid min-w-0 gap-10 lg:grid-cols-2">
+            <div class="min-w-0">
+              <p class="hand text-4xl font-bold">Workflow Automation</p>
+              <h3 id="meeting-automation-title" class="mt-4 text-2xl font-extrabold">FigJam 자동 회의록 스킬</h3>
+              <p class="mt-4 leading-7">FigJam 회의 내용을 분석해 Notion 회의록으로 자동 전환하는 업무 자동화 스킬을 설계했습니다.</p>
+              <p class="mt-4 leading-7 text-muted">팀원별 스티키 색상으로 작성자를 구분하고, 변경된 내용만 추출해 업무 유형과 진행 상태를 구조화합니다. 링크 보존, 누락 정보 검증, 오류 재시도 규칙을 적용해 반복적인 회의록 정리 과정을 자동화했습니다.</p>
+              <ul class="mt-6 flex flex-wrap gap-2" aria-label="자동 회의록 핵심 규칙">
+                <li class="rounded-full bg-white px-3 py-1 text-sm font-bold">색상 기반 작성자 구분</li>
+                <li class="rounded-full bg-white px-3 py-1 text-sm font-bold">변경 내용만 반영</li>
+                <li class="rounded-full bg-white px-3 py-1 text-sm font-bold">누락 정보 검증</li>
+                <li class="rounded-full bg-white px-3 py-1 text-sm font-bold">오류 1회 재시도</li>
+              </ul>
+            </div>
+
+            <div class="min-w-0 rounded-card border-4 border-ink bg-white p-6 md:p-8">
+              <p class="hand text-lg font-bold text-brand-dark">Automation Flow</p>
+              <ol class="mt-6 grid gap-4" aria-label="자동 회의록 처리 과정">
+                <li class="rounded-card bg-note-green p-4"><span class="hand font-bold">01 · Collect</span><p class="mt-1 font-extrabold">FigJam 회의 보드 읽기</p></li>
+                <li class="text-center text-2xl font-black" aria-hidden="true">↓</li>
+                <li class="rounded-card bg-note-yellow p-4"><span class="hand font-bold">02 · Analyze</span><p class="mt-1 font-extrabold">작성자·업무 유형·변경 내용 분류</p></li>
+                <li class="text-center text-2xl font-black" aria-hidden="true">↓</li>
+                <li class="rounded-card bg-note-pink p-4"><span class="hand font-bold">03 · Record</span><p class="mt-1 font-extrabold">Notion 회의록 데이터베이스 등록</p></li>
+              </ol>
+              <p class="mt-6 border-l-4 border-brand-dark pl-4 text-sm font-semibold leading-6">실제 키윅 워크스페이스의 회의록 데이터베이스 연결과 속성 구조를 확인했습니다.</p>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a class="rounded-full bg-note-green px-4 py-2 text-sm font-bold underline decoration-brand-dark underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4" href="https://www.figma.com/board/tTNn7XY4aHoeSO7p1fTaWX/?node-id=0-1" target="_blank" rel="noopener noreferrer">FigJam 원본 ↗</a>
+                <a class="rounded-full bg-note-yellow px-4 py-2 text-sm font-bold underline decoration-brand-dark underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4" href="https://app.notion.com/p/123566c2471d82c89423017b9d966342?v=58a566c2471d837cafed889ad635aae2" target="_blank" rel="noopener noreferrer">Notion 회의록 ↗</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="evidence-performance" class="reveal min-w-0 rounded-card border-4 border-ink bg-white p-7 md:col-span-2 md:p-9" aria-labelledby="performance-title" data-inventory-source="performance">
+          <div class="grid min-w-0 gap-10 lg:grid-cols-3">
+            <div class="min-w-0 lg:col-span-1">
+              <p class="hand text-4xl font-bold">Performance</p>
+              <h3 id="performance-title" class="mt-4 text-2xl font-extrabold">바른먹거리 하위 5개 페이지 성능 최적화</h3>
+              <p class="mt-4 leading-7 text-muted">W3C, ESLint, Lighthouse로 다섯 페이지를 검사하고 대용량 이미지, 로딩 순서, 공통 헤더와 모바일 메뉴의 실제 오류를 개선했습니다.</p>
+              <p class="mt-4 leading-7 text-muted">검사기의 외부 CDN·Tailwind 오탐과 프로젝트 코드의 실제 문제를 구분한 뒤, 배포 전후 수치로 개선 효과를 확인했습니다.</p>
+            </div>
+
+            <div class="grid min-w-0 gap-4 sm:grid-cols-2 lg:col-span-2">
+              <div class="rounded-card border-4 border-ink bg-note-green p-5">
+                <p class="hand text-3xl font-bold">약 94%</p>
+                <p class="mt-2 font-extrabold">이미지 총용량 감소</p>
+                <p class="mt-1 text-sm text-muted">약 34.8MiB → 약 2.0MiB</p>
+              </div>
+              <div class="rounded-card border-4 border-ink bg-note-yellow p-5">
+                <p class="hand text-3xl font-bold">25 Images</p>
+                <p class="mt-2 font-extrabold">PNG를 WebP로 전환</p>
+                <p class="mt-1 text-sm text-muted">크기 명시·지연 로딩 함께 적용</p>
+              </div>
+              <div class="rounded-card border-4 border-ink bg-note-blue p-5">
+                <p class="hand text-3xl font-bold">27.0s → 9.8s</p>
+                <p class="mt-2 font-extrabold">모바일 평균 LCP 단축</p>
+                <p class="mt-1 text-sm text-muted">바른먹거리 하위 5개 페이지 모두 개선</p>
+              </div>
+              <div class="rounded-card border-4 border-ink bg-note-pink p-5">
+                <p class="hand text-3xl font-bold">72 → 95</p>
+                <p class="mt-2 font-extrabold">지속가능 식생활 데스크톱 성능</p>
+                <p class="mt-1 text-sm text-muted">Lighthouse 좋음 구간 진입</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid gap-6 border-t-4 border-ink pt-8 md:grid-cols-2">
+            <div>
+              <p class="font-extrabold">수정한 핵심 문제</p>
+              <ul class="mt-3 grid gap-2 leading-7 text-muted">
+                <li>대용량 PNG와 느린 첫 화면 이미지 로딩</li>
+                <li>헤더 하위 메뉴의 ARIA 역할 누락</li>
+                <li>모바일 메뉴의 미선언 DOM 변수와 상태 클래스 오류</li>
+              </ul>
+            </div>
+            <div>
+              <p class="font-extrabold">측정 결과 해석</p>
+              <p class="mt-3 leading-7 text-muted">데스크톱 성능은 전 페이지가 상승했고 SEO는 모두 100점을 기록했습니다. 다만 모바일 성능은 56~66점이며, 바른먹거리 원칙 페이지의 종합 점수는 단일 측정에서 하락해 반복 측정이 필요한 결과로 남겼습니다.</p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <a class="inline-flex rounded-full bg-note-green px-4 py-2 text-sm font-bold underline decoration-brand-dark underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4" href="https://icerence.github.io/kiwik-project/food.html" target="_blank" rel="noopener noreferrer">최적화된 바른먹거리 화면 ↗</a>
+                <a class="inline-flex rounded-full bg-note-yellow px-4 py-2 text-sm font-bold underline decoration-brand-dark underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4" href="reports/바른먹거리-성능-개선-보고서-2026-08-13.html" target="_blank" rel="noopener noreferrer">성능 개선 보고서 확인 ↗</a>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <aside class="reveal mt-8 border-l-4 border-brand-dark bg-white p-6" aria-label="작업 체계 요약">
+        <p class="font-extrabold">반복 가능한 작업 체계</p>
+        <p class="mt-2 leading-7 text-muted">디자인 토큰, 작업 절차, 역할별 스킬, 자동 검사 도구를 직접 설계하고 저장소에 적용했습니다. 이를 통해 반복 작업의 일관성을 높이고 하드코딩과 규칙 위반을 구현 단계에서 방지했습니다.</p>
+      </aside>
+    </section>
+
+    <section id="process" class="unlock-section section-space mx-auto max-w-6xl px-page" aria-labelledby="process-title" data-unlock-section>
+      <div class="grid gap-12 lg:grid-cols-3">
+        <div>
+          <h2 id="process-title" class="hand inline-block bg-note-green px-3 py-1 text-display font-bold">Problem Solving</h2>
+          <p class="mt-5 text-lg leading-8 text-muted">막힌 지점에서 다시 설계한 과정</p>
+        </div>
+        <ol class="border-4 border-ink bg-white p-7 lg:col-span-2 lg:p-10">
+          <li class="grid gap-4 border-b-2 border-grid py-7 sm:grid-cols-5"><span class="hand flex size-16 items-center justify-center rounded-card bg-note-yellow text-3xl font-bold">1</span><div class="sm:col-span-4"><h3 class="text-xl font-extrabold">디자인 시스템 재구축</h3><p class="mt-2 leading-7 text-muted"><strong class="text-ink">문제</strong> · 초기에 구조를 충분히 이해하지 못한 채 시스템을 만들어 페이지 제작을 다시 시작해야 했습니다.</p><p class="mt-2 leading-7 text-muted"><strong class="text-ink">해결</strong> · 실패 원인을 분석하고 토큰의 역할과 참조 구조를 다시 학습해 디자인 토큰, 하네스, 자동 검사까지 포함한 체계로 재구축했습니다.</p></div></li>
+          <li class="grid gap-4 border-b-2 border-grid py-7 sm:grid-cols-5"><span class="hand flex size-16 items-center justify-center rounded-card bg-note-blue text-3xl font-bold">2</span><div class="sm:col-span-4"><h3 class="text-xl font-extrabold">공통 영역 일괄 적용</h3><p class="mt-2 leading-7 text-muted"><strong class="text-ink">문제</strong> · 페이지마다 헤더·헤드·푸터의 구조와 동작이 달라 수정 누락과 일관성 문제가 발생했습니다.</p><p class="mt-2 leading-7 text-muted"><strong class="text-ink">해결</strong> · 공통 원본과 동기화 도구를 구성해 모든 페이지에 동일한 헤더, head 설정, 푸터가 적용되도록 개선했습니다.</p></div></li>
+          <li class="grid gap-4 py-7 sm:grid-cols-5"><span class="hand flex size-16 items-center justify-center rounded-card bg-note-pink text-3xl font-bold">3</span><div class="sm:col-span-4"><h3 class="text-xl font-extrabold">AI 결과 검증과 스킬 개선</h3><p class="mt-2 leading-7 text-muted"><strong class="text-ink">문제</strong> · 프로젝트 초반에는 Codex, Claude Code, agy가 만든 결과를 목적에 맞게 제어하고 검증하는 데 어려움이 있었습니다.</p><p class="mt-2 leading-7 text-muted"><strong class="text-ink">해결</strong> · 결과를 그대로 사용하지 않고 반복 검토·수정했으며, 목적별 스킬과 역할을 분리해 재현 가능한 작업 방식으로 발전시켰습니다.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="contact" class="unlock-section mx-auto max-w-6xl px-page pb-28 pt-12" aria-labelledby="contact-title" data-unlock-section>
+      <div class="grid gap-10 border-t-4 border-ink pt-16 md:grid-cols-2">
+        <div><h2 id="contact-title" class="hand inline-block bg-note-green px-3 py-1 text-display font-bold">Explore here</h2><p class="mt-5 text-lg leading-8">완성된 첫 화면부터 직접 살펴보세요.</p></div>
+        <div class="flex items-center md:justify-end"><a href="https://icerence.github.io/kiwik-project/food.html" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-center bg-ink px-8 py-4 text-lg font-bold text-white shadow-note hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-4">바른먹거리 페이지 열기 ↗</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t-4 border-ink px-page py-10">
+    <div class="mx-auto flex max-w-6xl flex-col justify-between gap-5 sm:flex-row sm:items-center"><p class="hand text-2xl font-bold">✦ 동균</p><p class="text-sm text-muted">Pulmuone Web Portfolio · 2026</p></div>
+  </footer>
+
+  <button id="back-to-top" class="back-to-top fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-full bg-ink text-2xl font-bold text-white shadow-note hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-4 sm:bottom-12 sm:right-12" type="button" aria-label="페이지 맨 위로 이동" title="맨 위로">↑</button>
+
+  <script>
+    const gameIntro = document.getElementById('game-intro');
+    const gameStage = document.getElementById('game-stage');
+    const gameCharacter = document.getElementById('game-character');
+    const gameHole = document.getElementById('game-hole');
+    const gameCoins = [...document.querySelectorAll('[data-coin]')];
+    const coinCount = document.getElementById('coin-count');
+    const coinBalanceOutput = document.getElementById('coin-balance');
+    const gameStatus = document.getElementById('game-status');
+    const unlockSections = [...document.querySelectorAll('[data-unlock-section]')];
+    const gamePanels = [...document.querySelectorAll('.game-panel')];
+    const panelToggles = [...document.querySelectorAll('[data-panel-toggle]')];
+    const questItems = [...document.querySelectorAll('[data-quest]')];
+    const inventorySources = [...document.querySelectorAll('[data-inventory-source]')];
+    const achievementToast = document.getElementById('achievement-toast');
+    const skipGame = document.getElementById('skip-game');
+    const portfolioMain = document.getElementById('main');
+    const cursorCharacter = document.getElementById('cursor-character');
+    const activeDirections = new Set();
+    const directionByCode = {
+      KeyW: 'up',
+      KeyA: 'left',
+      KeyS: 'down',
+      KeyD: 'right',
+      ArrowUp: 'up',
+      ArrowLeft: 'left',
+      ArrowDown: 'down',
+      ArrowRight: 'right',
+    };
+    let gameX = 0;
+    let gameY = 0;
+    let collectedCoins = 0;
+    let coinBalance = 0;
+    let gameComplete = false;
+    let previousFrame = performance.now();
+    let cursorTargetX = 0;
+    let cursorTargetY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    let cursorAngle = 0;
+    let cursorAngularVelocity = 0;
+    let cursorTargetAngle = 0;
+    let cursorStretch = 1;
+    let cursorTargetStretch = 1;
+    let previousMotionAngle = null;
+    let previousMotionTime = 0;
+    let hasCursorPosition = false;
+    const completedQuests = new Set();
+    const foundInventory = new Set();
+    const earnedAchievements = new Set();
+    let achievementToastTimer = 0;
+
+    function getGameStep() {
+      const rootStyle = getComputedStyle(document.documentElement);
+      const stepInRem = Number.parseFloat(rootStyle.getPropertyValue('--spacing-game-move-step')) || 0.35;
+      const rootFontSize = Number.parseFloat(rootStyle.fontSize) || 16;
+      return stepInRem * rootFontSize;
+    }
+
+    function drawCharacter() {
+      gameCharacter.style.setProperty('--game-x', `${gameX}px`);
+      gameCharacter.style.setProperty('--game-y', `${gameY}px`);
+    }
+
+    function placeCharacterAtStart() {
+      if (gameComplete) return;
+      gameX = gameStage.clientWidth * 0.12;
+      gameY = Math.max(0, (gameStage.clientHeight - gameCharacter.offsetHeight) / 2);
+      drawCharacter();
+    }
+
+    function reachedHole() {
+      const footX = gameX + gameCharacter.offsetWidth / 2;
+      const footY = gameY + gameCharacter.offsetHeight * 0.9;
+      const holeX = gameHole.offsetLeft;
+      const holeY = gameHole.offsetTop;
+      const radiusX = gameHole.offsetWidth / 2;
+      const radiusY = gameHole.offsetHeight / 2;
+      const normalizedX = (footX - holeX) / radiusX;
+      const normalizedY = (footY - holeY) / radiusY;
+      return normalizedX * normalizedX + normalizedY * normalizedY <= 1;
+    }
+
+    function collectReachedCoins() {
+      const characterRect = gameCharacter.getBoundingClientRect();
+      const footX = characterRect.left + characterRect.width / 2;
+      const footY = characterRect.top + characterRect.height * 0.9;
+      const rootStyle = getComputedStyle(document.documentElement);
+      const collectionRange = Number.parseFloat(rootStyle.getPropertyValue('--game-coin-collection-range')) || 1.5;
+      gameCoins.forEach((coin) => {
+        if (coin.classList.contains('is-collected')) return;
+        const coinRect = coin.getBoundingClientRect();
+        const coinX = coinRect.left + coinRect.width / 2;
+        const coinY = coinRect.top + coinRect.height / 2;
+        const collectDistance = characterRect.width * collectionRange + coinRect.width / 2;
+        if (Math.hypot(footX - coinX, footY - coinY) > collectDistance) return;
+        coin.classList.add('is-collected');
+        collectedCoins += 1;
+        coinBalance += 1;
+        updateCoinDisplays();
+        gameStatus.value = collectedCoins === gameCoins.length
+          ? '입구가 열렸습니다! ENTER로 이동하세요'
+          : `남은 코인 ${gameCoins.length - collectedCoins}개`;
+        if (collectedCoins === gameCoins.length) unlockAchievement('collector');
+      });
+    }
+
+    function updateCoinDisplays() {
+      coinCount.value = `${collectedCoins} / ${gameCoins.length}`;
+      coinBalanceOutput.value = coinBalance;
+      document.querySelectorAll('[data-unlock-button]').forEach((button) => {
+        button.disabled = coinBalance < 1;
+      });
+    }
+
+    function closeGamePanels() {
+      gamePanels.forEach((panel) => { panel.hidden = true; });
+      panelToggles.forEach((button) => { button.setAttribute('aria-expanded', 'false'); });
+    }
+
+    function unlockAchievement(id) {
+      if (earnedAchievements.has(id)) return;
+      const item = document.querySelector(`[data-achievement="${id}"]`);
+      if (!item) return;
+      earnedAchievements.add(id);
+      item.classList.add('is-earned');
+      const title = item.querySelector('strong')?.textContent || '새 업적';
+      achievementToast.value = `★ 업적 달성 · ${title}`;
+      achievementToast.classList.add('is-visible');
+      window.clearTimeout(achievementToastTimer);
+      const rootStyle = getComputedStyle(document.documentElement);
+      const toastDuration = Number.parseFloat(rootStyle.getPropertyValue('--duration-toast')) || 2600;
+      achievementToastTimer = window.setTimeout(() => achievementToast.classList.remove('is-visible'), toastDuration);
+    }
+
+    function evaluateProgressAchievements() {
+      if (completedQuests.has('about') && completedQuests.has('projects')) unlockAchievement('explorer');
+      if (completedQuests.size === unlockSections.length) unlockAchievement('all-clear');
+      if (foundInventory.size === inventorySources.length) unlockAchievement('archivist');
+    }
+
+    function completeQuest(sectionId) {
+      if (completedQuests.has(sectionId)) return;
+      completedQuests.add(sectionId);
+      const item = document.querySelector(`[data-quest="${sectionId}"]`);
+      item?.classList.add('is-complete');
+      const status = item?.querySelector('[data-quest-status]');
+      if (status) status.textContent = '완료 ✓';
+      evaluateProgressAchievements();
+    }
+
+    function collectInventory(id) {
+      if (foundInventory.has(id)) return;
+      foundInventory.add(id);
+      document.querySelector(`[data-inventory="${id}"]`)?.classList.add('is-found');
+      evaluateProgressAchievements();
+    }
+
+    function scanVisibleInventory() {
+      inventorySources.forEach((source) => {
+        if (source.closest('.is-locked')) return;
+        const rect = source.getBoundingClientRect();
+        const visible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (visible) collectInventory(source.dataset.inventorySource);
+      });
+    }
+
+    function grantAllCoins() {
+      gameCoins.forEach((coin) => coin.classList.add('is-collected'));
+      collectedCoins = gameCoins.length;
+      coinBalance = gameCoins.length;
+      updateCoinDisplays();
+    }
+
+    function setupContentLocks() {
+      unlockSections.forEach((section) => {
+        section.classList.add('is-locked');
+        [...section.children].forEach((child) => { child.inert = true; });
+
+        const gate = document.createElement('div');
+        gate.className = 'unlock-gate';
+        const card = document.createElement('div');
+        card.className = 'unlock-card';
+        const label = document.createElement('p');
+        label.className = 'hand text-sm font-bold text-brand-dark';
+        const titleId = section.getAttribute('aria-labelledby');
+        label.textContent = titleId ? document.getElementById(titleId)?.textContent.trim() : 'Portfolio Content';
+        const message = document.createElement('p');
+        message.className = 'mt-2 font-extrabold';
+        message.textContent = '코인 1개로 이 콘텐츠를 해금하세요';
+        const button = document.createElement('button');
+        button.className = 'unlock-button focus-visible:outline-2 focus-visible:outline-offset-4';
+        button.type = 'button';
+        button.dataset.unlockButton = '';
+        button.textContent = '★ 1개 사용하기';
+        button.addEventListener('click', () => {
+          if (coinBalance < 1) return;
+          coinBalance -= 1;
+          unlockAchievement('first-unlock');
+          completeQuest(section.id);
+          section.classList.remove('is-locked');
+          [...section.children].forEach((child) => { child.inert = false; });
+          gate.remove();
+          updateCoinDisplays();
+          window.requestAnimationFrame(scanVisibleInventory);
+        });
+        card.append(label, message, button);
+        gate.append(card);
+        section.append(gate);
+      });
+      updateCoinDisplays();
+    }
+
+    function revealPortfolio(withAnimation = true) {
+      if (gameComplete) return;
+      gameComplete = true;
+      activeDirections.clear();
+      const rootStyle = getComputedStyle(document.documentElement);
+      const exitDuration = Number.parseFloat(rootStyle.getPropertyValue('--duration-game-exit'));
+      if (withAnimation && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gameCharacter.classList.add('is-falling');
+      }
+      gameIntro.classList.add('is-complete');
+      window.setTimeout(() => {
+        gameIntro.hidden = true;
+        document.body.classList.remove('game-locked');
+        document.body.classList.add('portfolio-ready');
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        portfolioMain.focus({ preventScroll: true });
+      }, withAnimation ? exitDuration : 0);
+    }
+
+    function updateGame(frameTime) {
+      const frameScale = Math.min((frameTime - previousFrame) / 16.67, 2);
+      previousFrame = frameTime;
+      if (!gameComplete && activeDirections.size > 0) {
+        const move = getGameStep() * frameScale;
+        if (activeDirections.has('up')) gameY -= move;
+        if (activeDirections.has('down')) gameY += move;
+        if (activeDirections.has('left')) gameX -= move;
+        if (activeDirections.has('right')) gameX += move;
+        gameX = Math.max(0, Math.min(gameX, gameStage.clientWidth - gameCharacter.offsetWidth));
+        gameY = Math.max(0, Math.min(gameY, gameStage.clientHeight - gameCharacter.offsetHeight));
+        gameCharacter.classList.add('is-walking');
+        drawCharacter();
+        collectReachedCoins();
+        if (reachedHole()) {
+          if (collectedCoins === gameCoins.length) {
+            revealPortfolio();
+          } else {
+            gameStatus.value = `입장하려면 코인 ${gameCoins.length - collectedCoins}개를 더 모아야 합니다`;
+          }
+        }
+      } else {
+        gameCharacter.classList.remove('is-walking');
+      }
+      if (gameComplete && hasCursorPosition) {
+        const rootStyle = getComputedStyle(document.documentElement);
+        const springStrength = Number.parseFloat(rootStyle.getPropertyValue('--cursor-angular-spring')) || 0.07;
+        const damping = Number.parseFloat(rootStyle.getPropertyValue('--cursor-angular-damping')) || 0.9;
+        const targetReturn = Number.parseFloat(rootStyle.getPropertyValue('--cursor-target-return')) || 0.86;
+        const maxAngularSpeed = Number.parseFloat(rootStyle.getPropertyValue('--cursor-max-angular-speed')) || 18;
+        const stretchSpring = Number.parseFloat(rootStyle.getPropertyValue('--cursor-stretch-spring')) || 0.16;
+        const maxRotation = Number.parseFloat(rootStyle.getPropertyValue('--rotate-cursor-max')) || 360;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        cursorX = cursorTargetX - cursorCharacter.offsetWidth / 2;
+        cursorY = cursorTargetY;
+        if (reducedMotion) {
+          cursorAngle = 0;
+          cursorAngularVelocity = 0;
+          cursorStretch = 1;
+        } else {
+          cursorAngularVelocity += (cursorTargetAngle - cursorAngle) * springStrength * frameScale;
+          const frameDamping = Math.pow(damping, frameScale);
+          cursorAngularVelocity *= frameDamping;
+          cursorAngularVelocity = Math.max(-maxAngularSpeed, Math.min(maxAngularSpeed, cursorAngularVelocity));
+          cursorAngle += cursorAngularVelocity * frameScale;
+          cursorTargetAngle *= Math.pow(targetReturn, frameScale);
+          cursorStretch += (cursorTargetStretch - cursorStretch) * stretchSpring * frameScale;
+          cursorTargetStretch += (1 - cursorTargetStretch) * stretchSpring * frameScale;
+        }
+        cursorAngle = Math.max(-maxRotation, Math.min(maxRotation, cursorAngle));
+        cursorCharacter.style.setProperty('--cursor-x', `${cursorX}px`);
+        cursorCharacter.style.setProperty('--cursor-y', `${cursorY}px`);
+        cursorCharacter.style.setProperty('--cursor-rotate', `${cursorAngle}deg`);
+        cursorCharacter.style.setProperty('--cursor-stretch', cursorStretch);
+      }
+      window.requestAnimationFrame(updateGame);
+    }
+
+    window.addEventListener('keydown', (event) => {
+      const direction = directionByCode[event.code];
+      if (!direction || gameComplete) return;
+      event.preventDefault();
+      activeDirections.add(direction);
+    });
+    window.addEventListener('keyup', (event) => {
+      const direction = directionByCode[event.code];
+      if (direction) activeDirections.delete(direction);
+    });
+    window.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      const rootStyle = getComputedStyle(document.documentElement);
+      const pointerForce = Number.parseFloat(rootStyle.getPropertyValue('--cursor-pointer-force')) || 0.65;
+      const circleForce = Number.parseFloat(rootStyle.getPropertyValue('--cursor-circle-force')) || 2.8;
+      const minCircleMotion = Number.parseFloat(rootStyle.getPropertyValue('--cursor-circle-min-motion')) || 2;
+      const gestureContinuity = Number.parseFloat(rootStyle.getPropertyValue('--duration-fast')) || 180;
+      const stretchForce = Number.parseFloat(rootStyle.getPropertyValue('--cursor-stretch-force')) || 0.012;
+      const minStretch = Number.parseFloat(rootStyle.getPropertyValue('--scale-cursor-min')) || 0.9;
+      const maxStretch = Number.parseFloat(rootStyle.getPropertyValue('--scale-cursor-max')) || 1.14;
+      const maxLean = Number.parseFloat(rootStyle.getPropertyValue('--rotate-cursor-lean-max')) || 48;
+      const movementAngle = event.movementX * pointerForce;
+      cursorTargetAngle = Math.max(-maxLean, Math.min(maxLean, movementAngle));
+      const motionDistance = Math.hypot(event.movementX, event.movementY);
+      if (motionDistance >= minCircleMotion) {
+        if (event.timeStamp - previousMotionTime > gestureContinuity) previousMotionAngle = null;
+        const motionDirection = Math.atan2(event.movementY, event.movementX);
+        if (previousMotionAngle !== null) {
+          const directionChange = Math.atan2(
+            Math.sin(motionDirection - previousMotionAngle),
+            Math.cos(motionDirection - previousMotionAngle),
+          );
+          cursorAngularVelocity += directionChange * circleForce;
+        }
+        previousMotionAngle = motionDirection;
+        previousMotionTime = event.timeStamp;
+      }
+      cursorTargetStretch = Math.max(minStretch, Math.min(maxStretch, 1 + event.movementY * stretchForce));
+      cursorTargetX = event.clientX;
+      cursorTargetY = event.clientY;
+      if (!hasCursorPosition) {
+        cursorX = cursorTargetX - cursorCharacter.offsetWidth / 2;
+        cursorY = cursorTargetY;
+        cursorAngle = 0;
+        cursorAngularVelocity = 0;
+        cursorStretch = 1;
+        cursorTargetStretch = 1;
+        previousMotionAngle = null;
+        previousMotionTime = 0;
+        hasCursorPosition = true;
+        cursorCharacter.classList.add('has-pointer');
+      }
+    });
+    window.addEventListener('mouseout', (event) => {
+      if (event.relatedTarget) return;
+      cursorCharacter.classList.remove('has-pointer');
+      hasCursorPosition = false;
+      previousMotionAngle = null;
+      previousMotionTime = 0;
+    });
+    panelToggles.forEach((button) => {
+      button.addEventListener('click', () => {
+        const panel = document.getElementById(button.dataset.panelToggle);
+        const shouldOpen = panel.hidden;
+        closeGamePanels();
+        if (!shouldOpen) return;
+        panel.hidden = false;
+        button.setAttribute('aria-expanded', 'true');
+        panel.querySelector('[data-panel-close]')?.focus();
+      });
+    });
+    document.querySelectorAll('[data-panel-close]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const panel = button.closest('.game-panel');
+        closeGamePanels();
+        document.querySelector(`[data-panel-toggle="${panel.id}"]`)?.focus();
+      });
+    });
+    gamePanels.forEach((panel) => {
+      panel.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeGamePanels));
+    });
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeGamePanels();
+    });
+    const inventoryObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting || entry.target.closest('.is-locked')) return;
+        collectInventory(entry.target.dataset.inventorySource);
+        inventoryObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.35 });
+    inventorySources.forEach((source) => inventoryObserver.observe(source));
+    window.addEventListener('scroll', scanVisibleInventory, { passive: true });
+    document.querySelectorAll('[data-direction]').forEach((button) => {
+      const direction = button.dataset.direction;
+      const startMoving = (event) => {
+        event.preventDefault();
+        activeDirections.add(direction);
+      };
+      const stopMoving = () => activeDirections.delete(direction);
+      button.addEventListener('pointerdown', startMoving);
+      button.addEventListener('pointerup', stopMoving);
+      button.addEventListener('pointercancel', stopMoving);
+      button.addEventListener('pointerleave', stopMoving);
+    });
+    skipGame.addEventListener('click', () => {
+      grantAllCoins();
+      revealPortfolio(false);
+    });
+    window.addEventListener('resize', placeCharacterAtStart);
+    gameCharacter.addEventListener('load', placeCharacterAtStart);
+    setupContentLocks();
+    placeCharacterAtStart();
+    window.requestAnimationFrame(updateGame);
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
+
+    const backToTop = document.getElementById('back-to-top');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function syncBackToTop() {
+      backToTop.classList.toggle('is-visible', window.scrollY > window.innerHeight);
+    }
+    window.addEventListener('scroll', syncBackToTop, { passive: true });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    });
+    syncBackToTop();
+
+  </script>
+</body>
+</html>
