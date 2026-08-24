@@ -1,6 +1,24 @@
 .mungi{background-image:url('../mongi-directional-sprite-v2-transparent.png')}
 .cursor-mongi{background-image:url('../mongi-directional-sprite-v2-transparent.png')}
 .hero-desc{max-width:590px}
+.hero-grid>div:first-child{width:min(100%,520px);justify-self:center;text-align:left}
+.hero-grid>div:first-child.motion-ready .eyebrow,
+.hero-grid>div:first-child.motion-ready .display-kicker,
+.hero-grid>div:first-child.motion-ready .display-name-line,
+.hero-grid>div:first-child.motion-ready .hero-desc,
+.hero-grid>div:first-child.motion-ready .hero-actions{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .8s cubic-bezier(.22,1,.36,1)}
+.hero-grid>div:first-child.motion-ready .display-kicker,
+.hero-grid>div:first-child.motion-ready .display-name-line{clip-path:inset(0 0 100% 0)}
+.hero-grid>div:first-child.motion-ready.is-visible .eyebrow,
+.hero-grid>div:first-child.motion-ready.is-visible .display-kicker,
+.hero-grid>div:first-child.motion-ready.is-visible .display-name-line,
+.hero-grid>div:first-child.motion-ready.is-visible .hero-desc,
+.hero-grid>div:first-child.motion-ready.is-visible .hero-actions{opacity:1;transform:none;clip-path:inset(0 0 0 0)}
+.hero-grid>div:first-child.motion-ready.is-visible .eyebrow{transition-delay:.05s}
+.hero-grid>div:first-child.motion-ready.is-visible .display-kicker{transition-delay:.16s}
+.hero-grid>div:first-child.motion-ready.is-visible .display-name-line{transition-delay:.34s}
+.hero-grid>div:first-child.motion-ready.is-visible .hero-desc{transition-delay:.56s}
+.hero-grid>div:first-child.motion-ready.is-visible .hero-actions{transition-delay:.7s}
 .profile-list{grid-template-columns:repeat(4,1fr)}
 .profile-contact{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 .mobile-game-guide{display:none}
@@ -12,4 +30,12 @@
 
 @media(max-width:520px){
   .profile-list{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hero-grid>div:first-child.motion-ready .eyebrow,
+  .hero-grid>div:first-child.motion-ready .display-kicker,
+  .hero-grid>div:first-child.motion-ready .display-name-line,
+  .hero-grid>div:first-child.motion-ready .hero-desc,
+  .hero-grid>div:first-child.motion-ready .hero-actions{opacity:1;transform:none;clip-path:none;transition:none}
 }
