@@ -1,0 +1,15 @@
+{
+  "name": "kdk-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "http-server . -a 127.0.0.1 -p 4392 -c-1",
+    "smoke": "node home-smoke.cjs",
+    "test": "start-server-and-test serve http://127.0.0.1:4392 smoke"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "playwright": "^1.55.0",
+    "start-server-and-test": "^2.0.13"
+  }
+}

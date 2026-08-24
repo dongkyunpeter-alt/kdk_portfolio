@@ -1,0 +1,15 @@
+.mungi{background-image:url('../mongi-directional-sprite-v2-transparent.png')}
+.cursor-mongi{background-image:url('../mongi-directional-sprite-v2-transparent.png')}
+.hero-desc{max-width:590px}
+.profile-list{grid-template-columns:repeat(4,1fr)}
+.profile-contact{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.mobile-game-guide{display:none}
+
+@media(max-width:760px){
+  .profile-list{grid-template-columns:1fr 1fr}
+  .mobile-game-guide{display:grid;gap:4px;margin:0;padding:12px 14px;border-bottom:1px solid rgba(21,21,21,.18);background:rgba(246,232,168,.65);font-size:13px;font-weight:600}
+}
+
+@media(max-width:520px){
+  .profile-list{grid-template-columns:1fr}
+}
