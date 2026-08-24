@@ -6,14 +6,14 @@
 .hero-grid>div:first-child.motion-ready .display-kicker,
 .hero-grid>div:first-child.motion-ready .display-name-line,
 .hero-grid>div:first-child.motion-ready .hero-desc,
-.hero-grid>div:first-child.motion-ready .hero-actions{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .8s cubic-bezier(.22,1,.36,1)}
+.hero-grid>div:first-child.motion-ready .hero-actions{opacity:0;transform:translateY(24px)}
 .hero-grid>div:first-child.motion-ready .display-kicker,
 .hero-grid>div:first-child.motion-ready .display-name-line{clip-path:inset(0 0 100% 0)}
 .hero-grid>div:first-child.motion-ready.is-visible .eyebrow,
 .hero-grid>div:first-child.motion-ready.is-visible .display-kicker,
 .hero-grid>div:first-child.motion-ready.is-visible .display-name-line,
 .hero-grid>div:first-child.motion-ready.is-visible .hero-desc,
-.hero-grid>div:first-child.motion-ready.is-visible .hero-actions{opacity:1;transform:none;clip-path:inset(0 0 0 0)}
+.hero-grid>div:first-child.motion-ready.is-visible .hero-actions{opacity:1;transform:none;clip-path:inset(0 0 0 0);transition:opacity .7s ease,transform .8s cubic-bezier(.22,1,.36,1),clip-path .8s cubic-bezier(.22,1,.36,1)}
 .hero-grid>div:first-child.motion-ready.is-visible .eyebrow{transition-delay:.05s}
 .hero-grid>div:first-child.motion-ready.is-visible .display-kicker{transition-delay:.16s}
 .hero-grid>div:first-child.motion-ready.is-visible .display-name-line{transition-delay:.34s}
@@ -26,6 +26,10 @@
 @media(max-width:760px){
   .profile-list{grid-template-columns:1fr 1fr}
   .mobile-game-guide{display:grid;gap:4px;margin:0;padding:12px 14px;border-bottom:1px solid rgba(21,21,21,.18);background:rgba(246,232,168,.65);font-size:13px;font-weight:600}
+}
+
+@media(max-width:1200px){
+  .game-shell{width:100%;justify-self:center}
 }
 
 @media(max-width:520px){

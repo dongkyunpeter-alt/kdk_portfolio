@@ -9,7 +9,15 @@ if (heroCopy) {
       { threshold: 0.3 }
     );
 
-    heroObserver.observe(heroCopy);
+    const startHeroMotion = async () => {
+      await document.fonts.ready;
+      if (document.readyState !== 'complete') {
+        await new Promise(resolve => addEventListener('load', resolve, { once: true }));
+      }
+      setTimeout(() => heroObserver.observe(heroCopy), 120);
+    };
+
+    startHeroMotion();
   } else {
     heroCopy.classList.add('is-visible');
   }

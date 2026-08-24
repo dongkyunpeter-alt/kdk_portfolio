@@ -14,9 +14,9 @@
           <nav class="nav common-nav" id="nav" aria-label="주요 메뉴">
             <a href="${home}#profile">Profile</a>
             <div class="common-nav-group">
-              <button class="common-nav-trigger" type="button" aria-expanded="false" aria-controls="project-subnav">Projects <span aria-hidden="true">▾</span></button>
+              <button class="common-nav-trigger${onHome ? '' : ' is-current'}" type="button" aria-expanded="false" aria-controls="project-subnav">Projects <span aria-hidden="true">▾</span></button>
               <div class="common-subnav" id="project-subnav">
-                <a href="pulmuone.html"><strong>풀무원 웹 리뉴얼</strong><small>Team Project · Published</small></a>
+                <a href="pulmuone.html"${onHome ? '' : ' aria-current="page"'}><strong>풀무원 웹 리뉴얼</strong><small>Team Project · Published</small></a>
                 <span aria-disabled="true"><strong>다음 프로젝트</strong><small>Personal Project · Coming Soon</small></span>
                 <span aria-disabled="true"><strong>프로젝트 추가 예정</strong><small>Web Project · Coming Soon</small></span>
               </div>
@@ -75,7 +75,13 @@
   const menuLabel = menu?.querySelector('[data-menu-label]');
   const projectTrigger = document.querySelector('.common-nav-trigger');
   const projectGroup = document.querySelector('.common-nav-group');
+  let projectPinned = false;
+  const openProjects = () => {
+    projectGroup?.classList.add('is-open');
+    projectTrigger?.setAttribute('aria-expanded', 'true');
+  };
   const closeProjects = () => {
+    projectPinned = false;
     projectGroup?.classList.remove('is-open');
     projectTrigger?.setAttribute('aria-expanded', 'false');
   };
@@ -94,9 +100,22 @@
   }, true);
   projectTrigger?.addEventListener('click', event => {
     event.stopImmediatePropagation();
-    const open = projectGroup.classList.toggle('is-open');
-    projectTrigger.setAttribute('aria-expanded', String(open));
+    if (projectPinned) closeProjects();
+    else {
+      projectPinned = true;
+      openProjects();
+    }
   }, true);
+  projectGroup?.addEventListener('focusin', openProjects);
+  projectGroup?.addEventListener('focusout', event => {
+    if (!projectGroup.contains(event.relatedTarget)) closeProjects();
+  });
+  projectGroup?.addEventListener('pointerenter', () => {
+    if (matchMedia('(min-width: 761px)').matches) openProjects();
+  });
+  projectGroup?.addEventListener('pointerleave', () => {
+    if (matchMedia('(min-width: 761px)').matches && !projectPinned && !projectGroup.contains(document.activeElement)) closeProjects();
+  });
   nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
   addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
