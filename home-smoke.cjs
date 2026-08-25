@@ -46,7 +46,7 @@ const assert = require('node:assert/strict');
   await page.waitForTimeout(3500);
   assert.equal(await page.locator('#mungi').getAttribute('data-motion'), 'sleep');
 
-  await page.getByRole('button', { name: '뼈 바로 받기' }).click();
+  await page.getByRole('button', { name: '게임 건너뛰기' }).click();
   assert.equal(await page.locator('.project-card.is-locked').count(), 3);
   assert.equal(await page.locator('.cursor-mongi').count(), 1);
   assert.equal(await page.locator('#mungi').evaluate(element => getComputedStyle(element).visibility), 'hidden');
