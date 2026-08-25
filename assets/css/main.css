@@ -19,11 +19,16 @@
 .hero-grid>div:first-child.motion-ready.is-visible .display-name-line{transition-delay:.34s}
 .hero-grid>div:first-child.motion-ready.is-visible .hero-desc{transition-delay:.56s}
 .hero-grid>div:first-child.motion-ready.is-visible .hero-actions{transition-delay:.7s}
-.profile-list{grid-template-columns:repeat(4,1fr)}
+.profile-card{grid-template-columns:clamp(260px,27vw,320px) minmax(0,1fr);gap:clamp(38px,4vw,58px)}
+.profile-portrait{min-height:430px}
+.profile-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.profile-list li:last-child{grid-column:1/-1}
 .profile-contact{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 .mobile-game-guide{display:none}
 
 @media(max-width:760px){
+  .profile-card{grid-template-columns:1fr;gap:28px}
+  .profile-portrait{width:min(100%,300px);min-height:320px;margin:0 auto}
   .profile-list{grid-template-columns:1fr 1fr}
   .mobile-game-guide{display:grid;gap:4px;margin:0;padding:12px 14px;border-bottom:1px solid rgba(21,21,21,.18);background:rgba(246,232,168,.65);font-size:13px;font-weight:600}
 }
@@ -34,6 +39,7 @@
 
 @media(max-width:520px){
   .profile-list{grid-template-columns:1fr}
+  .profile-list li:last-child{grid-column:auto}
 }
 
 @media(prefers-reduced-motion:reduce){
