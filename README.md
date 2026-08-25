@@ -4,19 +4,22 @@
 
 ## 구성
 
-- `index.html`: 프로필, 프로젝트 목록, 몽이 프로젝트 탐험
-- `pulmuone.html`: 풀무원 메인 및 바른먹거리 하위 5개 페이지 구현 사례
+- `src/App.jsx`: 공통 헤더·푸터와 페이지 구성을 담당하는 React 앱
+- `src/pages`: 메인·프로젝트 상세 JSX 페이지 컴포넌트
+- `src/components`: 상세 캐러셀 등 재사용 UI 컴포넌트
+- `src/data`: 프로젝트 카드 데이터
+- `index.html`, `pulmuone.html`: 기존 주소를 유지하는 Vite 엔트리
 - `assets/css`: 공통·메인·프로젝트 스타일
-- `assets/js`: 공통 컴포넌트·게임·프로젝트 캐러셀 동작
+- `assets/js/react-app.js`: 정적 호스팅용 React 프로덕션 번들
 - `evidence`, `reports`: 구현 기준과 측정 자료
 
 ## 실행
 
-Node.js 20 이상에서 의존성을 설치합니다.
+Node.js 20.19 이상 또는 22.12 이상에서 의존성을 설치합니다.
 
 ```powershell
 npm install
-npm run serve
+npm run dev
 ```
 
 브라우저에서 `http://127.0.0.1:4392`로 접속합니다.
@@ -31,6 +34,8 @@ npm test
 
 ## 주요 구현 기준
 
+- React와 Vite 기반 멀티 페이지 구성
+- 메뉴·게임·프로젝트 해금·캐러셀을 React 상태와 훅으로 관리
 - IBM Plex Sans KR와 IBM Plex Mono로 타이포그래피 통일
 - 공통 헤더·푸터 컴포넌트 공유
 - 키보드와 터치 방향키를 지원하는 프로젝트 해금 게임

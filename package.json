@@ -2,14 +2,28 @@
   "name": "kdk-portfolio",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "scripts": {
-    "serve": "http-server . -a 127.0.0.1 -p 4392 -c-1",
+    "dev": "vite --host 127.0.0.1 --port 4392",
+    "build:app": "vite build --config vite.static.config.mjs",
+    "build": "npm run build:app && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4392",
+    "serve": "vite --host 127.0.0.1 --port 4392",
     "smoke": "node home-smoke.cjs",
+    "test:react": "node react-regression.cjs",
     "test": "start-server-and-test serve http://127.0.0.1:4392 smoke"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.0",
     "http-server": "^14.1.1",
     "playwright": "^1.55.0",
-    "start-server-and-test": "^2.0.13"
+    "start-server-and-test": "^2.0.13",
+    "vite": "^8.2.2"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   }
 }
