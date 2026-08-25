@@ -4,7 +4,7 @@ export default function PulmuonePage(){return (
 <main id="main">
   <section className="hero wrap" aria-labelledby="hero-title">
     <div className="hero-layout"><div className="hero-copy reveal">
-        <p className="eyebrow">〈 Web Publisher · Portfolio 〉</p>
+        <p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p>
         <h1 className="display" id="hero-title">풀무원과<br />바른먹거리를<br />하나의 경험으로</h1>
       </div></div>
   </section>
