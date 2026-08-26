@@ -71,8 +71,8 @@
 /* 시안 원본 전체를 표시해 산책로·나무·벤치·연못의 배치를 보존합니다. */
 .arcade-screen .game-arena.park-map{height:auto;aspect-ratio:1568/1003;background:#799b55 url('../mongi-park-map-v1.png') center/100% 100% no-repeat;border-color:transparent;box-shadow:none}
 .arcade-screen .game-arena.park-map::before{display:none}
-/* 이미지에 포함된 안내문과 중복하지 않되 읽을 수 있는 텍스트는 남깁니다. */
-.arcade-screen .park-map .game-zone{width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* 배경의 작은 안내문을 덮고 화면 크기와 무관하게 16px로 표시합니다. */
+.arcade-screen .park-map .game-zone{position:absolute;z-index:5;left:2.5%;bottom:3.5%;width:max-content;height:auto;padding:8px 10px;margin:0;overflow:visible;clip-path:none;white-space:nowrap;font-size:16px;line-height:1.4;font-weight:700;background:#f6eed7;color:var(--ink);border:0;border-radius:4px;pointer-events:none}
 .arcade-screen .path{left:15%;right:9%;bottom:72px;height:126px;border:3px solid rgba(70,61,34,.25);border-radius:48% 42% 55% 44%;background:#d7c78d;rotate:-6deg;box-shadow:inset 0 0 0 5px rgba(255,255,255,.18)}
 .arcade-screen .cloud{display:none}.arcade-screen .tree{bottom:auto;width:55px;height:69px;border:3px solid var(--ink);border-radius:48% 52% 42% 46%;background:#397d47;box-shadow:inset -11px -9px rgba(0,0,0,.12),10px 5px 0 -5px #63994f}.arcade-screen .tree::after{left:22px;top:54px;width:10px;height:30px}.arcade-screen .tree.one{left:4%;top:11%}.arcade-screen .tree.two{right:4%;top:9%;scale:.88}
 .bush{width:68px;height:31px;border:2px solid var(--ink);border-radius:50% 48% 42% 46%;background:#579252;box-shadow:18px -10px 0 -5px #579252,18px -10px 0 -3px var(--ink)}.bush.one{left:27%;top:15%}.bush.two{right:25%;bottom:8%;scale:.72}
@@ -80,12 +80,49 @@
 .pond{right:5%;bottom:7%;width:72px;height:42px;border:5px solid #76776b;border-radius:50%;background:#62b6c4;box-shadow:0 0 0 2px var(--ink),inset 8px 4px rgba(255,255,255,.25)}
 .arcade-screen .game-zone{left:10px;bottom:8px;padding:6px 9px;border:0;border-radius:4px;background:rgba(241,239,232,.9);font-size:10px}
 .arcade-screen .bone{border:2px solid var(--ink);border-radius:8px;background:#f7f0df;box-shadow:2px 3px 0 rgba(21,21,21,.45)}
-.arcade-controls{display:grid;grid-template-columns:1fr auto auto 1fr;align-items:center;justify-items:center;gap:28px;padding:14px 22px 17px}.arcade-controls>div{display:grid;justify-items:center;gap:4px}.arcade-controls .dpad{display:grid;grid-template-columns:repeat(3,28px);grid-template-rows:repeat(2,25px);gap:3px;position:static}.arcade-controls .dpad button{border:1.5px solid var(--ink);border-radius:5px;background:#f6edda;box-shadow:0 2px 0 #8d846f;font:700 13px 'IBM Plex Mono',monospace!important;cursor:pointer}.arcade-controls .dpad button:first-child{grid-column:2}.arcade-controls .dpad button:nth-child(2){grid-row:2}.arcade-controls .dpad button:nth-child(3){grid-column:2;grid-row:2}.arcade-controls .dpad button:nth-child(4){grid-column:3;grid-row:2}.auto-pickup button{display:grid;place-items:center;min-width:72px;height:42px;border:2px solid var(--ink);border-radius:7px;background:#f6edda;box-shadow:0 3px 0 #8d846f;font:700 11px 'IBM Plex Mono',monospace!important;cursor:pointer}.arcade-controls button:not(:disabled):active{translate:0 2px;box-shadow:0 1px 0 #8d846f}.arcade-controls button:disabled{cursor:not-allowed;opacity:.4}.speaker{width:52px;height:32px;background:repeating-linear-gradient(0deg,transparent 0 4px,var(--ink) 4px 6px);opacity:.72}
+.arcade-controls{display:flex;align-items:center;justify-content:space-evenly;gap:0;padding:14px 22px 17px}.arcade-controls>div{display:grid;justify-items:center;gap:4px}.arcade-controls .dpad{display:grid;grid-template-columns:repeat(3,28px);grid-template-rows:repeat(2,25px);gap:3px;position:static}.arcade-controls .dpad button{border:1.5px solid var(--ink);border-radius:5px;background:#f6edda;box-shadow:0 2px 0 #8d846f;font:700 13px 'IBM Plex Mono',monospace!important;cursor:pointer}.arcade-controls .dpad button:first-child{grid-column:2}.arcade-controls .dpad button:nth-child(2){grid-row:2}.arcade-controls .dpad button:nth-child(3){grid-column:2;grid-row:2}.arcade-controls .dpad button:nth-child(4){grid-column:3;grid-row:2}.auto-pickup button{display:grid;place-items:center;min-width:72px;height:42px;border:2px solid var(--ink);border-radius:7px;background:#f6edda;box-shadow:0 3px 0 #8d846f;font:700 11px 'IBM Plex Mono',monospace!important;cursor:pointer}.arcade-controls button:not(:disabled):active{translate:0 2px;box-shadow:0 1px 0 #8d846f}.arcade-controls button:disabled{cursor:not-allowed;opacity:.4}.speaker{width:52px;height:32px;background:repeating-linear-gradient(0deg,transparent 0 4px,var(--ink) 4px 6px);opacity:.72}
+.arcade-controls>div,.arcade-controls>.speaker{flex:0 0 auto}
 
 @media(max-width:620px){
   .hero{overflow-x:clip}
   .arcade-screen .park-map .mungi{width:56px;height:56px}
-  .arcade-hud{grid-template-columns:1fr auto;gap:10px;padding:12px}.game-mission p{display:none}.game-counter{min-width:102px}.game-meta{grid-column:1/-1;display:flex!important;align-items:center;justify-content:space-between!important;width:100%}.status-label,.status-lights{display:none}.game-actions{margin:0 0 0 auto}.arcade-screen{margin-inline:8px}.arcade-screen .game-arena{height:310px}.arcade-controls{grid-template-columns:1fr auto 1fr;gap:12px;padding-inline:14px}.arcade-controls .speaker:last-child{display:none}.speaker{width:38px}.auto-pickup button{min-width:58px}
+  .arcade-hud{grid-template-columns:1fr auto;gap:10px;padding:12px}.game-mission p{display:none}.game-counter{min-width:102px}.game-meta{grid-column:1/-1;display:flex!important;align-items:center;justify-content:space-between!important;width:100%}.status-label,.status-lights{display:none}.game-actions{margin:0 0 0 auto}.arcade-screen{margin-inline:8px}.arcade-screen .game-arena{height:310px}.arcade-controls{padding-inline:14px}.arcade-controls .speaker:last-child{display:none}.speaker{width:38px}.auto-pickup button{min-width:58px}
 }
 
 @media(prefers-reduced-motion:reduce){.game-drop-stage,.game-drop-stage.is-ready{opacity:1;transform:none;animation:none}.game-drop-stage.is-ready .landing-dust{display:none;animation:none}}
+.project-facts{display:grid;gap:15px;margin:10px 0 0;font-size:13px;line-height:1.65}
+.project-facts dt{margin-bottom:3px;font-size:11px;font-weight:700;color:var(--accent)}
+.project-facts dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
+.project-contributions{display:grid;gap:5px}.project-contributions>span{display:flex;justify-content:space-between;gap:12px}.project-contributions strong{color:var(--ink)}
+.project-card-actions{position:relative;z-index:3;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px;padding:16px;border-top:1px solid var(--line)}
+.project-card-actions a,.project-card-actions button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:44px;padding:0 19px;border:1.5px solid var(--line);border-radius:999px;background:var(--paper);font-size:16px;line-height:1.5;font-weight:700;text-align:center}
+.project-card-actions a:hover,.project-card-actions a:focus-visible{background:var(--ink);color:var(--paper)}
+.project-card-actions button:disabled{opacity:.4;cursor:not-allowed}
+.project-link:focus-visible{outline:3px solid var(--accent);outline-offset:-5px}
+/* 텍스트는 전체 카드 링크 위에서 선택 가능하게 하고, 여백은 링크로 통과시킵니다. */
+.project-card[data-status=published]:not(.is-locked) .project-body{position:relative;z-index:3;pointer-events:none}
+.project-card[data-status=published]:not(.is-locked) .project-body> *{pointer-events:auto;cursor:text}
+.project-grid{grid-template-columns:minmax(0,1fr)}
+.project-grid .project-card{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.project-grid .project-card .project-media{grid-column:1;grid-row:1/3;height:100%;min-height:360px}
+.project-grid .project-card .project-body{grid-column:2;padding:28px}
+.project-grid .project-card .project-card-actions{grid-column:2;padding:20px 28px}
+.project-card .project-category,.project-card p,.project-card .project-facts,.project-card .project-facts dt,.project-card .project-tags span,.project-card .project-placeholder,.project-card .project-lock,.project-card .project-card-actions a,.project-card .project-card-actions button{font-size:16px}
+.project-card .project-tags{gap:8px}.project-card .project-tags span{padding:6px 10px}
+@media(max-width:760px){
+  .project-grid{grid-template-columns:minmax(0,1fr)}
+  .project-grid .project-card{display:flex}
+  .project-grid .project-card .project-media{height:230px;min-height:0;flex-shrink:0}
+  .project-grid .project-card .project-body{padding:22px}
+  .project-grid .project-card .project-card-actions{padding:16px 12px;gap:16px}
+}
+.project-role{white-space:pre-line;word-break:keep-all}
+.motion-ready .home-reveal{opacity:0;transform:translateY(16px);transition:opacity .58s cubic-bezier(.22,1,.36,1),transform .58s cubic-bezier(.22,1,.36,1)}
+.motion-ready .home-reveal[data-revealed=true],.motion-ready .home-reveal:focus-within{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.motion-ready .home-reveal{opacity:1;transform:none;transition:none}}
+.arcade-controls .auto-pickup button{min-width:96px;height:48px;padding:0 16px;background:#ed1515;color:#fff;font-size:16px!important;box-shadow:0 4px 0 #8d846f}
+.arcade-controls .auto-pickup button:not(:disabled):hover{background:#ce1010}
+.arcade-controls .auto-pickup button:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.profile-card .eyebrow,.profile-card .profile-list strong,.profile-card .profile-list span,.profile-card .profile-contact .pill{font-size:16px}
+.project-card-actions a,.project-card-actions button{gap:6px}
+.project-button-icon{display:block;flex:0 0 18px;width:18px;height:18px}

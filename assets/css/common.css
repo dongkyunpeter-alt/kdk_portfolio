@@ -3,7 +3,7 @@ html body,html body *{font-family:'IBM Plex Sans KR',sans-serif!important}
 .common-header.site-header{position:sticky;z-index:50;top:0;display:block;width:100%;height:82px;border-bottom:1px solid rgba(21,21,21,.16);background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(12px);transform:none}
 .common-header .common-header-inner{height:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:28px}
 .common-header .common-logo{justify-self:start;font-size:24px;font-weight:700;line-height:1;letter-spacing:-.08em}
-.common-header .common-nav{display:flex;align-items:center;gap:28px;font-size:12px}
+.common-header .common-nav{display:flex;align-items:center;gap:28px;font-size:16px}
 .common-header .common-nav a:hover,.common-header .common-nav a:focus-visible{text-decoration:underline;text-underline-offset:5px}
 .common-nav-group{position:relative}
 .common-nav-trigger{display:flex;align-items:center;gap:6px;min-height:44px;padding:0;border:0;background:transparent;cursor:pointer;font-size:inherit;font-weight:500}
@@ -19,7 +19,8 @@ html body,html body *{font-family:'IBM Plex Sans KR',sans-serif!important}
 .common-subnav strong{font-size:13px}.common-subnav small{color:var(--muted);font-size:10px}
 .common-subnav span[aria-disabled=true]{opacity:.46}
 .common-header .common-actions{display:flex;align-items:center;justify-self:end;gap:10px}
-.common-header .common-actions .pill{min-height:44px;padding:0 19px;font-size:13px;line-height:1}
+.common-header .common-actions .pill{min-height:44px;padding:0 19px;font-size:16px;line-height:1}
+.common-header .common-menu{font-size:16px}
 .common-header .common-menu{display:none;border:0;background:transparent;font-weight:700}
 .common-footer.footer{padding:58px 0 38px;border-top:1px solid var(--line)}
 .common-footer .common-footer-grid{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:48px}
