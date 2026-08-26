@@ -2,6 +2,11 @@
 .cursor-mongi{background-image:url('../mongi-directional-sprite-v2-transparent.png')}
 .hero-desc{max-width:590px}
 .hero-grid>div:first-child{width:min(100%,520px);justify-self:center;text-align:left}
+/* 좁힌 간격은 유지하고 양쪽을 68px씩 안으로 옮겨 전체를 중앙에 맞춥니다. */
+@media(min-width:1201px){
+  .hero-grid>div:first-child{position:relative;left:68px}
+  .hero-grid>.game-drop-stage{left:-68px}
+}
 .hero-grid>div:first-child.motion-ready .eyebrow,
 .hero-grid>div:first-child.motion-ready .display-kicker,
 .hero-grid>div:first-child.motion-ready .display-name-line,
