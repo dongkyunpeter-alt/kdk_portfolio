@@ -1,7 +1,4 @@
 import WorkCarousel from '../components/WorkCarousel.jsx';
-import { portfolioProjects } from '../data/projects.js';
-
-const pulmuoneProject=portfolioProjects.find(project=>project.slug==='pulmuone');
 
 export default function PulmuonePage(){return (
 <main id="main">
@@ -15,7 +12,6 @@ export default function PulmuonePage(){return (
   <section className="intro wrap reveal" id="about" aria-labelledby="about-title">
     <p className="eyebrow">〈 What I did 〉</p>
     <h2 id="about-title">Project Scope</h2>
-    <p className="project-technologies"><strong>사용 기술</strong><br />{pulmuoneProject.technologies}</p>
     <p className="section-lead">풀무원 메인페이지를 공동 작업하고,<br />바른먹거리 하위 5개 페이지의 구조 설계와<br />UI 구현을 담당했습니다.</p>
     <div className="overview-grid" aria-label="프로젝트 개요"><div className="overview-item"><small>PROJECT</small><strong>풀무원 웹 리뉴얼</strong><span>팀 프로젝트 · 2026.07.21—08.14</span></div><div className="overview-item"><small>MY ROLE</small><strong>하위 5개 페이지</strong><span>콘텐츠 구조 설계 · UI 구현</span></div><div className="overview-item"><small>COLLABORATION</small><strong>메인 공동 작업</strong><span>공통 경험과 인터랙션 연결</span></div><div className="overview-item"><small>OUTPUT</small><strong>총 6개 화면</strong><span>반응형 웹 · 접근성 · 성능 검증</span></div></div>
   </section>

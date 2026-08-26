@@ -1,0 +1,44 @@
+{
+  "fileKey": "twzEFjDVNY5gv7zX8nUmhs",
+  "fileName": "강동균_포트폴리오",
+  "updatedAt": "2026-08-24",
+  "pages": {
+    "foundations": "6997:2",
+    "components": "6997:3",
+    "main": "6997:4",
+    "pulmuone": "6997:5"
+  },
+  "frames": {
+    "foundations": "6997:6",
+    "components": "6998:2",
+    "mainDesktop": "7001:2",
+    "pulmuoneDesktop": "7009:2"
+  },
+  "sharedComponents": {
+    "buttonPrimary": "6998:5",
+    "buttonOutline": "6998:7",
+    "headerDesktop": "6998:9",
+    "footerDesktop": "6998:19",
+    "projectCard": "6998:27",
+    "profileCard": "6998:33",
+    "gameShell": "6998:46",
+    "headerCommon": "7005:3",
+    "footerCommon": "7005:18"
+  },
+  "variableCollections": {
+    "colorPrimitives": "VariableCollectionId:6996:2",
+    "semanticColors": "VariableCollectionId:6996:3",
+    "dimensions": "VariableCollectionId:6996:4",
+    "typography": "VariableCollectionId:6996:5"
+  },
+  "qa": {
+    "fontFamily": "IBM Plex Sans KR",
+    "localVariables": 34,
+    "sharedHeaderFooterInstances": 4,
+    "oldMockupArtifactsRemoved": [
+      "6945:2",
+      "6978:118",
+      "6978:143"
+    ]
+  }
+}

@@ -90,10 +90,10 @@
 }
 
 @media(prefers-reduced-motion:reduce){.game-drop-stage,.game-drop-stage.is-ready{opacity:1;transform:none;animation:none}.game-drop-stage.is-ready .landing-dust{display:none;animation:none}}
-.project-facts{display:grid;gap:15px;margin:10px 0 0;font-size:13px;line-height:1.65}
-.project-facts dt{margin-bottom:3px;font-size:11px;font-weight:700;color:var(--accent)}
-.project-facts dd{margin:0;color:var(--muted);overflow-wrap:anywhere}
-.project-contributions{display:grid;gap:5px}.project-contributions>span{display:flex;justify-content:space-between;gap:12px}.project-contributions strong{color:var(--ink)}
+.project-facts{display:grid;gap:24px;margin:24px 0 0;font-size:16px;line-height:1.75}
+.project-card .project-facts dt{margin-bottom:5px;font-size:18px;font-weight:700;color:var(--accent)}
+.project-facts dd{margin:0;font-weight:400;color:var(--muted);overflow-wrap:anywhere}
+.project-contributions{display:grid;gap:8px}.project-contributions>span{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.project-contributions strong{flex-shrink:0;font-size:20px;font-weight:700;color:var(--ink)}
 .project-card-actions{position:relative;z-index:3;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px;padding:16px;border-top:1px solid var(--line)}
 .project-card-actions a,.project-card-actions button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:44px;padding:0 19px;border:1.5px solid var(--line);border-radius:999px;background:var(--paper);font-size:16px;line-height:1.5;font-weight:700;text-align:center}
 .project-card-actions a:hover,.project-card-actions a:focus-visible{background:var(--ink);color:var(--paper)}
@@ -106,9 +106,11 @@
 .project-grid .project-card{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .project-grid .project-card .project-media{grid-column:1;grid-row:1/3;height:100%;min-height:360px}
 .project-grid .project-card .project-body{grid-column:2;padding:28px}
+.project-card .project-body h3{margin:8px 0 0;font-size:30px;line-height:1.3;font-weight:700;letter-spacing:-.025em;color:var(--ink)}
 .project-grid .project-card .project-card-actions{grid-column:2;padding:20px 28px}
-.project-card .project-category,.project-card p,.project-card .project-facts,.project-card .project-facts dt,.project-card .project-tags span,.project-card .project-placeholder,.project-card .project-lock,.project-card .project-card-actions a,.project-card .project-card-actions button{font-size:16px}
+.project-card .project-category,.project-card p,.project-card .project-facts,.project-card .project-tags span,.project-card .project-placeholder,.project-card .project-lock,.project-card .project-card-actions a,.project-card .project-card-actions button{font-size:16px}
 .project-card .project-tags{gap:8px}.project-card .project-tags span{padding:6px 10px}
+.project-card .project-portfolio-note{margin:24px 0 0;font-size:16px;font-weight:400;line-height:1.65;color:#66615a}
 @media(max-width:760px){
   .project-grid{grid-template-columns:minmax(0,1fr)}
   .project-grid .project-card{display:flex}

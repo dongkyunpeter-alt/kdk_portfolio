@@ -1,0 +1,54 @@
+{
+  "runId": "kdk-portfolio-hifi-v1",
+  "fileKey": "6rDip4yW1xgHgMOP1nqYyN",
+  "fileUrl": "https://www.figma.com/design/6rDip4yW1xgHgMOP1nqYyN",
+  "phase": "complete",
+  "step": "P4.e",
+  "entities": {
+    "pages": {
+      "00 · Cover": "0:1",
+      "01 · Foundations": "5:6",
+      "02 · Components": "5:208",
+      "03 · Hi-Fi": "5:209",
+      "99 · Reference Capture": "13:223"
+    },
+    "collections": {
+      "KDK / Color Primitives": "VariableCollectionId:4:2",
+      "KDK / Semantic Colors": "VariableCollectionId:4:3",
+      "KDK / Dimensions": "VariableCollectionId:4:4",
+      "KDK / Typography": "VariableCollectionId:4:5"
+    },
+    "variables": {
+      "total": 70
+    },
+    "styles": {
+      "text": 10,
+      "effect": 4
+    },
+    "components": {
+      "Button": "6:43",
+      "Header": "9:65",
+      "Footer": "9:66",
+      "AccordionItem": "9:67",
+      "GameShell": "9:68",
+      "Mongi": "9:69"
+    },
+    "screens": {
+      "Desktop 1440": "13:2",
+      "Mobile 390": "13:118"
+    }
+  },
+  "completedSteps": [
+    "P0.a",
+    "P0.b",
+    "P0.c",
+    "P0.d",
+    "P0.e",
+    "P0.f",
+    "P1.e",
+    "P2.d",
+    "P3.f",
+    "P4.e"
+  ],
+  "pendingValidations": []
+}
