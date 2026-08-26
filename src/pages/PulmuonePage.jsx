@@ -50,6 +50,6 @@ export default function PulmuonePage(){return (
       <article className="step"><span className="step-number">03 / Verification</span><h3>생성 결과 품질 검증</h3><div className="step-detail"><p><strong>문제</strong>생성 결과가 화면 목적과 구현 기준을 안정적으로 충족하는지 판단할 공통 기준이 필요했습니다.</p><p><strong>해결</strong>반응형·접근성·성능 기준으로 직접 검토하고, 통과하지 못한 결과는 코드와 에셋을 수정했습니다.</p><p className="step-result"><strong>결과</strong><span>도구와 관계없이 최종 품질을 직접 판단하고 책임지는 검증 흐름 확립</span></p></div></article>
     </div>
   </section>
-  <section className="closing" aria-labelledby="closing-title"><div className="wrap reveal"><p className="eyebrow">〈 Epilogue 〉</p><h2 id="closing-title">디자인을 이해하고,<br />끝까지 검증하는 구현자</h2><p className="closing-copy section-lead">예쁘게 보이는 화면에서 멈추지 않고, 다른 작업자가 이어받아도 같은 품질을 유지할 수 있는 구조를 만들겠습니다. 읽어주셔서 감사합니다.</p></div></section>
+  <section className="closing" aria-labelledby="closing-title"><div className="wrap reveal"><p className="eyebrow">〈 Epilogue 〉</p><h2 id="closing-title">풀무원 프로젝트를 하며</h2><p className="closing-copy closing-reflection">처음에는 AI를 활용하면 페이지를 쉽게 만들 수 있을 줄 알았습니다.<br />하지만 구조를 잘 모르는 상태에서 작업하다 보니, 만든 것을 처음부터 다시 만드는 일도 있었습니다.<br />그 일을 계기로 결과만 보기보다 왜 이렇게 만들어지는지 이해하려고 했고<br />그로 인해 더욱 완성도 높게 프로젝트를 만들 수 있었습니다.</p><p className="closing-copy closing-reflection">배운 내용을 직접 적용해서 우리 팀의 페이지가 완성되는 과정이 재미있었고,<br />막히던 문제를 하나씩 해결하면서 다음에는 더 잘 만들 수 있겠다는 자신감도 생겼습니다.</p><p className="closing-copy">끝까지 봐주셔서 감사합니다.</p></div></section>
 </main>
 )}

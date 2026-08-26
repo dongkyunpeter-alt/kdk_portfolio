@@ -68,6 +68,11 @@
 .arcade-screen{margin:0 14px;padding:7px;border:4px solid var(--ink);border-radius:20px;background:#2b2b27;box-shadow:inset 0 0 0 2px #5d594e}
 .arcade-screen .game-arena{height:330px;border:2px solid rgba(255,255,255,.22);border-radius:12px;background:linear-gradient(#8cb86c 0 100%);box-shadow:inset 0 0 32px rgba(15,35,18,.18)}
 .arcade-screen .game-arena::before{inset:0;background-image:linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:12px 12px;height:auto}
+/* 시안 원본 전체를 표시해 산책로·나무·벤치·연못의 배치를 보존합니다. */
+.arcade-screen .game-arena.park-map{height:auto;aspect-ratio:1568/1003;background:#799b55 url('../mongi-park-map-v1.png') center/100% 100% no-repeat;border-color:transparent;box-shadow:none}
+.arcade-screen .game-arena.park-map::before{display:none}
+/* 이미지에 포함된 안내문과 중복하지 않되 읽을 수 있는 텍스트는 남깁니다. */
+.arcade-screen .park-map .game-zone{width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .arcade-screen .path{left:15%;right:9%;bottom:72px;height:126px;border:3px solid rgba(70,61,34,.25);border-radius:48% 42% 55% 44%;background:#d7c78d;rotate:-6deg;box-shadow:inset 0 0 0 5px rgba(255,255,255,.18)}
 .arcade-screen .cloud{display:none}.arcade-screen .tree{bottom:auto;width:55px;height:69px;border:3px solid var(--ink);border-radius:48% 52% 42% 46%;background:#397d47;box-shadow:inset -11px -9px rgba(0,0,0,.12),10px 5px 0 -5px #63994f}.arcade-screen .tree::after{left:22px;top:54px;width:10px;height:30px}.arcade-screen .tree.one{left:4%;top:11%}.arcade-screen .tree.two{right:4%;top:9%;scale:.88}
 .bush{width:68px;height:31px;border:2px solid var(--ink);border-radius:50% 48% 42% 46%;background:#579252;box-shadow:18px -10px 0 -5px #579252,18px -10px 0 -3px var(--ink)}.bush.one{left:27%;top:15%}.bush.two{right:25%;bottom:8%;scale:.72}
@@ -78,6 +83,8 @@
 .arcade-controls{display:grid;grid-template-columns:1fr auto auto 1fr;align-items:center;justify-items:center;gap:28px;padding:14px 22px 17px}.arcade-controls>div{display:grid;justify-items:center;gap:4px}.arcade-controls .dpad{display:grid;grid-template-columns:repeat(3,28px);grid-template-rows:repeat(2,25px);gap:3px;position:static}.arcade-controls .dpad button{border:1.5px solid var(--ink);border-radius:5px;background:#f6edda;box-shadow:0 2px 0 #8d846f;font:700 13px 'IBM Plex Mono',monospace!important;cursor:pointer}.arcade-controls .dpad button:first-child{grid-column:2}.arcade-controls .dpad button:nth-child(2){grid-row:2}.arcade-controls .dpad button:nth-child(3){grid-column:2;grid-row:2}.arcade-controls .dpad button:nth-child(4){grid-column:3;grid-row:2}.auto-pickup button{display:grid;place-items:center;min-width:72px;height:42px;border:2px solid var(--ink);border-radius:7px;background:#f6edda;box-shadow:0 3px 0 #8d846f;font:700 11px 'IBM Plex Mono',monospace!important;cursor:pointer}.arcade-controls button:not(:disabled):active{translate:0 2px;box-shadow:0 1px 0 #8d846f}.arcade-controls button:disabled{cursor:not-allowed;opacity:.4}.speaker{width:52px;height:32px;background:repeating-linear-gradient(0deg,transparent 0 4px,var(--ink) 4px 6px);opacity:.72}
 
 @media(max-width:620px){
+  .hero{overflow-x:clip}
+  .arcade-screen .park-map .mungi{width:56px;height:56px}
   .arcade-hud{grid-template-columns:1fr auto;gap:10px;padding:12px}.game-mission p{display:none}.game-counter{min-width:102px}.game-meta{grid-column:1/-1;display:flex!important;align-items:center;justify-content:space-between!important;width:100%}.status-label,.status-lights{display:none}.game-actions{margin:0 0 0 auto}.arcade-screen{margin-inline:8px}.arcade-screen .game-arena{height:310px}.arcade-controls{grid-template-columns:1fr auto 1fr;gap:12px;padding-inline:14px}.arcade-controls .speaker:last-child{display:none}.speaker{width:38px}.auto-pickup button{min-width:58px}
 }
 
