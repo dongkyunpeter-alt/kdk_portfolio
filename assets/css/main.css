@@ -159,10 +159,12 @@
 .hero-grid>.hero-profile-visual{position:relative;left:-68px;display:flex;align-items:flex-end;justify-content:center;width:100%;height:clamp(540px,46vw,650px);overflow:hidden;opacity:0;transform:translateY(28px);transform-style:preserve-3d;will-change:transform}
 .hero-profile-visual.is-visible{opacity:1;transform:none;transition:opacity .7s .42s ease,transform .85s .42s cubic-bezier(.22,1,.36,1)}
 .hero-profile-visual img{display:block;width:auto;max-width:none;height:108%;object-fit:contain;object-position:center bottom;filter:drop-shadow(10px 14px 0 rgba(21,21,21,.12));will-change:transform}
-.mongi-launch{position:fixed;z-index:119;right:24px;bottom:72px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;width:230px;min-height:92px;padding:10px;border:4px solid var(--ink);border-radius:16px;background:#efe3c8;box-shadow:6px 7px 0 rgba(21,21,21,.28);color:var(--ink);font-family:'IBM Plex Mono',monospace;text-align:left;cursor:pointer;transition:transform .25s cubic-bezier(.22,1,.36,1),opacity .2s ease,visibility 0s}
-.mongi-launch:hover,.mongi-launch:focus-visible{transform:translateY(-4px);outline:3px solid var(--accent);outline-offset:4px}
-.mongi-launch:active{transform:translateY(2px);box-shadow:3px 4px 0 rgba(21,21,21,.28)}
-.mongi-launch.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.mongi-launch{position:fixed;z-index:119;right:24px;bottom:72px;width:230px;padding:7px 10px 10px;border:4px solid var(--ink);border-radius:16px;background:#efe3c8;box-shadow:6px 7px 0 rgba(21,21,21,.28);color:var(--ink);font-family:'IBM Plex Mono',monospace;text-align:left}
+.floating-drag-handle,.game-popup-bar{display:flex;align-items:center;justify-content:space-between;min-height:24px;padding:0 30px 0 2px;font-size:9px;font-weight:700;letter-spacing:.06em;cursor:grab;touch-action:none;user-select:none}
+.floating-drag-handle:active,.game-popup-bar:active{cursor:grabbing}
+.mongi-launch-dismiss{position:absolute;z-index:3;top:5px;right:7px;display:grid;place-items:center;width:24px;height:24px;padding:0;border:1.5px solid var(--ink);border-radius:50%;background:var(--paper);font-size:17px;font-weight:700;line-height:1;cursor:pointer}
+.mongi-launch-main{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.mongi-launch-main:hover,.mongi-launch-main:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .mongi-launch-screen{display:grid;gap:4px;min-height:64px;padding:9px 11px;border:3px solid var(--ink);border-radius:9px;background:#7ca65f;box-shadow:inset 0 0 0 2px rgba(255,255,255,.24)}
 .mongi-launch-screen small{color:#173b23;font-size:9px;font-weight:700;letter-spacing:.04em}
 .mongi-launch-screen strong{font-size:15px;line-height:1.25;letter-spacing:-.04em}
@@ -173,13 +175,16 @@
 .profile-card .profile-copy{width:100%}
 .game-popup{position:fixed;z-index:120;right:24px;bottom:24px;width:min(600px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;opacity:0;visibility:hidden;transform:translateY(24px) scale(.97);transition:opacity .25s ease,transform .32s cubic-bezier(.22,1,.36,1),visibility 0s .32s;pointer-events:none}
 .game-popup.is-open{opacity:1;visibility:visible;transform:none;transition-delay:0s;pointer-events:auto}
-.game-popup-close{position:absolute;z-index:20;top:14px;right:18px;min-height:34px;padding:0 11px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);font-size:14px;font-weight:700;cursor:pointer}
+.game-popup-bar{height:38px;padding:0 110px 0 12px;border:4px solid var(--ink);border-bottom:0;border-radius:16px 16px 0 0;background:#efe3c8;font-family:'IBM Plex Mono',monospace}
+.game-popup-close{position:absolute;z-index:20;top:5px;right:10px;min-height:29px;padding:0 10px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper);font-size:13px;font-weight:700;cursor:pointer}
 .game-popup-close:hover,.game-popup-close:focus-visible{background:var(--ink);color:var(--paper)}
 .game-popup .game-drop-stage,.game-popup .game-drop-stage.is-ready{width:100%;opacity:1;transform:none;animation:none}
 .game-popup .landing-dust{display:none}
-.game-popup .game-shell{width:100%;border-width:7px;border-radius:22px;box-shadow:7px 9px 0 rgba(21,21,21,.2)}
+.game-popup .game-shell{width:100%;border-width:7px;border-radius:0 0 22px 22px;box-shadow:7px 9px 0 rgba(21,21,21,.2)}
 .game-popup .game-head{padding-right:88px}
 .game-popup .arcade-screen .game-arena.park-map{max-height:48vh}
+.mongi-launch-restore{position:fixed;z-index:118;right:0;bottom:82px;min-height:44px;padding:0 14px 0 12px;border:3px solid var(--ink);border-right:0;border-radius:10px 0 0 10px;background:#efe3c8;box-shadow:-3px 4px 0 rgba(21,21,21,.22);font:700 12px 'IBM Plex Mono',monospace;cursor:pointer}
+.mongi-launch-restore:hover,.mongi-launch-restore:focus-visible{padding-right:20px;background:#7ca65f;outline:3px solid var(--accent);outline-offset:3px}
 @media(max-width:1200px){
   .hero-grid>.hero-profile-visual{left:0;height:560px}
   .hero-profile-visual img{height:106%}
@@ -190,6 +195,7 @@
   .profile-card{padding:32px!important}
   .game-popup{right:10px;bottom:10px;width:calc(100vw - 20px);max-height:calc(100vh - 20px)}
   .game-popup .game-shell{border-width:5px;border-radius:18px}
-  .mongi-launch{right:10px;bottom:58px;width:205px;min-height:82px;padding:8px}
+  .mongi-launch{right:10px;bottom:58px;width:205px;padding:6px 8px 8px}
   .mongi-launch-screen{min-height:58px;padding:7px 9px}
+  .mongi-launch-restore{bottom:64px}
 }

@@ -53,7 +53,7 @@ function Footer(){
 
 function ScrollProgress(){
   const progressRef=useRef(null);
-  useEffect(()=>{let frame=0,cardProgress=null;const update=()=>{frame=0;const max=document.documentElement.scrollHeight-innerHeight;const natural=max>0?Math.min(1,Math.max(0,scrollY/max)):0;const progress=cardProgress??natural;progressRef.current?.style.setProperty('--scroll-progress',progress)};const requestUpdate=()=>{if(!frame)frame=requestAnimationFrame(update)};const onCards=event=>{cardProgress=event.detail?.active?event.detail.progress:null;progressRef.current?.toggleAttribute('data-project-locked',Boolean(event.detail?.active));requestUpdate()};update();addEventListener('scroll',requestUpdate,{passive:true});addEventListener('resize',requestUpdate);addEventListener('project-card-progress',onCards);return()=>{removeEventListener('scroll',requestUpdate);removeEventListener('resize',requestUpdate);removeEventListener('project-card-progress',onCards);if(frame)cancelAnimationFrame(frame)}},[]);
+  useEffect(()=>{let frame=0;const update=()=>{frame=0;const max=document.documentElement.scrollHeight-innerHeight;const progress=max>0?Math.min(1,Math.max(0,scrollY/max)):0;progressRef.current?.style.setProperty('--scroll-progress',progress)};const requestUpdate=()=>{if(!frame)frame=requestAnimationFrame(update)};update();addEventListener('scroll',requestUpdate,{passive:true});addEventListener('resize',requestUpdate);return()=>{removeEventListener('scroll',requestUpdate);removeEventListener('resize',requestUpdate);if(frame)cancelAnimationFrame(frame)}},[]);
   return <div ref={progressRef} className="project-scroll-progress" aria-hidden="true"><span /></div>;
 }
 

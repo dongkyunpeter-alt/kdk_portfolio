@@ -237,8 +237,33 @@ function BoneGame({game,setGame,introReady}){
   </section><span className="landing-dust dust-left" aria-hidden="true"/><span className="landing-dust dust-right" aria-hidden="true"/></div></>;
 }
 
+function useDraggable(panelRef,handleRef,active=true){
+  useEffect(()=>{
+    const panel=panelRef.current,handle=handleRef.current;
+    if(!active||!panel||!handle)return;
+    let pointerId=null,offsetX=0,offsetY=0;
+    const down=event=>{if(event.button!==0)return;const rect=panel.getBoundingClientRect();pointerId=event.pointerId;offsetX=event.clientX-rect.left;offsetY=event.clientY-rect.top;panel.style.left=`${rect.left}px`;panel.style.top=`${rect.top}px`;panel.style.right='auto';panel.style.bottom='auto';handle.setPointerCapture?.(pointerId);event.preventDefault()};
+    const move=event=>{if(event.pointerId!==pointerId)return;const x=gsap.utils.clamp(8,innerWidth-panel.offsetWidth-8,event.clientX-offsetX),y=gsap.utils.clamp(8,innerHeight-panel.offsetHeight-8,event.clientY-offsetY);panel.style.left=`${x}px`;panel.style.top=`${y}px`};
+    const up=event=>{if(event.pointerId!==pointerId)return;handle.releasePointerCapture?.(pointerId);pointerId=null};
+    handle.addEventListener('pointerdown',down);handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',up);handle.addEventListener('pointercancel',up);
+    return()=>{handle.removeEventListener('pointerdown',down);handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',up);handle.removeEventListener('pointercancel',up)};
+  },[panelRef,handleRef,active]);
+}
+
+function MongiLauncher({hidden,onOpen,onDismiss}){
+  const panelRef=useRef(null),handleRef=useRef(null);
+  useDraggable(panelRef,handleRef,!hidden);
+  if(hidden)return null;
+  return <div ref={panelRef} className="mongi-launch">
+    <div ref={handleRef} className="floating-drag-handle"><span>DRAG</span><span aria-hidden="true">••••</span></div>
+    <button className="mongi-launch-dismiss" type="button" onClick={onDismiss} aria-label="몽이 실행 패널 닫기">×</button>
+    <button className="mongi-launch-main" type="button" aria-expanded="false" aria-controls="mongi-game-popup" onClick={onOpen}><span className="mongi-launch-screen"><small>MONGI QUEST</small><strong>몽이를<br/>만나보세요!</strong></span><span className="mongi-launch-controls" aria-hidden="true"><i/><i/><i/></span></button>
+  </div>;
+}
+
 function GamePopup({open,onClose,game,setGame}){
-  const closeRef=useRef(null);
+  const popupRef=useRef(null),handleRef=useRef(null),closeRef=useRef(null);
+  useDraggable(popupRef,handleRef,open);
   useEffect(()=>{
     if(!open)return;
     const previous=document.activeElement;
@@ -247,7 +272,8 @@ function GamePopup({open,onClose,game,setGame}){
     addEventListener('keydown',keydown);
     return()=>{removeEventListener('keydown',keydown);previous?.focus?.({preventScroll:true})};
   },[open,onClose]);
-  return <aside id="mongi-game-popup" className={`game-popup${open?' is-open':''}`} role="dialog" aria-modal="false" aria-label="몽이 뼈다귀 찾기 게임" aria-hidden={!open} inert={!open?'':undefined}>
+  return <aside ref={popupRef} id="mongi-game-popup" className={`game-popup${open?' is-open':''}`} role="dialog" aria-modal="false" aria-label="몽이 뼈다귀 찾기 게임" aria-hidden={!open} inert={!open?'':undefined}>
+    <div ref={handleRef} className="game-popup-bar"><span>MOVE · MONGI QUEST</span><span aria-hidden="true">••••••</span></div>
     <button ref={closeRef} className="game-popup-close" type="button" onClick={onClose} aria-label="몽이 게임 닫기">닫기 ×</button>
     {open&&<BoneGame game={game} setGame={setGame} introReady />}
   </aside>;
@@ -256,6 +282,7 @@ function GamePopup({open,onClose,game,setGame}){
 export default function HomePage(){
   const [game,setGame]=useState(initialGame);
   const [gameOpen,setGameOpen]=useState(false);
+  const [launcherDismissed,setLauncherDismissed]=useState(false);
   const [heroVisible,setHeroVisible]=useState(false);
   const [profileVisible,setProfileVisible]=useState(false);
   const [activeProject,setActiveProject]=useState(0);
@@ -265,6 +292,7 @@ export default function HomePage(){
   useEffect(()=>{let cancelled=false;const show=async()=>{await document.fonts.ready;requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!cancelled)setHeroVisible(true)}))};show();return()=>{cancelled=true}},[]);
   useEffect(()=>{const observer=new IntersectionObserver(([entry])=>setProfileVisible(entry.isIntersecting),{threshold:0});if(profileRef.current)observer.observe(profileRef.current);return()=>observer.disconnect()},[]);
   const complete=game.collected.length===3;
+  useEffect(()=>{if(complete){setGameOpen(false);setLauncherDismissed(true)}else{setLauncherDismissed(false)}},[complete]);
   return <main id="main">
     <section className="hero wrap" id="top"><div className="hero-grid">
       <div className={`motion-ready${heroVisible?' is-visible':''}`}><p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p><h1 className="display"><span className="display-kicker">균형 잡힌 인재</span><span className="display-name-line"><span className="display-name">강동균</span><span className="display-suffix">입니다.</span></span></h1><p className="hero-desc">디자인을 이해하고,<br />사용하기 편한 웹 화면으로 구현합니다.</p><div className="hero-actions"><a className="pill dark" href="#projects">프로젝트 보기</a><a className="pill" href="mailto:dongkyunpeter@gmail.com">이메일 보내기</a></div></div>
@@ -272,7 +300,8 @@ export default function HomePage(){
     </div></section>
     <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="mailto:dongkyunpeter@gmail.com">이메일 보내기</a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></div></section>
     <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head home-reveal"><div><p className="eyebrow">〈 SELECTED PROJECTS 〉</p><h2 className="projects-title">Project <span className="project-index" aria-live="polite">{String(activeProject+1).padStart(2,'0')}</span></h2></div></div><ProjectGrid onActiveChange={setActiveProject}/></div></section>
-    <button className={`mongi-launch${gameOpen?' is-hidden':''}`} type="button" aria-expanded={gameOpen} aria-controls="mongi-game-popup" onClick={()=>setGameOpen(true)}><span className="mongi-launch-screen"><small>MONGI QUEST</small><strong>몽이를<br/>만나보세요!</strong></span><span className="mongi-launch-controls" aria-hidden="true"><i/><i/><i/></span></button>
+    <MongiLauncher hidden={gameOpen||launcherDismissed} onOpen={()=>setGameOpen(true)} onDismiss={()=>setLauncherDismissed(true)}/>
+    {launcherDismissed&&!gameOpen&&<button className="mongi-launch-restore" type="button" onClick={()=>setGameOpen(true)} aria-label="몽이 게임 열기"><span aria-hidden="true">🦴</span> 게임 열기</button>}
     <GamePopup open={gameOpen} onClose={closeGame} game={game} setGame={setGame}/>{complete&&<CursorMongi/>}
   </main>;
 }
