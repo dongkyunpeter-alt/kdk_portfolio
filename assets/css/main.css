@@ -111,7 +111,13 @@
 .projects-shell::before{display:none}
 .projects .section-head{position:sticky;z-index:10;top:110px}
 .projects-title{display:flex;align-items:baseline;gap:16px}
-.project-index{min-width:2ch;color:var(--accent);font:700 clamp(20px,2vw,28px)/1 'IBM Plex Mono',monospace;letter-spacing:0}
+.project-index{display:inline-flex;min-width:2ch;align-items:flex-end;color:var(--accent);font:700 clamp(20px,2vw,28px)/1 'IBM Plex Mono',monospace;letter-spacing:0}
+.project-index>span:first-child{display:block;height:1em;line-height:1}
+.project-index-wheel{position:relative;display:block;width:1ch;height:1em;overflow:hidden;line-height:1}
+.project-index-wheel>span{position:absolute;inset:0;display:block;line-height:1;opacity:0;transform:translateY(65%);filter:blur(2px);transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .26s ease,filter .34s ease;will-change:transform,opacity,filter}
+.project-index-wheel>span.is-active{opacity:1;transform:translateY(0);filter:none}
+.project-index-wheel>span.is-before{transform:translateY(-65%)}
+.project-index-wheel>span.is-after{transform:translateY(65%)}
 .project-grid{--project-card-height:clamp(500px,min(36vw,calc(100vh - 210px)),560px);--project-stack-top:240px;position:relative;z-index:1;display:block;height:auto;overflow:visible;background:transparent}
 .project-grid::after{content:"";display:block;height:calc(var(--project-stack-top) + 30vh)}
 .project-card-slot{--project-stack-offset:0px;position:sticky;top:var(--project-stack-top);translate:0 var(--project-stack-offset);width:100%;height:var(--project-card-height)}
@@ -161,6 +167,7 @@
 .motion-ready .home-reveal[data-revealed=true],.motion-ready .home-reveal:focus-within{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.motion-ready .home-reveal{opacity:1;transform:none;transition:none}}
 @media(prefers-reduced-motion:reduce){.project-grid .project-card{transition:none}}
+@media(prefers-reduced-motion:reduce){.project-index-wheel>span{transition:none;filter:none}}
 .arcade-controls .auto-pickup button{min-width:96px;height:48px;padding:0 16px;background:#ed1515;color:#fff;font-size:16px!important;box-shadow:0 4px 0 #8d846f}
 .arcade-controls .auto-pickup button:not(:disabled):hover{background:#ce1010}
 .arcade-controls .auto-pickup button:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
