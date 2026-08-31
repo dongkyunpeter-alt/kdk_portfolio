@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { portfolioProjects } from '../data/projects.js';
 import { createParkWorld, moveInPark, safeParkPosition } from '../game/parkPhysics.mjs';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const STATE_KEY='kdk-project-bones-v2';
 const initialGame=()=>{try{return {...{collected:[],x:24,y:150},...JSON.parse(localStorage.getItem(STATE_KEY)||'{}')}}catch{return {collected:[],x:24,y:150}}};
@@ -44,79 +47,84 @@ function useProjectCardPager(gridRef,onActiveChange){
   useEffect(()=>{
     const grid=gridRef.current;
     if(!grid)return;
-    const stage=grid.closest('.projects-shell');
-    const section=grid.closest('.projects');
+    const heading=grid.closest('.projects-shell')?.querySelector('.section-head');
     const cards=[...grid.querySelectorAll('.project-card')];
-    if(!stage||!section||!cards.length)return;
-    const reducedMotion=matchMedia('(prefers-reduced-motion:reduce)').matches;
-    if(reducedMotion||matchMedia('(max-width:760px)').matches){
+    const slots=cards.map(card=>card.closest('.project-card-slot'));
+    if(!heading||!cards.length)return;
+    const activateCard=index=>{
+      cards.forEach((card,cardIndex)=>{
+        const depth=Math.max(0,index-cardIndex);
+        card.classList.toggle('is-current',cardIndex===index);
+        card.classList.toggle('is-past',cardIndex<index);
+        card.classList.toggle('is-next',cardIndex>index);
+        card.style.setProperty('--project-card-blur',`${depth===0?0:depth===1?.9:1.2}px`);
+        card.style.setProperty('--project-card-opacity',String(1-(depth*.025)));
+      });
+      onActiveChange(index);
+    };
+    if(matchMedia('(max-width:760px)').matches){
       const observer=new IntersectionObserver(entries=>{
         const active=entries.find(entry=>entry.isIntersecting);
-        if(active)onActiveChange(Number(active.target.dataset.projectIndex));
+        if(active)activateCard(Number(active.target.dataset.projectIndex));
       },{rootMargin:'-45% 0px -45% 0px',threshold:0});
       cards.forEach(card=>observer.observe(card));
-      return()=>observer.disconnect();
+      activateCard(0);
+      return()=>{observer.disconnect();cards.forEach(card=>card.classList.remove('is-current','is-past','is-next'))};
     }
-    let index=0,locked=false,lockY=0,lastY=scrollY,animating=false,gestureReady=true,wheelTotal=0,wheelTimer=0,touchStart=null,bypassUntil=0;
-    gsap.set(cards,{yPercent:110});gsap.set(cards[0],{yPercent:0});
-    const report=active=>{
-      const max=Math.max(1,document.documentElement.scrollHeight-innerHeight);
-      const sectionTop=section.offsetTop;
-      const virtualY=sectionTop+(section.offsetHeight*(index/Math.max(1,cards.length-1)));
-      dispatchEvent(new CustomEvent('project-card-progress',{detail:{active,progress:Math.min(1,virtualY/max),index,total:cards.length}}));
+    const stackOffset=index=>index===0?0:index===1?12:28;
+    const targetTop=index=>Math.round(110+heading.offsetHeight+24+stackOffset(index));
+    const setStackTop=()=>grid.style.setProperty('--project-stack-top',`${targetTop(0)}px`);
+    setStackTop();
+    gsap.set(cards,{scale:1,transformOrigin:'center top'});
+
+    // 카드의 고정은 CSS sticky가 담당합니다. ScrollTrigger는 카드 상태와
+    // 이전 카드의 축소만 계산하므로 빠르게 진입해도 pin 보정으로 화면이 튀지 않습니다.
+    const triggers=[];
+    cards.forEach((card,index)=>{
+      const slot=slots[index];
+      slot.style.zIndex=String(index+1);
+      slot.style.setProperty('--project-stack-offset',`${stackOffset(index)}px`);
+      triggers.push(ScrollTrigger.create({
+        trigger:slot,
+        start:()=>`top ${targetTop(index)+2}px`,
+        end:()=>`bottom ${targetTop(index)+slot.offsetHeight}px`,
+        invalidateOnRefresh:true,
+        onEnter:()=>activateCard(index),
+        onEnterBack:()=>activateCard(index)
+      }));
+      if(index===0)return;
+      const previousCards=cards.slice(0,index);
+      triggers.push(ScrollTrigger.create({
+        trigger:slot,
+        start:'top bottom-=80',
+        end:()=>`top ${targetTop(index)}px`,
+        scrub:.18,
+        invalidateOnRefresh:true,
+        animation:gsap.fromTo(previousCards,
+          {scale:cardIndex=>1-(Math.max(0,index-1-cardIndex)*.025)},
+          {scale:cardIndex=>1-((index-cardIndex)*.025),ease:'none',transformOrigin:'center top',immediateRender:false}
+        )
+      }));
+    });
+    activateCard(0);
+    const refresh=()=>{setStackTop();ScrollTrigger.refresh()};
+    const frame=requestAnimationFrame(refresh);
+    addEventListener('resize',setStackTop);
+    return()=>{
+      cancelAnimationFrame(frame);
+      removeEventListener('resize',setStackTop);
+      triggers.forEach(trigger=>trigger.kill());
+      grid.style.removeProperty('--project-stack-top');
+      cards.forEach((card,index)=>{
+        const slot=slots[index];
+        card.classList.remove('is-current','is-past','is-next');
+        slot.style.removeProperty('z-index');
+        slot.style.removeProperty('--project-stack-offset');
+        card.style.removeProperty('--project-card-blur');
+        card.style.removeProperty('--project-card-opacity');
+        gsap.set(card,{clearProps:'transform,transformOrigin'});
+      });
     };
-    const unlock=()=>{locked=false;bypassUntil=performance.now()+350;report(false)};
-    const change=direction=>{
-      const next=gsap.utils.clamp(0,cards.length-1,index+direction);
-      if(next===index||animating)return;
-      animating=true;index=next;onActiveChange(index);report(true);
-      const card=direction>0?cards[index]:cards[index+1];
-      gsap.to(card,{yPercent:direction>0?0:110,duration:.62,ease:'power3.inOut',onComplete:()=>{animating=false}});
-    };
-    const lock=()=>{
-      const rect=stage.getBoundingClientRect();
-      lockY=Math.max(0,scrollY+rect.top-86);locked=true;
-      scrollTo({top:lockY,behavior:'instant'});report(true);
-    };
-    const onScroll=()=>{
-      const y=scrollY;
-      if(locked){if(Math.abs(y-lockY)>.5)scrollTo({top:lockY,behavior:'instant'});return}
-      const rect=stage.getBoundingClientRect();
-      if(performance.now()>bypassUntil&&rect.top<=86&&rect.top>=0)lock();
-      lastY=y;
-    };
-    const settleGesture=()=>{gestureReady=true;wheelTotal=0};
-    const onWheel=event=>{
-      if(!locked)return;
-      clearTimeout(wheelTimer);wheelTimer=setTimeout(settleGesture,150);
-      if(!gestureReady){event.preventDefault();return}
-      const direction=Math.sign(event.deltaY);
-      if((direction>0&&index===cards.length-1)||(direction<0&&index===0)){unlock();return}
-      event.preventDefault();wheelTotal+=event.deltaY;
-      if(Math.abs(wheelTotal)<36)return;
-      gestureReady=false;wheelTotal=0;change(Math.sign(event.deltaY));
-    };
-    const onKey=event=>{
-      if(!locked)return;
-      const down=['ArrowDown','PageDown',' ','End'].includes(event.key),up=['ArrowUp','PageUp','Home'].includes(event.key);
-      if(!down&&!up)return;
-      const direction=down?1:-1;
-      if((direction>0&&index===cards.length-1)||(direction<0&&index===0)){unlock();return}
-      event.preventDefault();change(direction);
-    };
-    const onTouchStart=event=>{if(locked)touchStart=event.touches[0]?.clientY??null};
-    const onTouchMove=event=>{if(locked)event.preventDefault()};
-    const onTouchEnd=event=>{
-      if(!locked||touchStart===null)return;
-      const end=event.changedTouches[0]?.clientY??touchStart,delta=touchStart-end;touchStart=null;
-      if(Math.abs(delta)<36)return;
-      const direction=Math.sign(delta);
-      if((direction>0&&index===cards.length-1)||(direction<0&&index===0)){unlock();return}
-      change(direction);
-    };
-    addEventListener('scroll',onScroll,{passive:true});addEventListener('wheel',onWheel,{passive:false});addEventListener('keydown',onKey);addEventListener('touchstart',onTouchStart,{passive:true});addEventListener('touchmove',onTouchMove,{passive:false});addEventListener('touchend',onTouchEnd,{passive:true});
-    requestAnimationFrame(onScroll);
-    return()=>{clearTimeout(wheelTimer);unlock();gsap.killTweensOf(cards);gsap.set(cards,{clearProps:'transform'});removeEventListener('scroll',onScroll);removeEventListener('wheel',onWheel);removeEventListener('keydown',onKey);removeEventListener('touchstart',onTouchStart);removeEventListener('touchmove',onTouchMove);removeEventListener('touchend',onTouchEnd)};
   },[gridRef,onActiveChange]);
 }
 
@@ -125,7 +133,7 @@ function ProjectGrid({onActiveChange}){
   useProjectCardPager(gridRef,onActiveChange);
   return <div ref={gridRef} className="project-grid" id="project-grid">{portfolioProjects.map((project,index)=>{
     const published=project.status==='published';
-    return <article key={project.slug} className="project-card home-reveal" data-status={project.status} data-slug={project.slug} data-project-index={index}>
+    return <Fragment key={project.slug}><div className="project-card-slot" data-project-index={index}><article className="project-card" data-status={project.status} data-slug={project.slug} data-project-index={index}>
       <div className="project-media">{project.thumbnail?<img src={project.thumbnail} alt={`${project.title} 프로젝트 미리보기`} width="800" height="450"/>:<div className="project-placeholder">PROJECT SLOT</div>}</div>
       <div className="project-body">
         <span className="project-category">{project.category}</span><h3>{project.title}</h3>
@@ -137,11 +145,11 @@ function ProjectGrid({onActiveChange}){
         </dl>
         {published?<p className="project-portfolio-note">자세한 작업 내용과 과정은 포트폴리오에서 확인해 주세요.</p>:<div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>}
       </div>
-      {!published?<span className="project-lock">COMING SOON</span>:<a className="project-link" href={project.href} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} 사이트 보기 (새 탭)`}/>}
+      {published&&<a className="project-link" href={project.href} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} 사이트 보기 (새 탭)`}/>}
       <div className="project-card-actions" aria-label={`${project.title} 관련 링크`}>
         {[['포트폴리오',project.portfolio,false],['깃허브',project.github,true],['사이트',project.href,true]].map(([label,href,external])=>!href?<button key={label} type="button" disabled>{label==='깃허브'&&<GitHubIcon/>}{label}</button>:<a key={label} href={href} target={external?'_blank':undefined} rel={external?'noopener noreferrer':undefined} aria-label={`${project.title} ${label}${external?' (새 탭)':''}`}>{label==='깃허브'&&<GitHubIcon/>}{label}{external?' ↗':' →'}</a>)}
       </div>
-    </article>;
+    </article></div>{index<portfolioProjects.length-1&&<div className="project-stack-spacer" aria-hidden="true"/>}</Fragment>;
   })}</div>;
 }
 

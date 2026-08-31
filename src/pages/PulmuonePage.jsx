@@ -40,10 +40,35 @@ export default function PulmuonePage(){return (
       <article className="metric-card reveal"><strong className="metric-value"><span className="before">72</span><span className="change">→</span>95</strong><h3>데스크톱 성능</h3><p>지속가능 식생활 페이지 Lighthouse 결과</p></article>
       <article className="metric-card reveal"><strong className="metric-value">All 100</strong><h3>SEO</h3><p>최적화 후 바른먹거리 하위 5개 페이지</p></article>
     </div>
+    <div className="results-evidence reveal" aria-label="성과 증거 자료">
+      <div><small>RESULTS SOURCE</small><strong>수치와 결과의 근거를 직접 확인할 수 있습니다.</strong></div>
+      <nav aria-label="성과 증거 링크">
+        <a href="https://github.com/icerence/kiwik-project" target="_blank" rel="noopener">구현 코드 ↗</a>
+        <a href="https://www.figma.com/design/ePhLkt6OzxLw9p38nOcvrx/kiwik_design_system" target="_blank" rel="noopener">디자인 시스템 ↗</a>
+        <a href="reports/%EB%B0%94%EB%A5%B8%EB%A8%B9%EA%B1%B0%EB%A6%AC-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0-%EB%B3%B4%EA%B3%A0%EC%84%9C-2026-08-13.html">측정 보고서 ↗</a>
+      </nav>
+    </div>
   </section>
   <section className="process wrap" id="process" aria-labelledby="process-title">
     <div className="process-head reveal"><p className="eyebrow">〈 Problem Solving 〉</p><h2 id="process-title">문제 해결에서<br />품질 향상까지</h2></div>
-    <div className="comparison-grid" aria-label="개선 전후 비교"><article className="comparison-card reveal"><h3>이미지 용량</h3><div className="comparison-bars"><div className="comparison-row"><span>Before</span><i className="comparison-track"><b className="comparison-fill" style={{'--value':'100%'}} /></i><strong>34.8MiB</strong></div><div className="comparison-row after"><span>After</span><i className="comparison-track"><b className="comparison-fill" style={{'--value':'6%'}} /></i><strong>2.0MiB</strong></div></div><p className="comparison-caption">WebP 변환과 표시 크기 기준 리사이징으로 전체 이미지 용량을 94% 줄였습니다.</p></article><article className="comparison-card reveal"><h3>Lighthouse 성능</h3><div className="comparison-bars"><div className="comparison-row"><span>Before</span><i className="comparison-track"><b className="comparison-fill" style={{'--value':'72%'}} /></i><strong>72점</strong></div><div className="comparison-row after"><span>After</span><i className="comparison-track"><b className="comparison-fill" style={{'--value':'95%'}} /></i><strong>95점</strong></div></div><p className="comparison-caption">지속가능 식생활 페이지의 데스크톱 동일 조건 측정 결과입니다.</p></article></div>
+    <div className="comparison-grid" aria-label="성능 개선 전후 비교">
+      <article className="comparison-card reveal">
+        <div className="comparison-title"><h3>이미지 용량</h3><strong>94% 감소</strong></div>
+        <div className="comparison-bars" aria-label="이미지 용량 34.8MiB에서 2.0MiB로 감소">
+          <div className="comparison-row"><span>Before</span><div className="comparison-track"><i className="comparison-fill" style={{ '--value': '100%' }} /></div><strong>34.8MiB</strong></div>
+          <div className="comparison-row after"><span>After</span><div className="comparison-track"><i className="comparison-fill" style={{ '--value': '6%' }} /></div><strong>2.0MiB</strong></div>
+        </div>
+        <p className="comparison-caption">WebP 변환 · 표시 크기 기준 리사이징 · 지연 로딩</p>
+      </article>
+      <article className="comparison-card reveal">
+        <div className="comparison-title"><h3>Lighthouse 성능</h3><strong>23점 향상</strong></div>
+        <div className="comparison-bars" aria-label="Lighthouse 성능 72점에서 95점으로 향상">
+          <div className="comparison-row"><span>Before</span><div className="comparison-track"><i className="comparison-fill" style={{ '--value': '72%' }} /></div><strong>72점</strong></div>
+          <div className="comparison-row after"><span>After</span><div className="comparison-track"><i className="comparison-fill" style={{ '--value': '95%' }} /></div><strong>95점</strong></div>
+        </div>
+        <p className="comparison-caption">이미지 최적화 · 주요 리소스 로딩 순서 조정</p>
+      </article>
+    </div>
     <div className="steps">
       <article className="step"><span className="step-number">01 / System</span><h3>디자인 시스템 재구축</h3><div className="step-detail"><p><strong>문제</strong>초기 구조를 충분히 이해하지 못해 페이지 제작을 다시 시작해야 했습니다.</p><p><strong>해결</strong>토큰 참조 구조를 다시 학습하고 하네스와 자동 검사까지 포함해 재구축했습니다.</p><p className="step-result"><strong>결과</strong><span>토큰·구현·검증 기준을 하나의 작업 체계로 연결</span></p></div></article>
       <article className="step"><span className="step-number">02 / Consistency</span><h3>공통 영역 일괄 적용</h3><div className="step-detail"><p><strong>문제</strong>페이지마다 헤더·head·푸터가 달라 수정 누락과 동작 차이가 발생했습니다.</p><p><strong>해결</strong>공통 원본과 동기화 도구를 구성해 같은 구조와 설정을 사용하도록 통일했습니다.</p><p className="step-result"><strong>결과</strong><span>한 번의 수정으로 6개 페이지 공통 영역을 동일하게 반영</span></p></div></article>
