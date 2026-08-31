@@ -3,3 +3,14 @@ dist/
 test-results/
 playwright-report/
 *.log
+
+# Local image-generation intermediates and visual QA captures
+/assets/*-source.png
+/assets/*-base.png
+/assets/*-candidate.png
+/assets/test-frame.png
+/*-check.png
+/*-debug.png
+/current-*.png
+/figma-*.png
+/figma-*-state.json
