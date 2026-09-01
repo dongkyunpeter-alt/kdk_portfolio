@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 import { copyFileSync, cpSync, existsSync, mkdirSync } from 'node:fs';
 
 export default defineConfig({
-  plugins: [react(), {
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] }), {
     name: 'copy-static-react-bundle',
     closeBundle() {
       mkdirSync('dist/assets/js', { recursive: true });

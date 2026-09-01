@@ -16,7 +16,9 @@
     "test": "start-server-and-test serve http://127.0.0.1:4392 smoke"
   },
   "devDependencies": {
+    "@rolldown/plugin-babel": "0.2.3",
     "@vitejs/plugin-react": "^6.1.0",
+    "babel-plugin-react-compiler": "1.0.0",
     "http-server": "^14.1.1",
     "playwright": "^1.55.0",
     "start-server-and-test": "^2.0.13",
