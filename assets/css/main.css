@@ -108,30 +108,27 @@
 .project-card[data-status=published]:not(.is-locked) .project-body> *{pointer-events:auto;cursor:text}
 .projects>.wrap{width:min(calc(100% - var(--pad)*2),78vw,1180px)}
 .projects-shell{position:relative;isolation:isolate}
-.projects-shell::before{display:none}
 .projects .section-head{position:sticky;z-index:10;top:110px}
-.projects-title{display:flex;align-items:baseline;gap:16px}
-.project-index{display:inline-flex;min-width:2ch;align-items:flex-end;color:var(--accent);font:700 clamp(20px,2vw,28px)/1 'IBM Plex Mono',monospace;letter-spacing:0}
-.project-index>span:first-child{display:block;height:1em;line-height:1}
-.project-index-wheel{position:relative;display:block;width:1ch;height:1em;overflow:hidden;line-height:1}
-.project-index-wheel>span{position:absolute;inset:0;display:block;line-height:1;opacity:0;transform:translateY(65%);filter:blur(2px);transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .26s ease,filter .34s ease;will-change:transform,opacity,filter}
-.project-index-wheel>span.is-active{opacity:1;transform:translateY(0);filter:none}
-.project-index-wheel>span.is-before{transform:translateY(-65%)}
-.project-index-wheel>span.is-after{transform:translateY(65%)}
-.project-grid{--project-card-height:clamp(500px,min(36vw,calc(100vh - 210px)),560px);--project-stack-top:240px;position:relative;z-index:1;display:block;height:auto;overflow:visible;background:transparent}
-.project-grid::after{content:"";display:block;height:calc(var(--project-stack-top) + 30vh)}
-.project-card-slot{--project-stack-offset:0px;position:sticky;top:var(--project-stack-top);translate:0 var(--project-stack-offset);width:100%;height:var(--project-card-height)}
-.project-grid .project-card{--project-card-blur:0px;--project-card-opacity:1;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;width:100%;height:100%;margin:0;overflow:hidden;border:2px solid var(--line);border-radius:14px;background:var(--paper);box-shadow:4px 5px 0 var(--ink);transform-origin:center top;transition:filter .34s cubic-bezier(.22,1,.36,1),opacity .34s cubic-bezier(.22,1,.36,1);will-change:transform,filter,opacity}
-.project-stack-spacer{height:clamp(320px,48vh,460px);pointer-events:none}
-.project-grid .project-card:last-child{margin-bottom:0}
-.project-grid .project-card[data-status=coming-soon]{opacity:1;box-shadow:4px 5px 0 var(--ink)}
-.project-grid .project-card.is-past{filter:blur(var(--project-card-blur)) brightness(.985);opacity:var(--project-card-opacity)}
-.project-grid .project-card.is-current,.project-grid .project-card.is-next{filter:none;opacity:1}
+.projects-title{position:relative;display:block;width:max-content;height:1em;overflow:hidden;line-height:1}
+.project-title-sizer{display:flex;align-items:baseline;gap:clamp(10px,1vw,16px);visibility:hidden;white-space:nowrap}.project-title-sizer span{font-family:'IBM Plex Mono',monospace;letter-spacing:-.05em}
+.project-title-wheel{position:absolute;inset:0;display:block}
+.project-title-slide{position:absolute;inset:0;display:flex;align-items:baseline;gap:clamp(10px,1vw,16px);white-space:nowrap;opacity:0;transform:translateY(105%);transition:transform .42s cubic-bezier(.16,1,.3,1),opacity .25s ease;will-change:transform,opacity}
+.project-title-slide.is-active{opacity:1;transform:translateY(0)}
+.project-title-slide.is-before{transform:translateY(-105%)}
+.project-title-slide.is-after{transform:translateY(105%)}
+.project-title-number{color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:1em;font-weight:inherit;letter-spacing:-.05em}
+.project-grid{--project-card-height:clamp(500px,min(36vw,calc(100vh - 210px)),560px);--project-stack-top:240px;position:relative;z-index:1;display:flex;flex-direction:column;padding:6vh 0 0;background:transparent}
+.project-progress-range{position:absolute;inset:0 0 52vh;visibility:hidden;pointer-events:none}
+.project-stack-hold{flex:0 0 52vh;width:100%;pointer-events:none}
+.project-sticky-card{position:sticky;display:flex;align-items:flex-start;justify-content:center;width:100%;height:var(--project-card-height)}
+.project-grid .project-card{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;width:100%;height:100%;margin:0;overflow:hidden;border:2px solid var(--line);border-radius:14px;background:var(--paper);box-shadow:4px 5px 0 var(--ink);opacity:1!important;transform-origin:center top;backface-visibility:hidden;will-change:transform}
+.project-grid .project-card[data-status=coming-soon]{box-shadow:4px 5px 0 var(--ink)}
 .project-grid .project-card .project-media{grid-column:1;grid-row:1/3;height:100%;min-height:clamp(320px,30vw,420px)}
 .project-grid .project-card .project-body{grid-column:2;padding:clamp(20px,2.2vw,28px)}
 .project-card .project-body h3{margin:8px 0 0;font-size:clamp(26px,2.3vw,30px);line-height:1.3;font-weight:700;letter-spacing:-.025em;color:var(--ink)}
 .project-grid .project-card .project-card-actions{grid-column:2;padding:clamp(16px,1.6vw,20px) clamp(20px,2.2vw,28px)}
 .project-card .project-category,.project-card p,.project-card .project-facts,.project-card .project-tags span,.project-card .project-placeholder,.project-card .project-lock,.project-card .project-card-actions a,.project-card .project-card-actions button{font-size:16px}
+.project-tech-source{display:inline-block;margin-left:8px;color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:.86em;font-weight:600;white-space:nowrap}.project-tech-source:hover,.project-tech-source:focus-visible{text-decoration:underline;text-underline-offset:3px}
 .project-card .project-tags{gap:8px}.project-card .project-tags span{padding:6px 10px}
 .project-card .project-portfolio-note{margin:clamp(18px,1.7vw,24px) 0 0;font-size:16px;font-weight:400;line-height:1.65;color:#66615a}
 @media (min-width:761px){
@@ -152,12 +149,10 @@
   .projects-shell::before{display:none}
   .projects .section-head{position:static}
   .projects>.wrap{width:min(calc(100% - var(--pad)*2),1180px)}
-  .project-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(18px,2vw,24px);height:auto;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}
-  .project-grid::after{display:none}
-  .project-stack-spacer{display:none}
-  .project-card-slot{position:relative;inset:auto;translate:none;width:auto;height:auto}
-  .project-grid .project-card{position:relative;inset:auto;display:flex;width:auto;height:auto;margin-bottom:0;overflow:visible;border:2px solid var(--line);border-radius:14px;box-shadow:4px 5px 0 var(--ink);will-change:auto}
-  .project-grid .project-card.is-past,.project-grid .project-card.is-current,.project-grid .project-card.is-next{filter:none;opacity:1}
+  .project-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(18px,2vw,24px);height:auto;padding:0;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}
+  .project-progress-range,.project-stack-hold{display:none}
+  .project-sticky-card{position:relative;inset:auto;width:auto;height:auto}
+  .project-grid .project-card{position:relative!important;inset:auto!important;display:flex;width:auto;height:auto;margin-bottom:0;overflow:visible;border:2px solid var(--line);border-radius:14px;box-shadow:4px 5px 0 var(--ink);transform:none!important;opacity:1!important;will-change:auto}
   .project-grid .project-card .project-media{height:230px;min-height:0;flex-shrink:0}
   .project-grid .project-card .project-body{padding:22px}
   .project-grid .project-card .project-card-actions{padding:16px 12px;gap:16px}
@@ -167,7 +162,7 @@
 .motion-ready .home-reveal[data-revealed=true],.motion-ready .home-reveal:focus-within{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.motion-ready .home-reveal{opacity:1;transform:none;transition:none}}
 @media(prefers-reduced-motion:reduce){.project-grid .project-card{transition:none}}
-@media(prefers-reduced-motion:reduce){.project-index-wheel>span{transition:none;filter:none}}
+@media(prefers-reduced-motion:reduce){.project-title-slide{transition:none}}
 .arcade-controls .auto-pickup button{min-width:96px;height:48px;padding:0 16px;background:#ed1515;color:#fff;font-size:16px!important;box-shadow:0 4px 0 #8d846f}
 .arcade-controls .auto-pickup button:not(:disabled):hover{background:#ce1010}
 .arcade-controls .auto-pickup button:focus-visible{outline:3px solid var(--accent);outline-offset:4px}

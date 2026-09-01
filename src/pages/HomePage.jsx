@@ -1,10 +1,9 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
+import ReactLenis from 'lenis/react';
 import { portfolioProjects } from '../data/projects.js';
 import { createParkWorld, moveInPark, safeParkPosition } from '../game/parkPhysics.mjs';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const STATE_KEY='kdk-project-bones-v2';
 const initialGame=()=>{try{return {...{collected:[],x:24,y:150},...JSON.parse(localStorage.getItem(STATE_KEY)||'{}')}}catch{return {collected:[],x:24,y:150}}};
@@ -43,104 +42,22 @@ function useProfileTilt(cardRef,portraitRef){
   },[cardRef,portraitRef]);
 }
 
-function useProjectCardPager(gridRef,onActiveChange){
-  useEffect(()=>{
-    const grid=gridRef.current;
-    if(!grid)return;
-    const heading=grid.closest('.projects-shell')?.querySelector('.section-head');
-    const cards=[...grid.querySelectorAll('.project-card')];
-    const slots=cards.map(card=>card.closest('.project-card-slot'));
-    if(!heading||!cards.length)return;
-    const activateCard=index=>{
-      cards.forEach((card,cardIndex)=>{
-        const depth=Math.max(0,index-cardIndex);
-        card.classList.toggle('is-current',cardIndex===index);
-        card.classList.toggle('is-past',cardIndex<index);
-        card.classList.toggle('is-next',cardIndex>index);
-        card.style.setProperty('--project-card-blur',`${depth===0?0:depth===1?.9:1.2}px`);
-        card.style.setProperty('--project-card-opacity',String(1-(depth*.025)));
-      });
-      onActiveChange(index);
-    };
-    if(matchMedia('(max-width:760px)').matches){
-      const observer=new IntersectionObserver(entries=>{
-        const active=entries.find(entry=>entry.isIntersecting);
-        if(active)activateCard(Number(active.target.dataset.projectIndex));
-      },{rootMargin:'-45% 0px -45% 0px',threshold:0});
-      cards.forEach(card=>observer.observe(card));
-      activateCard(0);
-      return()=>{observer.disconnect();cards.forEach(card=>card.classList.remove('is-current','is-past','is-next'))};
-    }
-    const stackOffset=index=>index===0?0:index===1?12:28;
-    const targetTop=index=>Math.round(110+heading.offsetHeight+24+stackOffset(index));
-    const setStackTop=()=>grid.style.setProperty('--project-stack-top',`${targetTop(0)}px`);
-    setStackTop();
-    gsap.set(cards,{scale:1,transformOrigin:'center top'});
-
-    // 카드의 고정은 CSS sticky가 담당합니다. ScrollTrigger는 카드 상태와
-    // 이전 카드의 축소만 계산하므로 빠르게 진입해도 pin 보정으로 화면이 튀지 않습니다.
-    const triggers=[];
-    cards.forEach((card,index)=>{
-      const slot=slots[index];
-      slot.style.zIndex=String(index+1);
-      slot.style.setProperty('--project-stack-offset',`${stackOffset(index)}px`);
-      triggers.push(ScrollTrigger.create({
-        trigger:slot,
-        start:()=>`top ${targetTop(index)+2}px`,
-        end:()=>`bottom ${targetTop(index)+slot.offsetHeight}px`,
-        invalidateOnRefresh:true,
-        onEnter:()=>activateCard(index),
-        onEnterBack:()=>activateCard(index)
-      }));
-      if(index===0)return;
-      const previousCards=cards.slice(0,index);
-      triggers.push(ScrollTrigger.create({
-        trigger:slot,
-        start:'top bottom-=80',
-        end:()=>`top ${targetTop(index)}px`,
-        scrub:.18,
-        invalidateOnRefresh:true,
-        animation:gsap.fromTo(previousCards,
-          {scale:cardIndex=>1-(Math.max(0,index-1-cardIndex)*.025)},
-          {scale:cardIndex=>1-((index-cardIndex)*.025),ease:'none',transformOrigin:'center top',immediateRender:false}
-        )
-      }));
-    });
-    activateCard(0);
-    const refresh=()=>{setStackTop();ScrollTrigger.refresh()};
-    const frame=requestAnimationFrame(refresh);
-    addEventListener('resize',setStackTop);
-    return()=>{
-      cancelAnimationFrame(frame);
-      removeEventListener('resize',setStackTop);
-      triggers.forEach(trigger=>trigger.kill());
-      grid.style.removeProperty('--project-stack-top');
-      cards.forEach((card,index)=>{
-        const slot=slots[index];
-        card.classList.remove('is-current','is-past','is-next');
-        slot.style.removeProperty('z-index');
-        slot.style.removeProperty('--project-stack-offset');
-        card.style.removeProperty('--project-card-blur');
-        card.style.removeProperty('--project-card-opacity');
-        gsap.set(card,{clearProps:'transform,transformOrigin'});
-      });
-    };
-  },[gridRef,onActiveChange]);
-}
-
-function ProjectGrid({onActiveChange}){
-  const gridRef=useRef(null);
-  useProjectCardPager(gridRef,onActiveChange);
-  return <div ref={gridRef} className="project-grid" id="project-grid">{portfolioProjects.map((project,index)=>{
-    const published=project.status==='published';
-    return <Fragment key={project.slug}><div className="project-card-slot" data-project-index={index}><article className="project-card" data-status={project.status} data-slug={project.slug} data-project-index={index}>
+function StickyProjectCard({project,index,progress}){
+  const total=portfolioProjects.length;
+  const targetScale=Math.max(.72,1-(total-index-1)*.08);
+  const rangeStart=index/total;
+  const scale=useTransform(progress,[rangeStart,1],[1,targetScale]);
+  const y=useTransform(progress,[rangeStart,1],[0,index===total-1?0:-(total-index-1)*10]);
+  const published=project.status==='published';
+  return <div className="project-sticky-card" data-project-index={index} style={{top:`calc(var(--project-stack-top) + ${index*18}px)`}}>
+    <motion.article className="project-card" data-status={project.status} data-slug={project.slug} data-project-index={index} style={{scale,y}}>
       <div className="project-media">{project.thumbnail?<img src={project.thumbnail} alt={`${project.title} 프로젝트 미리보기`} width="800" height="450"/>:<div className="project-placeholder">PROJECT SLOT</div>}</div>
       <div className="project-body">
         <span className="project-category">{project.category}</span><h3>{project.title}</h3>
         <dl className="project-facts">
           <div><dt>작업기간</dt><dd>{published?project.period:'추가 예정'}</dd></div>
           <div><dt>담당 업무</dt><dd className="project-role">{published?project.description:'추가 예정'}</dd></div>
-          <div><dt>사용 기술</dt><dd>{project.technologies||'추가 예정'}</dd></div>
+          <div><dt>사용 기술</dt><dd>{project.technologies||'추가 예정'}<a className="project-tech-source" href="https://skiper-ui.com/v1/skiper16" target="_blank" rel="noopener noreferrer">Skiper UI ↗</a></dd></div>
           <div><dt>기여도</dt><dd className="project-contributions">{project.contributions?.map(({page,percent})=><span key={page}>{page}<strong>{percent}%</strong></span>)||'추가 예정'}</dd></div>
         </dl>
         {published?<p className="project-portfolio-note">자세한 작업 내용과 과정은 포트폴리오에서 확인해 주세요.</p>:<div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>}
@@ -149,8 +66,23 @@ function ProjectGrid({onActiveChange}){
       <div className="project-card-actions" aria-label={`${project.title} 관련 링크`}>
         {[['포트폴리오',project.portfolio,false],['깃허브',project.github,true],['사이트',project.href,true]].map(([label,href,external])=>!href?<button key={label} type="button" disabled>{label==='깃허브'&&<GitHubIcon/>}{label}</button>:<a key={label} href={href} target={external?'_blank':undefined} rel={external?'noopener noreferrer':undefined} aria-label={`${project.title} ${label}${external?' (새 탭)':''}`}>{label==='깃허브'&&<GitHubIcon/>}{label}{external?' ↗':' →'}</a>)}
       </div>
-    </article></div>{index<portfolioProjects.length-1&&<div className="project-stack-spacer" aria-hidden="true"/>}</Fragment>;
-  })}</div>;
+    </motion.article>
+  </div>;
+}
+
+function ProjectGrid({onActiveChange}){
+  const gridRef=useRef(null);
+  const {scrollYProgress}=useScroll({target:gridRef,offset:['start start','end end']});
+  useMotionValueEvent(scrollYProgress,'change',value=>{
+    onActiveChange(Math.min(portfolioProjects.length-1,Math.max(0,Math.round(value*(portfolioProjects.length-1)))));
+  });
+  return <ReactLenis root options={{lerp:.12,smoothWheel:true}}>
+    <div className="project-grid project-skipper" id="project-grid">
+      <div ref={gridRef} className="project-progress-range" aria-hidden="true"/>
+      {portfolioProjects.map((project,index)=><StickyProjectCard key={project.slug} project={project} index={index} progress={scrollYProgress}/>)}
+      <div className="project-stack-hold" aria-hidden="true"/>
+    </div>
+  </ReactLenis>;
 }
 
 function CursorMongi(){
@@ -307,7 +239,7 @@ export default function HomePage(){
       <div ref={heroPortraitRef} className={`hero-profile-visual${heroVisible?' is-visible':''}`}><img ref={heroImageRef} src="assets/images/profile-kang-donggyun.png" alt="강동균 프로필 사진" width="878" height="1448" /></div>
     </div></section>
     <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="mailto:dongkyunpeter@gmail.com">이메일 보내기</a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></div></section>
-    <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head home-reveal"><div><p className="eyebrow">〈 SELECTED PROJECTS 〉</p><h2 className="projects-title">Project <span className="project-index" aria-live="polite" aria-label={`0${activeProject+1}`}><span aria-hidden="true">0</span><span className="project-index-wheel" aria-hidden="true">{[1,2,3].map(digit=><span key={digit} className={digit===activeProject+1?'is-active':digit<activeProject+1?'is-before':'is-after'}>{digit}</span>)}</span></span></h2></div></div><ProjectGrid onActiveChange={setActiveProject}/></div></section>
+    <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head home-reveal"><div><p className="eyebrow">〈 SELECTED PROJECTS 〉</p><h2 className="projects-title" aria-live="polite" aria-label={`Project 0${activeProject+1}`}><span className="project-title-sizer" aria-hidden="true">Project <span>03</span></span><span className="project-title-wheel" aria-hidden="true">{[1,2,3].map(number=><span key={number} className={`project-title-slide ${number===activeProject+1?'is-active':number<activeProject+1?'is-before':'is-after'}`}><span>Project</span><span className="project-title-number">0{number}</span></span>)}</span></h2></div></div><ProjectGrid onActiveChange={setActiveProject}/></div></section>
     <MongiLauncher hidden={gameOpen||launcherDismissed} onOpen={()=>setGameOpen(true)} onDismiss={()=>setLauncherDismissed(true)}/>
     {launcherDismissed&&!gameOpen&&<button className="mongi-launch-restore" type="button" onClick={()=>setGameOpen(true)} aria-label="몽이 게임 열기"><span aria-hidden="true">🦴</span> 게임 열기</button>}
     <GamePopup open={gameOpen} onClose={closeGame} game={game} setGame={setGame}/>{complete&&<CursorMongi/>}
