@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion';
-import ReactLenis from 'lenis/react';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import ReactLenis, { useLenis } from 'lenis/react';
+import 'lenis/dist/lenis.css';
 import { portfolioProjects } from '../data/projects.js';
 import { createParkWorld, moveInPark, safeParkPosition } from '../game/parkPhysics.mjs';
 
@@ -46,11 +47,16 @@ function StickyProjectCard({project,index,progress}){
   const total=portfolioProjects.length;
   const targetScale=Math.max(.72,1-(total-index-1)*.08);
   const rangeStart=index/total;
-  const scale=useTransform(progress,[rangeStart,1],[1,targetScale]);
-  const y=useTransform(progress,[rangeStart,1],[0,index===total-1?0:-(total-index-1)*10]);
+  const scaleProgress=useTransform(progress,[rangeStart,1],[1,targetScale]);
+  const yProgress=useTransform(progress,[rangeStart,1],[0,index===total-1?0:-(total-index-1)*10]);
+  const scale=useSpring(scaleProgress,{stiffness:150,damping:30,mass:.28});
+  const y=useSpring(yProgress,{stiffness:150,damping:30,mass:.28});
+  const titleOpacity=useTransform(scaleProgress,index===total-1?[0,1]:[targetScale,1],[index===total-1?1:.2,1]);
   const published=project.status==='published';
   return <div className="project-sticky-card" data-project-index={index} style={{top:`calc(var(--project-stack-top) + ${index*18}px)`}}>
-    <motion.article className="project-card" data-status={project.status} data-slug={project.slug} data-project-index={index} style={{scale,y}}>
+    <motion.div className="project-card-layer" style={{scale,y}}>
+      <motion.h2 className="project-card-heading" style={{opacity:titleOpacity}}>Project<span>0{index+1}</span></motion.h2>
+      <article className="project-card" data-status={project.status} data-slug={project.slug} data-project-index={index}>
       <div className="project-media">{project.thumbnail?<img src={project.thumbnail} alt={`${project.title} 프로젝트 미리보기`} width="800" height="450"/>:<div className="project-placeholder">PROJECT SLOT</div>}</div>
       <div className="project-body">
         <span className="project-category">{project.category}</span><h3>{project.title}</h3>
@@ -66,21 +72,37 @@ function StickyProjectCard({project,index,progress}){
       <div className="project-card-actions" aria-label={`${project.title} 관련 링크`}>
         {[['포트폴리오',project.portfolio,false],['깃허브',project.github,true],['사이트',project.href,true]].map(([label,href,external])=>!href?<button key={label} type="button" disabled>{label==='깃허브'&&<GitHubIcon/>}{label}</button>:<a key={label} href={href} target={external?'_blank':undefined} rel={external?'noopener noreferrer':undefined} aria-label={`${project.title} ${label}${external?' (새 탭)':''}`}>{label==='깃허브'&&<GitHubIcon/>}{label}{external?' ↗':' →'}</a>)}
       </div>
-    </motion.article>
+      </article>
+    </motion.div>
   </div>;
 }
 
-function ProjectGrid({onActiveChange}){
+function ProjectGrid(){
   const gridRef=useRef(null);
+  const holdRef=useRef(null);
+  const skippingHoldRef=useRef(false);
   const {scrollYProgress}=useScroll({target:gridRef,offset:['start start','end end']});
-  useMotionValueEvent(scrollYProgress,'change',value=>{
-    onActiveChange(Math.min(portfolioProjects.length-1,Math.max(0,Math.round(value*(portfolioProjects.length-1)))));
+  useLenis(lenis=>{
+    if(lenis.direction!==-1||skippingHoldRef.current||scrollYProgress.get()<.999)return;
+    const range=gridRef.current,hold=holdRef.current;
+    if(!range||!hold)return;
+    const rangeEnd=lenis.scroll+range.getBoundingClientRect().bottom-innerHeight;
+    const distance=lenis.scroll-rangeEnd;
+    if(distance<=4||distance>hold.offsetHeight+innerHeight)return;
+    skippingHoldRef.current=true;
+    lenis.scrollTo(Math.max(0,rangeEnd-1),{
+      duration:.46,
+      easing:value=>1-Math.pow(1-value,3),
+      lock:true,
+      force:true,
+      onComplete:()=>{skippingHoldRef.current=false}
+    });
   });
   return <ReactLenis root options={{lerp:.12,smoothWheel:true}}>
     <div className="project-grid project-skipper" id="project-grid">
       <div ref={gridRef} className="project-progress-range" aria-hidden="true"/>
       {portfolioProjects.map((project,index)=><StickyProjectCard key={project.slug} project={project} index={index} progress={scrollYProgress}/>)}
-      <div className="project-stack-hold" aria-hidden="true"/>
+      <div ref={holdRef} className="project-stack-hold" aria-hidden="true"/>
     </div>
   </ReactLenis>;
 }
@@ -225,7 +247,6 @@ export default function HomePage(){
   const [launcherDismissed,setLauncherDismissed]=useState(false);
   const [heroVisible,setHeroVisible]=useState(false);
   const [profileVisible,setProfileVisible]=useState(false);
-  const [activeProject,setActiveProject]=useState(0);
   const profileRef=useRef(null),heroPortraitRef=useRef(null),heroImageRef=useRef(null);
   const closeGame=useCallback(()=>setGameOpen(false),[]);
   useProfileTilt(heroPortraitRef,heroImageRef);
@@ -239,7 +260,7 @@ export default function HomePage(){
       <div ref={heroPortraitRef} className={`hero-profile-visual${heroVisible?' is-visible':''}`}><img ref={heroImageRef} src="assets/images/profile-kang-donggyun.png" alt="강동균 프로필 사진" width="878" height="1448" /></div>
     </div></section>
     <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="mailto:dongkyunpeter@gmail.com">이메일 보내기</a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></div></section>
-    <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head home-reveal"><div><p className="eyebrow">〈 SELECTED PROJECTS 〉</p><h2 className="projects-title" aria-live="polite" aria-label={`Project 0${activeProject+1}`}><span className="project-title-sizer" aria-hidden="true">Project <span>03</span></span><span className="project-title-wheel" aria-hidden="true">{[1,2,3].map(number=><span key={number} className={`project-title-slide ${number===activeProject+1?'is-active':number<activeProject+1?'is-before':'is-after'}`}><span>Project</span><span className="project-title-number">0{number}</span></span>)}</span></h2></div></div><ProjectGrid onActiveChange={setActiveProject}/></div></section>
+    <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head projects-intro home-reveal"><p className="eyebrow">〈 SELECTED PROJECTS 〉</p></div><ProjectGrid/></div></section>
     <MongiLauncher hidden={gameOpen||launcherDismissed} onOpen={()=>setGameOpen(true)} onDismiss={()=>setLauncherDismissed(true)}/>
     {launcherDismissed&&!gameOpen&&<button className="mongi-launch-restore" type="button" onClick={()=>setGameOpen(true)} aria-label="몽이 게임 열기"><span aria-hidden="true">🦴</span> 게임 열기</button>}
     <GamePopup open={gameOpen} onClose={closeGame} game={game} setGame={setGame}/>{complete&&<CursorMongi/>}
