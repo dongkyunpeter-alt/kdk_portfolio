@@ -5,7 +5,7 @@ export const portfolioProjects = [
     status:'published',
     requiresUnlock:true,
     title:'코카콜라 AI 광고 영상',
-    category:'개인 프로젝트 · AI Commercial Film',
+    category:'개인 프로젝트 · AI Advertisement',
     period:'2026.06.16–07.01',
     description:'벤치마킹 영상 탐색과 스토리 기획부터 Google Flow 기반 소스·대사·BGM 제작, Adobe 툴을 활용한 편집까지 전 과정을 담당했습니다.',
     technologies:'Google Flow · Flow Music · Figma · Adobe Premiere Pro · Adobe Photoshop · Adobe After Effects',

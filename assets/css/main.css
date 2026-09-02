@@ -109,7 +109,7 @@
 .projects>.wrap{width:min(calc(100% - var(--pad)*2),78vw,1180px)}
 .projects-shell{position:relative;isolation:isolate}
 .projects .projects-intro{position:relative;z-index:1;margin-bottom:0}.projects-intro .eyebrow{margin:0}
-.project-grid{--project-card-height:clamp(500px,min(36vw,calc(100vh - 210px)),560px);--project-title-space:clamp(70px,6.5vw,92px);--project-card-gap:clamp(88px,14vh,128px);--project-stack-top:130px;position:relative;z-index:1;display:flex;flex-direction:column;padding:2vh 0 0;background:transparent}
+.project-grid{--project-card-height:clamp(500px,min(36vw,calc(100vh - 210px)),560px);--project-title-space:clamp(70px,6.5vw,92px);--project-card-gap:clamp(88px,14vh,128px);--project-stack-top:130px;position:relative;z-index:1;display:flex;flex-direction:column;margin-bottom:clamp(90px,14vh,150px);padding:2vh 0 0;background:transparent}
 .project-progress-range{position:absolute;inset:0 0 26vh;visibility:hidden;pointer-events:none}
 .project-stack-hold{flex:0 0 26vh;width:100%;pointer-events:none}
 .project-sticky-card{position:sticky;display:flex;align-items:flex-start;justify-content:center;width:100%;height:calc(var(--project-card-height) + var(--project-title-space))}
@@ -144,7 +144,7 @@
   .projects-shell::before{display:none}
   .projects .section-head{position:static}
   .projects>.wrap{width:min(calc(100% - var(--pad)*2),1180px)}
-  .project-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(18px,2vw,24px);height:auto;padding:0;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}
+  .project-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(18px,2vw,24px);height:auto;margin-bottom:0;padding:0;overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}
   .project-progress-range,.project-stack-hold{display:none}
   .project-sticky-card{position:relative;inset:auto;width:auto;height:auto;margin-top:0!important}
   .project-card-layer{height:auto;transform:none!important;opacity:1!important}

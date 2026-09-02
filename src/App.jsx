@@ -2,13 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
+import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import HomePage from './pages/HomePage.jsx';
 import PulmuonePage from './pages/PulmuonePage.jsx';
 
 const EMAIL='dongkyunpeter@gmail.com';
 const GMAIL=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}`;
 
-gsap.registerPlugin(ScrollTrigger,ScrollSmoother);
+gsap.registerPlugin(ScrollTrigger,ScrollSmoother,MorphSVGPlugin);
+
+const FOOTER_LINE_DOWN='M0 1C200 1 340 52 500 52S800 1 1000 1';
+const FOOTER_LINE_CENTER='M0 1C200 1 340 1 500 1S800 1 1000 1';
 
 function useSmoothScroll(enabled){
   useEffect(()=>{
@@ -32,7 +36,19 @@ function centerProfileCard(){
 }
 
 function Header({isHome}){
+  const logoRef=useRef(null);
   const [menuOpen,setMenuOpen]=useState(false); const [scrolled,setScrolled]=useState(false);
+  useEffect(()=>{
+    const logo=logoRef.current,outline=logo?.querySelector('.common-logo-outline'),fill=logo?.querySelector('.common-logo-fill');
+    if(!logo||!outline||!fill||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const timeline=gsap.timeline();
+    timeline.set(outline,{opacity:1,strokeDasharray:'180 180',strokeDashoffset:180})
+      .set(fill,{opacity:0},0)
+      .to(outline,{strokeDashoffset:0,duration:1.45,ease:'power2.inOut'},.15)
+      .to(fill,{opacity:1,duration:.38,ease:'power1.out'},'-=.08')
+      .to(outline,{opacity:0,duration:.32,ease:'power1.out'},'<');
+    return()=>timeline.kill();
+  },[]);
   useEffect(()=>{const onScroll=()=>setScrolled(scrollY>90);const onKey=event=>{if(event.key==='Escape'){setMenuOpen(false)}};addEventListener('scroll',onScroll,{passive:true});addEventListener('keydown',onKey);return()=>{removeEventListener('scroll',onScroll);removeEventListener('keydown',onKey)}},[]);
   const home=isHome?'':'index.html'; const close=()=>{setMenuOpen(false)};
   const openProfile=event=>{
@@ -57,12 +73,29 @@ function Header({isHome}){
     addEventListener('hashchange',align);
     return()=>{cancelled=true;cancelAnimationFrame(frame);removeEventListener('hashchange',align);history.scrollRestoration=previousRestoration};
   },[isHome]);
-  return <header className={`site-header common-header${scrolled?' is-scrolled':''}`}><div className="wrap common-header-inner"><a className="logo common-logo" href={isHome?'#top':'index.html'} aria-label="강동균 포트폴리오 메인으로 이동">KDK</a><nav className={`nav common-nav${menuOpen?' open':''}`} id="nav" aria-label="주요 메뉴"><a href={`${home}#profile`} onClick={openProfile}>Profile</a><a href={`${home}#projects`} onClick={close}>Projects</a><a href="#contact" onClick={close}>Contact</a></nav><div className="header-actions common-actions"><a className="pill" href={GMAIL} target="_blank" rel="noreferrer">Email ↗</a><a className="pill dark" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div><button className="menu menu-button common-menu" id="menu" type="button" aria-controls="nav" aria-expanded={menuOpen} onClick={()=>setMenuOpen(value=>!value)}><span data-menu-label>{menuOpen?'Close':'Menu'}</span> ☰</button></div></header>;
+  return <header className={`site-header common-header${scrolled?' is-scrolled':''}`}><div className="wrap common-header-inner"><a ref={logoRef} className="logo common-logo" href={isHome?'#top':'index.html'} aria-label="강동균 포트폴리오 메인으로 이동"><svg viewBox="0 0 64 32" aria-hidden="true"><text className="common-logo-outline" x="1" y="27">KDK</text><text className="common-logo-fill" x="1" y="27">KDK</text></svg></a><nav className={`nav common-nav${menuOpen?' open':''}`} id="nav" aria-label="주요 메뉴"><a href={`${home}#profile`} onClick={openProfile}>Profile</a><a href={`${home}#projects`} onClick={close}>Projects</a><a href="#contact" onClick={close}>Contact</a></nav><div className="header-actions common-actions"><a className="pill" href={GMAIL} target="_blank" rel="noreferrer">Email ↗</a><a className="pill dark" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div><button className="menu menu-button common-menu" id="menu" type="button" aria-controls="nav" aria-expanded={menuOpen} onClick={()=>setMenuOpen(value=>!value)}><span data-menu-label>{menuOpen?'Close':'Menu'}</span> ☰</button></div></header>;
 }
 
 function Footer(){
+  const footerRef=useRef(null); const lineRef=useRef(null);
   const [copied,setCopied]=useState(false); const copy=async()=>{try{await navigator.clipboard.writeText(EMAIL)}catch{}setCopied(true);setTimeout(()=>setCopied(false),1600)};
-  return <footer className="footer common-footer" id="contact"><div className="wrap"><div className="common-footer-grid"><div><h2>다음 화면을 함께<br/>구현할 준비가 되어 있습니다.</h2></div><div className="common-footer-contact"><h3>CONTACT</h3><div className="common-contact-list"><div className="common-contact-item common-email-row"><a href={GMAIL} target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5h18v13H3z"/><path d="m4 7 8 6 8-6"/></svg><span>{EMAIL}</span></a><button className="common-copy-email" type="button" aria-label="이메일 주소 복사" onClick={copy}>{copied?'복사됨':'복사'}</button></div><div className="common-contact-item"><a href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true" className="github-icon"><path d="M12 .7A11.5 11.5 0 0 0 8.36 23.1c.58.1.79-.25.79-.56v-2.2c-3.23.7-3.91-1.37-3.91-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.58-.3-5.3-1.29-5.3-5.74 0-1.27.45-2.3 1.2-3.12-.12-.3-.52-1.48.11-3.08 0 0 .98-.31 3.2 1.2A11.1 11.1 0 0 1 12 6.04c.98 0 1.98.13 2.9.39 2.22-1.5 3.2-1.2 3.2-1.2.63 1.6.23 2.79.11 3.08.74.81 1.2 1.85 1.2 3.12 0 4.46-2.73 5.44-5.32 5.73.42.36.79 1.07.79 2.15v3.23c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg><span>GitHub ↗</span></a></div></div></div></div><div className="common-copyright"><span>© 2026 Kang Donggyun. All rights reserved.</span><span>Web Publishing · Responsive UI · Design System</span></div></div></footer>;
+  useEffect(()=>{
+    const footer=footerRef.current,path=lineRef.current;
+    if(!footer||!path)return;
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){gsap.set(path,{morphSVG:FOOTER_LINE_CENTER});return}
+    const context=gsap.context(()=>{
+      ScrollTrigger.create({
+        trigger:footer,
+        start:'top bottom',
+        onEnter:self=>{
+          const variation=gsap.utils.clamp(0,.7,Math.abs(self.getVelocity())/10000);
+          gsap.fromTo(path,{morphSVG:FOOTER_LINE_DOWN},{duration:1.85,morphSVG:FOOTER_LINE_CENTER,ease:`elastic.out(${1.4+variation*.6}, ${.42-variation*.14})`,overwrite:true});
+        },
+      });
+    },footer);
+    return()=>context.revert();
+  },[]);
+  return <footer ref={footerRef} className="footer common-footer" id="contact"><svg className="footer-bounce-line" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><path ref={lineRef} d={FOOTER_LINE_CENTER}/></svg><div className="wrap"><div className="common-footer-grid"><div><h2>다음 화면을 함께<br/>구현할 준비가 되어 있습니다.</h2></div><div className="common-footer-contact"><h3>CONTACT</h3><div className="common-contact-list"><div className="common-contact-item common-email-row"><a href={GMAIL} target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5h18v13H3z"/><path d="m4 7 8 6 8-6"/></svg><span>{EMAIL}</span></a><button className="common-copy-email" type="button" aria-label="이메일 주소 복사" onClick={copy}>{copied?'복사됨':'복사'}</button></div><div className="common-contact-item"><a href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true" className="github-icon"><path d="M12 .7A11.5 11.5 0 0 0 8.36 23.1c.58.1.79-.25.79-.56v-2.2c-3.23.7-3.91-1.37-3.91-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.58-.3-5.3-1.29-5.3-5.74 0-1.27.45-2.3 1.2-3.12-.12-.3-.52-1.48.11-3.08 0 0 .98-.31 3.2 1.2A11.1 11.1 0 0 1 12 6.04c.98 0 1.98.13 2.9.39 2.22-1.5 3.2-1.2 3.2-1.2.63 1.6.23 2.79.11 3.08.74.81 1.2 1.85 1.2 3.12 0 4.46-2.73 5.44-5.32 5.73.42.36.79 1.07.79 2.15v3.23c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg><span>GitHub ↗</span></a></div></div></div></div><div className="common-copyright"><span>© 2026 Kang Donggyun. All rights reserved.</span><span>Web Publishing · Responsive UI · Design System</span></div></div></footer>;
 }
 
 function ScrollProgress(){
