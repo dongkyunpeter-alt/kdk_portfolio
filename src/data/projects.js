@@ -1,5 +1,27 @@
 export const portfolioProjects = [
   { slug:'pulmuone', status:'published', requiresUnlock:true, title:'풀무원 웹 리뉴얼', category:'팀 프로젝트 · Web Publishing', period:'2026.07.21–08.14', description:'메인페이지 공동 제작과 바른먹거리 하위 5개 페이지의\n구조 설계·반응형 UI 구현을 담당했습니다.', technologies:'HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper', contributions:[{page:'메인페이지',percent:25},{page:'바른먹거리 페이지',percent:100}], thumbnail:'assets/images/hero.webp', href:'https://icerence.github.io/kiwik-project/', github:'https://github.com/icerence/kiwik-project', portfolio:'pulmuone.html', tags:['6 Pages','Design System','Performance'] },
-  { slug:'next-project-01', status:'coming-soon', requiresUnlock:true, title:'다음 프로젝트', category:'Personal Project', period:'Coming Soon', description:'새로운 문제와 기술을 다룬 프로젝트를 준비하고 있습니다.', thumbnail:null, href:null, tags:['Planning','UI','Interaction'] },
+  {
+    slug:'coca-cola-ai-ad',
+    status:'published',
+    requiresUnlock:true,
+    title:'코카콜라 AI 광고 영상',
+    category:'개인 프로젝트 · AI Commercial Film',
+    period:'2026.06.16–07.01',
+    description:'벤치마킹 영상 탐색과 스토리 기획부터 Google Flow 기반 소스·대사·BGM 제작, Adobe 툴을 활용한 편집까지 전 과정을 담당했습니다.',
+    technologies:'Google Flow · Flow Music · Figma · Adobe Premiere Pro · Adobe Photoshop · Adobe After Effects',
+    showSkiperCredit:false,
+    contributions:[{page:'전체 제작',percent:100}],
+    thumbnail:'assets/images/coca-cola-ad.webp',
+    href:'assets/videos/coca-cola-final-web.mp4',
+    storyboard:'https://www.figma.com/design/d7q76XdzmmkjBBHIxQ4Z5N/%EC%98%81%EC%83%81%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C-%EC%BD%94%EC%B9%B4%EC%BD%9C%EB%9D%BC?node-id=2533-726&t=TgYjBfpmQ3RObq89-4',
+    benchmark:'https://match.dropshot.io/portfolio/NCaNmKEn5AsU8IlWkbiY',
+    concept:'이니스프리 쿠션 광고의 인물 군집 표현을 벤치마킹해 콜라색과 흰색 타이즈를 입은 사람들로 탄산의 기포를 시각화했습니다. 일상에서 김이 빠지고 답답한 순간, 코카콜라의 청량함으로 감정을 해소하는 흐름을 담았습니다.',
+    actions:[
+      {label:'영상',href:'assets/videos/coca-cola-final-web.mp4',external:true},
+      {label:'스토리보드',href:'https://www.figma.com/design/d7q76XdzmmkjBBHIxQ4Z5N/%EC%98%81%EC%83%81%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C-%EC%BD%94%EC%B9%B4%EC%BD%9C%EB%9D%BC?node-id=2533-726&t=TgYjBfpmQ3RObq89-4',external:true},
+      {label:'레퍼런스',href:'https://match.dropshot.io/portfolio/NCaNmKEn5AsU8IlWkbiY',external:true},
+    ],
+    tags:['AI Video','Storyboarding','Editing'],
+  },
   { slug:'next-project-02', status:'coming-soon', requiresUnlock:true, title:'프로젝트 추가 예정', category:'Web Project', period:'Coming Soon', description:'완성 후 이 데이터의 제목·이미지·주소·상태만 교체하면 카드가 자동으로 연결됩니다.', thumbnail:null, href:null, tags:['Responsive','Accessible','Reusable'] },
 ];

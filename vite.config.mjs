@@ -9,7 +9,7 @@ export default defineConfig({
     closeBundle() {
       mkdirSync('dist/assets/js', { recursive: true });
       copyFileSync('assets/js/react-app.js', 'dist/assets/js/react-app.js');
-      for (const directory of ['images','icons','fonts','css']) {
+      for (const directory of ['images','icons','fonts','css','videos']) {
         if (existsSync(`assets/${directory}`)) {
           cpSync(`assets/${directory}`, `dist/assets/${directory}`, { recursive: true });
         }

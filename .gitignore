@@ -14,3 +14,7 @@ playwright-report/
 /current-*.png
 /figma-*.png
 /figma-*-state.json
+
+# Local source videos; the optimized site copy lives in assets/videos/.
+/코카콜라_최종본.mp4
+/코카콜라_최종본_web.mp4

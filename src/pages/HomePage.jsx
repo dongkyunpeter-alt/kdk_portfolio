@@ -43,6 +43,38 @@ function useProfileTilt(cardRef,portraitRef){
   },[cardRef,portraitRef]);
 }
 
+function documentOffsetTop(element){
+  let top=0;
+  for(let node=element;node;node=node.offsetParent)top+=node.offsetTop;
+  return top;
+}
+
+function useCardFadeRange(index,total){
+  const [fadeRange,setFadeRange]=useState([Math.min(1,(index+1)/total),1]);
+  useEffect(()=>{
+    if(index===total-1)return;
+    let frame=0;
+    const measure=()=>{
+      const range=document.querySelector('.project-progress-range');
+      const nextCard=document.querySelector(`.project-sticky-card[data-project-index="${index+1}"]`);
+      if(!range||!nextCard)return;
+      const scrollable=Math.max(1,range.offsetHeight-innerHeight);
+      const stickyTop=Number.parseFloat(getComputedStyle(nextCard).top)||0;
+      const arrival=(documentOffsetTop(nextCard)-stickyTop-documentOffsetTop(range))/scrollable;
+      const start=Math.max(0,Math.min(.97,arrival));
+      const end=Math.min(1,start+Math.max(.045,72/scrollable));
+      setFadeRange(previous=>Math.abs(previous[0]-start)<.001&&Math.abs(previous[1]-end)<.001?previous:[start,end]);
+    };
+    const requestMeasure=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(measure)};
+    requestMeasure();
+    const observer=new ResizeObserver(requestMeasure);
+    observer.observe(document.querySelector('.project-grid'));
+    addEventListener('resize',requestMeasure);
+    return()=>{cancelAnimationFrame(frame);observer.disconnect();removeEventListener('resize',requestMeasure)};
+  },[index,total]);
+  return fadeRange;
+}
+
 function StickyProjectCard({project,index,progress}){
   const total=portfolioProjects.length;
   const targetScale=Math.max(.72,1-(total-index-1)*.08);
@@ -52,9 +84,17 @@ function StickyProjectCard({project,index,progress}){
   const scale=useSpring(scaleProgress,{stiffness:150,damping:30,mass:.28});
   const y=useSpring(yProgress,{stiffness:150,damping:30,mass:.28});
   const titleOpacity=useTransform(scaleProgress,index===total-1?[0,1]:[targetScale,1],[index===total-1?1:.2,1]);
+  const fadeRange=useCardFadeRange(index,total);
+  const opacityProgress=useTransform(progress,fadeRange,index===total-1?[1,1]:[1,.62],{clamp:true});
+  const cardOpacity=useSpring(opacityProgress,{stiffness:220,damping:34,mass:.24});
   const published=project.status==='published';
+  const actions=project.actions||[
+    {label:'포트폴리오',href:project.portfolio,external:false},
+    {label:'깃허브',href:project.github,external:true},
+    {label:'사이트',href:project.href,external:true},
+  ];
   return <div className="project-sticky-card" data-project-index={index} style={{top:`calc(var(--project-stack-top) + ${index*18}px)`}}>
-    <motion.div className="project-card-layer" style={{scale,y}}>
+    <motion.div className="project-card-layer" style={{scale,y,opacity:cardOpacity}}>
       <motion.h2 className="project-card-heading" style={{opacity:titleOpacity}}>Project<span>0{index+1}</span></motion.h2>
       <article className="project-card" data-status={project.status} data-slug={project.slug} data-project-index={index}>
       <div className="project-media">{project.thumbnail?<img src={project.thumbnail} alt={`${project.title} 프로젝트 미리보기`} width="800" height="450"/>:<div className="project-placeholder">PROJECT SLOT</div>}</div>
@@ -63,14 +103,15 @@ function StickyProjectCard({project,index,progress}){
         <dl className="project-facts">
           <div><dt>작업기간</dt><dd>{published?project.period:'추가 예정'}</dd></div>
           <div><dt>담당 업무</dt><dd className="project-role">{published?project.description:'추가 예정'}</dd></div>
-          <div><dt>사용 기술</dt><dd>{project.technologies||'추가 예정'}<a className="project-tech-source" href="https://skiper-ui.com/v1/skiper16" target="_blank" rel="noopener noreferrer">Skiper UI ↗</a></dd></div>
+          <div><dt>사용 기술</dt><dd>{project.technologies||'추가 예정'}{project.showSkiperCredit!==false&&<a className="project-tech-source" href="https://skiper-ui.com/v1/skiper16" target="_blank" rel="noopener noreferrer">Skiper UI ↗</a>}</dd></div>
           <div><dt>기여도</dt><dd className="project-contributions">{project.contributions?.map(({page,percent})=><span key={page}>{page}<strong>{percent}%</strong></span>)||'추가 예정'}</dd></div>
         </dl>
-        {published?<p className="project-portfolio-note">자세한 작업 내용과 과정은 포트폴리오에서 확인해 주세요.</p>:<div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>}
+        {published&&project.portfolio&&<p className="project-portfolio-note">자세한 작업 내용과 과정은 포트폴리오에서 확인해 주세요.</p>}
+        {!published&&<div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>}
       </div>
       {published&&<a className="project-link" href={project.href} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} 사이트 보기 (새 탭)`}/>}
       <div className="project-card-actions" aria-label={`${project.title} 관련 링크`}>
-        {[['포트폴리오',project.portfolio,false],['깃허브',project.github,true],['사이트',project.href,true]].map(([label,href,external])=>!href?<button key={label} type="button" disabled>{label==='깃허브'&&<GitHubIcon/>}{label}</button>:<a key={label} href={href} target={external?'_blank':undefined} rel={external?'noopener noreferrer':undefined} aria-label={`${project.title} ${label}${external?' (새 탭)':''}`}>{label==='깃허브'&&<GitHubIcon/>}{label}{external?' ↗':' →'}</a>)}
+        {actions.map(({label,href,external})=>!href?<button key={label} type="button" disabled>{label==='깃허브'&&<GitHubIcon/>}{label}</button>:<a key={label} href={href} target={external?'_blank':undefined} rel={external?'noopener noreferrer':undefined} aria-label={`${project.title} ${label}${external?' (새 탭)':''}`}>{label==='깃허브'&&<GitHubIcon/>}{label}{external?' ↗':' →'}</a>)}
       </div>
       </article>
     </motion.div>
@@ -257,7 +298,7 @@ export default function HomePage(){
   return <main id="main">
     <section className="hero wrap" id="top"><div className="hero-grid">
       <div className={`motion-ready${heroVisible?' is-visible':''}`}><p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p><h1 className="display"><span className="display-kicker">균형 잡힌 인재</span><span className="display-name-line"><span className="display-name">강동균</span><span className="display-suffix">입니다.</span></span></h1><p className="hero-desc">디자인을 이해하고,<br />사용하기 편한 웹 화면으로 구현합니다.</p><div className="hero-actions"><a className="pill dark" href="#projects">프로젝트 보기</a><a className="pill" href="mailto:dongkyunpeter@gmail.com">이메일 보내기</a></div></div>
-      <div ref={heroPortraitRef} className={`hero-profile-visual${heroVisible?' is-visible':''}`}><img ref={heroImageRef} src="assets/images/profile-kang-donggyun.png" alt="강동균 프로필 사진" width="878" height="1448" /></div>
+      <div ref={heroPortraitRef} className={`hero-profile-visual${heroVisible?' is-visible':''}`}><img ref={heroImageRef} src="assets/images/profile-kang-donggyun.png" alt="강동균 프로필 사진" width="1086" height="1448" /></div>
     </div></section>
     <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="mailto:dongkyunpeter@gmail.com">이메일 보내기</a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div></div></div></section>
     <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head projects-intro home-reveal"><p className="eyebrow">〈 SELECTED PROJECTS 〉</p></div><ProjectGrid/></div></section>
