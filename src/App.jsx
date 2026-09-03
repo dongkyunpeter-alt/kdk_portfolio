@@ -125,10 +125,12 @@ function useMagneticButtons(){
         const centerY=bounds.top+bounds.height/2;
         const deltaX=event.clientX-centerX;
         const deltaY=event.clientY-centerY;
-        moveX(gsap.utils.clamp(-10,10,deltaX*.18));
-        moveY(gsap.utils.clamp(-7,7,deltaY*.18));
-        moveLabelX?.(gsap.utils.clamp(-8,8,deltaX*.14));
-        moveLabelY?.(gsap.utils.clamp(-5,5,deltaY*.14));
+        // 낮은 버튼도 위·아래 가장자리에서 충분히 반응하도록 높이로 정규화합니다.
+        const verticalRatio=gsap.utils.clamp(-1,1,deltaY/Math.max(1,bounds.height/2));
+        moveX(gsap.utils.clamp(-15,15,deltaX*.27));
+        moveY(verticalRatio*15);
+        moveLabelX?.(gsap.utils.clamp(-12,12,deltaX*.21));
+        moveLabelY?.(verticalRatio*8);
       };
       const reset=()=>{
         bounds=null;
