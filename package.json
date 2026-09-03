@@ -7,11 +7,11 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 4392",
-    "build:app": "vite build --config vite.static.config.mjs",
+    "build:app": "vite build --config vite.static.config.mjs && vite build --config vite.static.config.mjs --mode detail",
     "build": "npm run build:app && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4392",
     "serve": "vite --host 127.0.0.1 --port 4392",
-    "test": "node --test park-physics.test.mjs"
+    "test": "node --test park-physics.test.mjs ui-actions.test.mjs loading-assets.test.mjs motion-preference.test.mjs"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "0.2.3",

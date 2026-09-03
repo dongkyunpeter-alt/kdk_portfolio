@@ -1,0 +1,39 @@
+/* 마지막에 읽어 기기 설정이 켜진 경우에만 장식적인 움직임을 멈춥니다. */
+@media (prefers-reduced-motion: reduce) {
+  html, body, *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* 등장 효과를 제거해도 본문이 숨겨진 초기 상태에 남지 않게 합니다. */
+  .motion-ready .home-reveal, .reveal, .text-reveal,
+  .hero-grid > div:first-child.motion-ready > *,
+  .hero-grid .display-kicker, .hero-grid .display-name-line,
+  .hero-grid > .hero-profile-visual, .hero .eyebrow, .hero .display, .hero .hero-desc {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  .common-logo-outline { opacity: 0 !important; }
+  .common-logo-fill { opacity: 1 !important; }
+  .pill, .magnetic-label, .project-card-actions a { transform: none !important; }
+  .cursor-mongi, .landing-dust { display: none !important; }
+  .game-drop-stage { opacity: 1 !important; transform: none !important; }
+  .game-popup.is-open { transform: none !important; }
+  .bone.collected { visibility: hidden; }
+
+  /* 카드 크기·글·링크는 유지하고 겹침과 여유 스크롤만 없앱니다. */
+  .project-grid { gap: 36px; height: auto; }
+  .project-progress-range, .project-stack-hold { display: none !important; }
+  .project-sticky-card {
+    position: relative !important;
+    inset: auto !important;
+    height: auto !important;
+    margin-top: 0 !important;
+  }
+  .project-card-layer { height: auto; transform: none !important; opacity: 1 !important; will-change: auto; }
+  .project-card-heading { opacity: 1 !important; will-change: auto; }
+  .project-grid .project-card { height: auto; min-height: var(--project-card-height); transform: none !important; opacity: 1 !important; will-change: auto; }
+  .ribbon .ribbon-track { transform: none; }
+}
