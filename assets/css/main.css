@@ -23,7 +23,8 @@
 .hero-grid>div:first-child.motion-ready.is-visible .display-kicker{transition-delay:.16s}
 .hero-grid>div:first-child.motion-ready.is-visible .display-name-line{transition-delay:.34s}
 .hero-grid>div:first-child.motion-ready.is-visible .hero-desc{transition-delay:.56s}
-.hero-grid>div:first-child.motion-ready.is-visible .hero-actions{transition-delay:.7s}
+/* 버튼은 등장 후에도 프레임과 레이블이 영역 밖으로 움직이므로 자르지 않습니다. */
+.hero-grid>div:first-child.motion-ready.is-visible .hero-actions{clip-path:none;overflow:visible;transition-property:opacity,transform;transition-delay:.7s}
 .profile-card{grid-template-columns:clamp(260px,27vw,320px) minmax(0,1fr);gap:clamp(38px,4vw,58px)}
 .profile-card{transform-style:preserve-3d;will-change:transform}
 .profile-portrait{will-change:transform}

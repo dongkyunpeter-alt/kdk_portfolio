@@ -73,7 +73,7 @@ function Header({isHome}){
     addEventListener('hashchange',align);
     return()=>{cancelled=true;cancelAnimationFrame(frame);removeEventListener('hashchange',align);history.scrollRestoration=previousRestoration};
   },[isHome]);
-  return <header className={`site-header common-header${scrolled?' is-scrolled':''}`}><div className="wrap common-header-inner"><a ref={logoRef} className="logo common-logo" href={isHome?'#top':'index.html'} aria-label="강동균 포트폴리오 메인으로 이동"><svg viewBox="0 0 64 32" aria-hidden="true"><text className="common-logo-outline" x="1" y="27">KDK</text><text className="common-logo-fill" x="1" y="27">KDK</text></svg></a><nav className={`nav common-nav${menuOpen?' open':''}`} id="nav" aria-label="주요 메뉴"><a href={`${home}#profile`} onClick={openProfile}>Profile</a><a href={`${home}#projects`} onClick={close}>Projects</a><a href="#contact" onClick={close}>Contact</a></nav><div className="header-actions common-actions"><a className="pill" href={GMAIL} target="_blank" rel="noreferrer">Email ↗</a><a className="pill dark" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer">GitHub ↗</a></div><button className="menu menu-button common-menu" id="menu" type="button" aria-controls="nav" aria-expanded={menuOpen} onClick={()=>setMenuOpen(value=>!value)}><span data-menu-label>{menuOpen?'Close':'Menu'}</span> ☰</button></div></header>;
+  return <header className={`site-header common-header${scrolled?' is-scrolled':''}`}><div className="wrap common-header-inner"><a ref={logoRef} className="logo common-logo" href={isHome?'#top':'index.html'} aria-label="강동균 포트폴리오 메인으로 이동"><svg viewBox="0 0 64 32" aria-hidden="true"><text className="common-logo-outline" x="1" y="27">KDK</text><text className="common-logo-fill" x="1" y="27">KDK</text></svg></a><nav className={`nav common-nav${menuOpen?' open':''}`} id="nav" aria-label="주요 메뉴"><a href={`${home}#profile`} onClick={openProfile}>Profile</a><a href={`${home}#projects`} onClick={close}>Projects</a><a href="#contact" onClick={close}>Contact</a></nav><div className="header-actions common-actions"><a className="pill" href={GMAIL} target="_blank" rel="noreferrer"><span className="magnetic-label">Email ↗</span></a><a className="pill dark" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">GitHub ↗</span></a></div><button className="menu menu-button common-menu" id="menu" type="button" aria-controls="nav" aria-expanded={menuOpen} onClick={()=>setMenuOpen(value=>!value)}><span data-menu-label>{menuOpen?'Close':'Menu'}</span> ☰</button></div></header>;
 }
 
 function Footer(){
@@ -104,6 +104,64 @@ function ScrollProgress(){
   return <div ref={progressRef} className="project-scroll-progress" aria-hidden="true"><span /></div>;
 }
 
+function useMagneticButtons(){
+  useEffect(()=>{
+    const finePointer=matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+    if(!finePointer.matches||reducedMotion.matches)return;
+
+    const buttons=[...document.querySelectorAll('.pill,.project-card-actions a')];
+    const cleanups=buttons.map(button=>{
+      const label=button.querySelector('.magnetic-label');
+      let bounds=null;
+      const moveX=gsap.quickTo(button,'x',{duration:.38,ease:'power3.out'});
+      const moveY=gsap.quickTo(button,'y',{duration:.38,ease:'power3.out'});
+      const moveLabelX=label?gsap.quickTo(label,'x',{duration:.42,ease:'power3.out'}):null;
+      const moveLabelY=label?gsap.quickTo(label,'y',{duration:.42,ease:'power3.out'}):null;
+      const measure=()=>{bounds=button.getBoundingClientRect()};
+      const move=event=>{
+        if(!bounds)measure();
+        const centerX=bounds.left+bounds.width/2;
+        const centerY=bounds.top+bounds.height/2;
+        const deltaX=event.clientX-centerX;
+        const deltaY=event.clientY-centerY;
+        moveX(gsap.utils.clamp(-10,10,deltaX*.18));
+        moveY(gsap.utils.clamp(-7,7,deltaY*.18));
+        moveLabelX?.(gsap.utils.clamp(-8,8,deltaX*.14));
+        moveLabelY?.(gsap.utils.clamp(-5,5,deltaY*.14));
+      };
+      const reset=()=>{
+        bounds=null;
+        // quickTo가 관리하는 tween을 별도 tween으로 덮어쓰지 않아야
+        // 포인터가 다시 진입했을 때도 같은 인스턴스를 계속 재사용할 수 있습니다.
+        moveX(0);
+        moveY(0);
+        moveLabelX?.(0);
+        moveLabelY?.(0);
+      };
+
+      button.classList.add('magnetic-ready');
+      button.addEventListener('pointerenter',measure);
+      button.addEventListener('pointermove',move);
+      button.addEventListener('pointerleave',reset);
+      button.addEventListener('blur',reset);
+
+      return()=>{
+        button.removeEventListener('pointerenter',measure);
+        button.removeEventListener('pointermove',move);
+        button.removeEventListener('pointerleave',reset);
+        button.removeEventListener('blur',reset);
+        button.classList.remove('magnetic-ready');
+        gsap.killTweensOf(button);
+        gsap.set(button,{clearProps:'x,y'});
+        if(label){gsap.killTweensOf(label);gsap.set(label,{clearProps:'x,y'})}
+      };
+    });
+
+    return()=>cleanups.forEach(cleanup=>cleanup());
+  },[]);
+}
+
 function usePageEffects(isHome){useEffect(()=>{document.title=isHome?'강동균 — Web Portfolio':'풀무원 웹 리뉴얼 — 강동균 포트폴리오';document.documentElement.classList.add('motion-ready');const nodes=[...document.querySelectorAll(isHome?'.home-reveal':'.reveal,.section-title,.intro h2,.process-head h2,.closing h2')];nodes.forEach(node=>{if(node.matches('.section-title,.intro h2,.process-head h2,.closing h2'))node.classList.add('text-reveal')});const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){if(isHome)entry.target.setAttribute('data-revealed','true');else entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});nodes.forEach(node=>observer.observe(node));return()=>observer.disconnect()},[isHome])}
 
-export default function App(){const isHome=!location.pathname.endsWith('/pulmuone.html');const [showTop,setShowTop]=useState(false);useSmoothScroll(!isHome);usePageEffects(isHome);useEffect(()=>{if(isHome)return;const handler=()=>setShowTop(scrollY>420);addEventListener('scroll',handler,{passive:true});return()=>removeEventListener('scroll',handler)},[isHome]);return <><a className="skip" href="#main">본문으로 건너뛰기</a><Header isHome={isHome}/><ScrollProgress/><div id="smooth-wrapper"><div id="smooth-content">{isHome?<HomePage/>:<PulmuonePage/>}<Footer isHome={isHome}/></div></div>{!isHome&&<button id="back-to-top" className={`back-to-top${showTop?' show':''}`} type="button" aria-label="맨 위로 이동" onClick={()=>ScrollSmoother.get()?.scrollTo(0,true)}>↑</button>}</>}
+export default function App(){const isHome=!location.pathname.endsWith('/pulmuone.html');const [showTop,setShowTop]=useState(false);useSmoothScroll(!isHome);usePageEffects(isHome);useMagneticButtons();useEffect(()=>{if(isHome)return;const handler=()=>setShowTop(scrollY>420);addEventListener('scroll',handler,{passive:true});return()=>removeEventListener('scroll',handler)},[isHome]);return <><a className="skip" href="#main">본문으로 건너뛰기</a><Header isHome={isHome}/><ScrollProgress/><div id="smooth-wrapper"><div id="smooth-content">{isHome?<HomePage/>:<PulmuonePage/>}<Footer isHome={isHome}/></div></div>{!isHome&&<button id="back-to-top" className={`back-to-top${showTop?' show':''}`} type="button" aria-label="맨 위로 이동" onClick={()=>ScrollSmoother.get()?.scrollTo(0,true)}>↑</button>}</>}
