@@ -19,6 +19,7 @@
   .common-logo-fill { opacity: 1 !important; }
   .pill, .magnetic-label, .project-card-actions a { transform: none !important; }
   .cursor-mongi, .landing-dust { display: none !important; }
+  /* 애니메이션은 멈추되 완성된 테트리스 이미지는 그대로 보여줍니다. */
   .game-drop-stage { opacity: 1 !important; transform: none !important; }
   .game-popup.is-open { transform: none !important; }
   .bone.collected { visibility: hidden; }

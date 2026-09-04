@@ -11,7 +11,7 @@ export default defineConfig({
       mkdirSync('dist/assets/js', { recursive: true });
       copyFileSync('assets/js/react-app.js', 'dist/assets/js/react-app.js');
       copyFileSync('assets/js/pulmuone-app.js', 'dist/assets/js/pulmuone-app.js');
-      for (const directory of ['images','icons','fonts','css','videos']) {
+      for (const directory of ['images','icons','fonts','css','videos','animations']) {
         if (existsSync(`assets/${directory}`)) {
           cpSync(`assets/${directory}`, `dist/assets/${directory}`, { recursive: true });
         }
