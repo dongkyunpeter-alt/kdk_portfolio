@@ -33,6 +33,18 @@ def recolor(node: object, color: list[float]) -> None:
             recolor(value, color)
 
 
+def move_spawn_above_canvas(layer: dict) -> None:
+    """완성 좌표는 유지하고 각 조각의 첫 진입 좌표만 화면 위로 옮깁니다."""
+    position = layer.get("ks", {}).get("p", {})
+    keyframes = position.get("k") if position.get("a") == 1 else None
+    if not isinstance(keyframes, list) or not keyframes:
+        return
+
+    first_value = keyframes[0].get("s")
+    if isinstance(first_value, list) and len(first_value) >= 2:
+        first_value[1] = -180
+
+
 def main() -> None:
     if len(sys.argv) != 3:
         raise SystemExit("usage: prepare-profile-lottie.py INPUT.lottie OUTPUT.lottie")
@@ -47,6 +59,7 @@ def main() -> None:
         color = BRAND_COLORS.get(layer.get("nm"))
         if color:
             recolor(layer.get("shapes", []), hex_to_lottie(color))
+            move_spawn_above_canvas(layer)
 
         # 원본의 약 7Hz 점멸을 없애 접근성과 시각적 안정성을 높입니다.
         opacity = layer.get("ks", {}).get("o")
