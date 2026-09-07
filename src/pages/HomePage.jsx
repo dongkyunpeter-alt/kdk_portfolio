@@ -7,16 +7,22 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { portfolioProjects } from '../data/projects.js';
 import { createParkWorld, moveInPark, safeParkPosition } from '../game/parkPhysics.mjs';
 import { useReducedMotion } from '../hooks/useReducedMotion.js';
-import profileTetrisUrl from '../../assets/animations/tetris-profile.lottie?url';
+import profileCodeUrl from '../../assets/animations/code-profile.json?url';
 
 const STATE_KEY='kdk-project-bones-v2';
-const PROFILE_LOTTIE_SEGMENT=[0,435];
-const PROFILE_LOTTIE_HOLD_FRAME=434;
+const PROFILE_LOTTIE_HOLD_FRAME=240;
 const PROFILE_LOTTIE_RENDER_CONFIG={devicePixelRatio:Math.min(window.devicePixelRatio||1,1.5)};
 const initialGame=()=>{try{return {...{collected:[],x:24,y:150},...JSON.parse(localStorage.getItem(STATE_KEY)||'{}')}}catch{return {collected:[],x:24,y:150}}};
 
 function GitHubIcon(){
   return <svg className="project-button-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297C5.37.297 0 5.67 0 12.297c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.043-1.61-4.043-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.3-5.467-1.334-5.467-5.931 0-1.31.469-2.381 1.236-3.221-.123-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 0 1 3.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.628-5.479 5.925.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>;
+}
+
+function HeroDesignerType(){
+  let characterIndex=0;
+  return <span className="hero-designer-type" aria-hidden="true">
+    {['WEB','DESIGNER'].map(line=><span className="hero-designer-line" key={line}>{[...line].map(character=><span className="hero-designer-char" style={{'--char-index':characterIndex++}} key={`${line}-${characterIndex}`}>{character}</span>)}</span>)}
+  </span>;
 }
 
 function useProfileTilt(cardRef,portraitRef){
@@ -50,20 +56,9 @@ function useProfileTilt(cardRef,portraitRef){
   },[cardRef,portraitRef,reducedMotion]);
 }
 
-function ProfileTetris({active}){
+function ProfileCode({active}){
   const reducedMotion=useReducedMotion();
   const [player,setPlayer]=useState(null);
-  const [loaded,setLoaded]=useState(false);
-  useEffect(()=>{
-    if(!player)return;
-    let holdFrame=0;
-    const holdFinalStack=()=>{
-      cancelAnimationFrame(holdFrame);
-      holdFrame=requestAnimationFrame(()=>player.setFrame(PROFILE_LOTTIE_HOLD_FRAME));
-    };
-    player.addEventListener('complete',holdFinalStack);
-    return()=>{cancelAnimationFrame(holdFrame);player.removeEventListener('complete',holdFinalStack)};
-  },[player]);
   useEffect(()=>{
     if(!player)return;
     const syncPlayback=()=>{
@@ -71,27 +66,18 @@ function ProfileTetris({active}){
       if(active)player.play();
       else player.pause();
     };
-    const handleLoad=()=>{setLoaded(true);syncPlayback()};
+    const handleLoad=()=>syncPlayback();
     player.addEventListener('load',handleLoad);
     if(player.isLoaded)handleLoad();
     return()=>player.removeEventListener('load',handleLoad);
   },[active,player,reducedMotion]);
   return <div className="profile-lottie-panel" aria-hidden="true">
-    <svg className={`profile-lottie-fallback${loaded?' is-hidden':''}`} viewBox="0 0 240 430" focusable="false">
-      <g transform="translate(29 124)">
-        <path fill="#D6E2D2" d="M46 0h44v44H46zm46 0h44v44H92zm46 0h44v44h-44z"/>
-        <path fill="#5A936B" d="M92 46h44v44H92zm46 0h44v44h-44zm0 46h44v44h-44z"/>
-        <path fill="#287645" d="M0 46h44v44H0zm0 46h44v44H0zm0 46h44v44H0zm46 0h44v44H46z"/>
-        <path fill="#F0C94A" d="M46 92h44v44H46zm46 0h44v44H92zm0 46h44v44H92zm46 0h44v44h-44z"/>
-      </g>
-    </svg>
     <DotLottieReact
       className="profile-lottie-canvas"
-      src={profileTetrisUrl}
+      src={profileCodeUrl}
       autoplay={false}
-      loop={false}
-      speed={.82}
-      segment={PROFILE_LOTTIE_SEGMENT}
+      loop
+      speed={1}
       renderConfig={PROFILE_LOTTIE_RENDER_CONFIG}
       dotLottieRefCallback={setPlayer}
     />
@@ -377,10 +363,11 @@ export default function HomePage(){
   useEffect(()=>{if(complete){setGameOpen(false);setLauncherDismissed(true)}else{setLauncherDismissed(false)}},[complete]);
   return <main id="main">
     <section className="hero wrap" id="top"><div className="hero-grid">
-      <div className={`motion-ready${heroVisible?' is-visible':''}`}><p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p><h1 className="display"><span className="display-kicker">균형 잡힌 인재</span><span className="display-name-line"><span className="display-name">강동균</span><span className="display-suffix">입니다.</span></span></h1><p className="hero-desc">디자인을 이해하고,<br />사용하기 편한 웹 화면으로 구현합니다.</p><div className="hero-actions"><a className="pill dark" href="#projects"><span className="magnetic-label">프로젝트 보기</span></a><a className="pill" href="mailto:dongkyunpeter@gmail.com"><span className="magnetic-label">이메일 보내기</span></a></div></div>
+      <div className={`motion-ready${heroVisible?' is-visible':''}`}><p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p><h1 className="display"><span className="display-kicker">균형 잡힌 인재</span><span className="display-name-line"><span className="display-name">강동균</span><span className="display-suffix">입니다.</span></span></h1><p className="hero-desc">디자인을 이해하고,<br />사용하기 편한 웹 화면으로 구현합니다.</p><div className="hero-actions"><button className="pill dark" type="button" disabled aria-label="이력서 준비 중"><span className="magnetic-label">이력서 보기</span></button><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">깃허브 보기</span></a></div></div>
       <div ref={heroPortraitRef} className={`hero-profile-visual${heroVisible?' is-visible':''}`}><img ref={heroImageRef} src="assets/images/profile-kang-donggyun.webp" fetchPriority="high" loading="eager" decoding="async" alt="강동균 프로필 사진" width="1086" height="1448" /></div>
+      <HeroDesignerType/>
     </div></section>
-    <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><ProfileTetris active={profileVisible}/><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="mailto:dongkyunpeter@gmail.com"><span className="magnetic-label">이메일 보내기</span></a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">GitHub ↗</span></a></div></div></div></section>
+    <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><ProfileCode active={profileVisible}/><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="mailto:dongkyunpeter@gmail.com"><span className="magnetic-label">이메일 보내기</span></a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">GitHub ↗</span></a></div></div></div></section>
     <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head projects-intro home-reveal"><p className="eyebrow">〈 SELECTED PROJECTS 〉</p></div><ProjectGrid/></div></section>
     <MongiLauncher hidden={gameOpen||launcherDismissed} onOpen={()=>setGameOpen(true)} onDismiss={()=>setLauncherDismissed(true)}/>
     {launcherDismissed&&!gameOpen&&<button className="mongi-launch-restore" type="button" onClick={()=>setGameOpen(true)} aria-label="몽이 게임 열기"><span aria-hidden="true">🦴</span> 게임 열기</button>}

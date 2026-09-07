@@ -2,13 +2,17 @@
 .cursor-mongi{background-image:url('../mongi-directional-sprite-v2-transparent.webp')}
 .hero-desc{max-width:590px}
 .hero-grid>div:first-child{width:min(100%,520px);justify-self:center;text-align:left}
+.hero-designer-type{display:none}
 /* 넓은 화면에서는 소개문과 인물을 가까이 모으고, 빈 중앙을 낮은 대비의 직무 타이포로 채웁니다. */
 @media(min-width:1201px){
   .hero-grid{position:relative;isolation:isolate;grid-template-columns:minmax(500px,1fr) minmax(520px,1fr);gap:clamp(0px,1vw,14px)}
-  .hero-grid::before{content:'WEB\A DESIGNER';position:absolute;z-index:0;left:50%;top:50%;translate:-50% -46%;white-space:pre;pointer-events:none;color:rgba(21,21,21,.025);-webkit-text-stroke:1.4px rgba(21,21,21,.17);font:800 clamp(92px,9.2vw,142px)/.8 'IBM Plex Mono',monospace;letter-spacing:-.09em;text-align:center}
+  .hero-designer-type{display:block;position:absolute;z-index:0;left:50%;top:50%;translate:-50% -46%;pointer-events:none;color:rgba(21,21,21,.025);-webkit-text-stroke:1.4px rgba(21,21,21,.17);font:800 clamp(92px,9.2vw,142px)/.8 'IBM Plex Mono',monospace;letter-spacing:-.09em;text-align:center}
+  .hero-designer-line{display:block;white-space:nowrap}
+  .hero-designer-char{display:inline-block;opacity:0;transform:translateY(.14em);animation:hero-designer-char .12s ease-out calc(.05s + var(--char-index)*.055s) forwards}
   .hero-grid>div{z-index:1}
   .hero-grid>div:first-child{position:relative;left:24px}
 }
+@keyframes hero-designer-char{to{opacity:1;transform:none}}
 .hero-grid>div:first-child.motion-ready .eyebrow,
 .hero-grid>div:first-child.motion-ready .display-kicker,
 .hero-grid>div:first-child.motion-ready .display-name-line,
@@ -27,6 +31,7 @@
 .hero-grid>div:first-child.motion-ready.is-visible .hero-desc{transition-delay:.56s}
 /* 버튼은 등장 후에도 프레임과 레이블이 영역 밖으로 움직이므로 자르지 않습니다. */
 .hero-grid>div:first-child.motion-ready.is-visible .hero-actions{clip-path:none;overflow:visible;transition-property:opacity,transform;transition-delay:.7s}
+.hero-actions .pill:disabled{cursor:not-allowed;opacity:.55}
 .profile-card{grid-template-columns:clamp(260px,27vw,320px) minmax(0,1fr);gap:clamp(38px,4vw,58px)}
 .profile-card{transform-style:preserve-3d;will-change:transform}
 .profile-portrait{will-change:transform}
@@ -46,6 +51,12 @@
 }
 
 @media(max-width:1200px){
+  .hero-grid>div:first-child{text-align:center}
+  .hero-grid .display-name-line{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline}
+  .hero-grid .display-name{grid-column:2}
+  .hero-grid .display-suffix{display:none}
+  .hero-grid .hero-actions{justify-content:center}
+  .hero-grid .hero-desc{margin-inline:auto}
   .game-shell{width:100%;justify-self:center}
 }
 
@@ -55,6 +66,7 @@
 }
 
 @media(prefers-reduced-motion:reduce){
+  .hero-designer-char{opacity:1;transform:none;animation:none}
   .hero-grid>div:first-child.motion-ready .eyebrow,
   .hero-grid>div:first-child.motion-ready .display-kicker,
   .hero-grid>div:first-child.motion-ready .display-name-line,
@@ -171,10 +183,10 @@
 
 /* Hero 프로필과 화면을 따라오는 몽이 게임 팝업 */
 .hero-grid>.hero-profile-visual{position:relative;left:-68px;display:flex;align-items:flex-end;justify-content:center;width:100%;height:clamp(540px,46vw,650px);overflow:hidden;opacity:0;transform:translateY(28px);transform-style:preserve-3d;will-change:transform}
-.hero-profile-visual.is-visible{opacity:1;transform:none;transition:opacity .7s .42s ease,transform .85s .42s cubic-bezier(.22,1,.36,1)}
+.hero-profile-visual.is-visible{opacity:1;transform:none;transition:opacity .7s .85s ease,transform .85s .85s cubic-bezier(.22,1,.36,1)}
 .hero-profile-visual img{display:block;width:auto;max-width:none;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(10px 14px 0 rgba(21,21,21,.12));will-change:transform}
 @media(min-width:1201px){
-  .hero-grid>.hero-profile-visual{left:-104px;height:clamp(600px,50vw,710px)}
+  .hero-grid>.hero-profile-visual{left:-52px;height:clamp(600px,50vw,710px)}
 }
 .mongi-launch{position:fixed;z-index:119;right:24px;bottom:72px;width:230px;padding:7px 10px 10px;border:4px solid var(--ink);border-radius:16px;background:#efe3c8;box-shadow:6px 7px 0 rgba(21,21,21,.28);color:var(--ink);font-family:'IBM Plex Mono',monospace;text-align:left}
 .floating-drag-handle,.game-popup-bar{display:flex;align-items:center;justify-content:space-between;min-height:24px;padding:0 30px 0 2px;font-size:9px;font-weight:700;letter-spacing:.06em;cursor:grab;touch-action:none;user-select:none}
@@ -188,13 +200,13 @@
 .mongi-launch-controls{display:grid;gap:8px;justify-items:center}
 .mongi-launch-controls i{display:block;width:14px;height:14px;border:2px solid var(--ink);border-radius:50%;background:#ed1515;box-shadow:0 2px 0 #8d846f}
 .mongi-launch-controls i:nth-child(2){background:#f0ca5e}.mongi-launch-controls i:nth-child(3){width:20px;height:8px;border-radius:999px;background:#3b7e4a}
-.profile-card{grid-template-columns:clamp(220px,24vw,300px) minmax(0,1fr)!important;align-items:center;gap:clamp(34px,4vw,58px);min-height:0;border-radius:14px}
+.profile-card{grid-template-columns:clamp(320px,30vw,400px) minmax(0,1fr)!important;align-items:center;gap:clamp(28px,3vw,46px);min-height:0;border-radius:14px}
 .profile-card .profile-copy{width:100%}
-.profile-lottie-panel{--profile-lottie-lift:-120px;position:relative;display:grid;place-items:center;width:100%;height:430px;overflow:visible;pointer-events:none}
+.profile-lottie-panel{--profile-lottie-lift:0px;position:relative;display:grid;place-items:center;width:100%;height:470px;overflow:visible;pointer-events:none}
 .profile-lottie-fallback,.profile-lottie-canvas{position:absolute;inset:0;display:block;width:100%!important;height:100%!important}
 .profile-lottie-fallback{z-index:1;opacity:1;transition:opacity .18s ease}
 .profile-lottie-fallback.is-hidden{opacity:0}
-.profile-lottie-canvas{z-index:2;transform:translateY(var(--profile-lottie-lift))}
+.profile-lottie-canvas{z-index:2;transform:translateY(var(--profile-lottie-lift)) scale(1.1);transform-origin:center}
 .game-popup{position:fixed;z-index:120;right:24px;bottom:24px;width:min(600px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;opacity:0;visibility:hidden;transform:translateY(24px) scale(.97);transition:opacity .25s ease,transform .32s cubic-bezier(.22,1,.36,1),visibility 0s .32s;pointer-events:none}
 .game-popup.is-open{opacity:1;visibility:visible;transform:none;transition-delay:0s;pointer-events:auto}
 .game-popup-bar{height:38px;padding:0 110px 0 12px;border:4px solid var(--ink);border-bottom:0;border-radius:16px 16px 0 0;background:#efe3c8;font-family:'IBM Plex Mono',monospace}
@@ -215,7 +227,8 @@
   .hero-grid>.hero-profile-visual{height:460px}
   .hero-profile-visual img{height:100%}
   .profile-card{grid-template-columns:1fr!important;gap:22px;padding:32px!important}
-  .profile-lottie-panel{--profile-lottie-lift:-100px;width:min(100%,240px);height:360px;margin:0 auto}
+  .profile-lottie-panel{--profile-lottie-lift:0px;width:min(100%,320px);height:340px;margin:0 auto}
+  .profile-lottie-canvas{transform:scale(1.04)}
   .game-popup{right:10px;bottom:10px;width:calc(100vw - 20px);max-height:calc(100vh - 20px)}
   .game-popup .game-shell{border-width:5px;border-radius:18px}
   .mongi-launch{right:10px;bottom:58px;width:205px;padding:6px 8px 8px}
