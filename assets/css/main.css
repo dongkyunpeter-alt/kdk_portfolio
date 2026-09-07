@@ -2,10 +2,12 @@
 .cursor-mongi{background-image:url('../mongi-directional-sprite-v2-transparent.webp')}
 .hero-desc{max-width:590px}
 .hero-grid>div:first-child{width:min(100%,520px);justify-self:center;text-align:left}
-/* 좁힌 간격은 유지하고 양쪽을 68px씩 안으로 옮겨 전체를 중앙에 맞춥니다. */
+/* 넓은 화면에서는 소개문과 인물을 가까이 모으고, 빈 중앙을 낮은 대비의 직무 타이포로 채웁니다. */
 @media(min-width:1201px){
-  .hero-grid>div:first-child{position:relative;left:68px}
-  .hero-grid>.game-drop-stage{left:-68px}
+  .hero-grid{position:relative;isolation:isolate;grid-template-columns:minmax(500px,1fr) minmax(520px,1fr);gap:clamp(0px,1vw,14px)}
+  .hero-grid::before{content:'WEB\A DESIGNER';position:absolute;z-index:0;left:50%;top:50%;translate:-50% -46%;white-space:pre;pointer-events:none;color:rgba(21,21,21,.025);-webkit-text-stroke:1.4px rgba(21,21,21,.17);font:800 clamp(92px,9.2vw,142px)/.8 'IBM Plex Mono',monospace;letter-spacing:-.09em;text-align:center}
+  .hero-grid>div{z-index:1}
+  .hero-grid>div:first-child{position:relative;left:24px}
 }
 .hero-grid>div:first-child.motion-ready .eyebrow,
 .hero-grid>div:first-child.motion-ready .display-kicker,
@@ -171,6 +173,9 @@
 .hero-grid>.hero-profile-visual{position:relative;left:-68px;display:flex;align-items:flex-end;justify-content:center;width:100%;height:clamp(540px,46vw,650px);overflow:hidden;opacity:0;transform:translateY(28px);transform-style:preserve-3d;will-change:transform}
 .hero-profile-visual.is-visible{opacity:1;transform:none;transition:opacity .7s .42s ease,transform .85s .42s cubic-bezier(.22,1,.36,1)}
 .hero-profile-visual img{display:block;width:auto;max-width:none;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(10px 14px 0 rgba(21,21,21,.12));will-change:transform}
+@media(min-width:1201px){
+  .hero-grid>.hero-profile-visual{left:-104px;height:clamp(600px,50vw,710px)}
+}
 .mongi-launch{position:fixed;z-index:119;right:24px;bottom:72px;width:230px;padding:7px 10px 10px;border:4px solid var(--ink);border-radius:16px;background:#efe3c8;box-shadow:6px 7px 0 rgba(21,21,21,.28);color:var(--ink);font-family:'IBM Plex Mono',monospace;text-align:left}
 .floating-drag-handle,.game-popup-bar{display:flex;align-items:center;justify-content:space-between;min-height:24px;padding:0 30px 0 2px;font-size:9px;font-weight:700;letter-spacing:.06em;cursor:grab;touch-action:none;user-select:none}
 .floating-drag-handle:active,.game-popup-bar:active{cursor:grabbing}
