@@ -207,7 +207,9 @@ function AnimatedProjectGrid(){
     if(!range||!hold)return;
     const rangeEnd=lenis.scroll+range.getBoundingClientRect().bottom-innerHeight;
     const distance=lenis.scroll-rangeEnd;
-    if(distance<=4||distance>hold.offsetHeight+innerHeight)return;
+    // 푸터에서 올라올 때는 정상 스크롤을 유지하고, 마지막 카드의
+    // 의도적인 유지 구간 안에서만 빈 구간을 즉시 건너뜁니다.
+    if(distance<=4||distance>hold.offsetHeight)return;
     skippingHoldRef.current=true;
     lenis.scrollTo(Math.max(0,rangeEnd-1),{
       immediate:true,
