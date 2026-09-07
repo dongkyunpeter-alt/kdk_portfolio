@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
+import emailjs from '@emailjs/browser';
 import { copyText, scrollPageToTop } from './utils/uiActions.mjs';
 import { useReducedMotion } from './hooks/useReducedMotion.js';
 
 const EMAIL='dongkyunpeter@gmail.com';
 const GMAIL=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}`;
+const EMAILJS_SERVICE_ID='service_mtmq12b';
+const EMAILJS_TEMPLATE_ID='template_ncgve0r';
+const EMAILJS_PUBLIC_KEY='qFGcOVMfNaeW70T7N';
+const RECAPTCHA_SITE_KEY='6LcPrq0tAAAAADi2e2BI8QfeUlA02-iiCMTIjgnh';
 
 gsap.registerPlugin(ScrollTrigger,MorphSVGPlugin);
 
@@ -93,6 +98,58 @@ function Header({isHome}){
   return <header className={`site-header common-header${scrolled?' is-scrolled':''}`}><div className="wrap common-header-inner"><a ref={logoRef} className="logo common-logo" href={isHome?'#top':'index.html'} aria-label="강동균 포트폴리오 메인으로 이동"><svg viewBox="0 0 64 32" aria-hidden="true"><text className="common-logo-outline" x="1" y="27">KDK</text><text className="common-logo-fill" x="1" y="27">KDK</text></svg></a><nav className={`nav common-nav${menuOpen?' open':''}`} id="nav" aria-label="주요 메뉴"><a href={`${home}#profile`} onClick={openProfile}>Profile</a><a href={`${home}#projects`} onClick={close}>Projects</a><a href="#contact" onClick={close}>Contact</a></nav><div className="header-actions common-actions"><a className="pill" href={GMAIL} target="_blank" rel="noreferrer"><span className="magnetic-label">Email ↗</span></a><a className="pill dark" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">GitHub ↗</span></a></div><button className="menu menu-button common-menu" id="menu" type="button" aria-controls="nav" aria-expanded={menuOpen} onClick={()=>setMenuOpen(value=>!value)}><span data-menu-label>{menuOpen?'Close':'Menu'}</span> ☰</button></div></header>;
 }
 
+function ContactForm(){
+  const [sendStatus,setSendStatus]=useState('idle');
+  useEffect(()=>{
+    if(document.querySelector('script[data-recaptcha]'))return;
+    const script=document.createElement('script');
+    script.src='https://www.google.com/recaptcha/api.js?hl=ko';
+    script.async=true;
+    script.defer=true;
+    script.dataset.recaptcha='v2';
+    document.head.append(script);
+  },[]);
+  const statusMessages={
+    idle:'',
+    pending:'메시지를 보내고 있습니다.',
+    success:'메시지를 보냈습니다. 확인 후 이메일로 답변드리겠습니다.',
+    captcha:'로봇이 아님을 확인해 주세요.',
+    error:'전송하지 못했습니다. 잠시 후 다시 시도하거나 이메일 링크를 이용해 주세요.',
+  };
+  const sendEmail=async event=>{
+    event.preventDefault();
+    if(sendStatus==='pending')return;
+    const form=event.currentTarget;
+    const data=new FormData(form);
+    if(data.get('website'))return;
+    const captchaToken=window.grecaptcha?.getResponse?.()||'';
+    if(!captchaToken){setSendStatus('captcha');return}
+    setSendStatus('pending');
+    try{
+      await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+        subject:String(data.get('subject')||'').trim(),
+        name:String(data.get('name')||'').trim(),
+        email:String(data.get('email')||'').trim(),
+        message:String(data.get('message')||'').trim(),
+        time:new Intl.DateTimeFormat('ko-KR',{dateStyle:'long',timeStyle:'short'}).format(new Date()),
+        'g-recaptcha-response':captchaToken,
+      },{
+        publicKey:EMAILJS_PUBLIC_KEY,
+        blockHeadless:true,
+        limitRate:{id:'portfolio-contact',throttle:10000},
+      });
+      form.reset();
+      window.grecaptcha?.reset?.();
+      setSendStatus('success');
+    }catch(error){
+      console.error('EmailJS send failed',error);
+      window.grecaptcha?.reset?.();
+      setSendStatus('error');
+    }
+  };
+  return <form className="contact-form" onSubmit={sendEmail} aria-busy={sendStatus==='pending'}><div className="contact-form-row"><div className="contact-field"><label htmlFor="contact-name">이름</label><input id="contact-name" name="name" type="text" autoComplete="name" maxLength="60" required/></div><div className="contact-field"><label htmlFor="contact-email">이메일</label><input id="contact-email" name="email" type="email" autoComplete="email" maxLength="120" required/></div></div><div className="contact-field"><label htmlFor="contact-subject">제목</label><input id="contact-subject" name="subject" type="text" maxLength="120" required/></div><div className="contact-field"><label htmlFor="contact-message">문의 내용</label><textarea id="contact-message" name="message" rows="5" minLength="10" maxLength="3000" required/></div><div className="contact-captcha"><div className="g-recaptcha" data-sitekey={RECAPTCHA_SITE_KEY}/></div><div className="contact-honeypot" aria-hidden="true"><label htmlFor="contact-website">웹사이트</label><input id="contact-website" name="website" type="text" tabIndex="-1" autoComplete="off"/></div><div className="contact-form-actions"><button className="contact-submit" type="submit" disabled={sendStatus==='pending'}>{sendStatus==='pending'?'전송 중…':'메시지 보내기'} <span aria-hidden="true">↗</span></button><p className="contact-form-status" role="status" aria-live="polite" data-state={sendStatus}>{statusMessages[sendStatus]}</p></div></form>;
+}
+
 function Footer(){
   const reducedMotion=useReducedMotion();
   const footerRef=useRef(null); const lineRef=useRef(null);
@@ -127,7 +184,7 @@ function Footer(){
     },footer);
     return()=>{context.revert();gsap.killTweensOf(path);path.setAttribute('d',FOOTER_LINE_CENTER)};
   },[reducedMotion]);
-  return <footer ref={footerRef} className="footer common-footer" id="contact"><svg className="footer-bounce-line" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><path ref={lineRef} d={FOOTER_LINE_CENTER}/></svg><div className="wrap"><div className="common-footer-grid"><div><h2>다음 화면을 함께<br/>디자인할 준비가 되어 있습니다.</h2></div><div className="common-footer-contact"><h3>CONTACT</h3><div className="common-contact-list"><div className="common-contact-item common-email-row"><a href={GMAIL} target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5h18v13H3z"/><path d="m4 7 8 6 8-6"/></svg><span>{EMAIL}</span></a><button className="common-copy-email" type="button" aria-label="이메일 주소 복사" aria-describedby="email-copy-status" disabled={copyStatus==='pending'} onClick={copy}><span className="common-copy-label">{copyStatus==='success'?'복사됨':copyStatus==='error'?'복사 실패':copyStatus==='pending'?'복사 중':'복사'}</span></button><span id="email-copy-status" role="status" className="email-copy-status" data-state={copyStatus}>{copyStatus==='error'?'복사하지 못했습니다. 이메일 주소를 직접 선택해 복사해 주세요.':copyStatus==='success'?'이메일 주소가 복사되었습니다.':''}</span></div><div className="common-contact-item"><a href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true" className="github-icon"><path d="M12 .7A11.5 11.5 0 0 0 8.36 23.1c.58.1.79-.25.79-.56v-2.2c-3.23.7-3.91-1.37-3.91-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.58-.3-5.3-1.29-5.3-5.74 0-1.27.45-2.3 1.2-3.12-.12-.3-.52-1.48.11-3.08 0 0 .98-.31 3.2 1.2A11.1 11.1 0 0 1 12 6.04c.98 0 1.98.13 2.9.39 2.22-1.5 3.2-1.2 3.2-1.2.63 1.6.23 2.79.11 3.08.74.81 1.2 1.85 1.2 3.12 0 4.46-2.73 5.44-5.32 5.73.42.36.79 1.07.79 2.15v3.23c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg><span>GitHub ↗</span></a></div></div></div></div><div className="common-copyright"><span>© 2026 Kang Donggyun. All rights reserved.</span><span>Web Publishing · Responsive UI · Design System</span></div></div></footer>;
+  return <footer ref={footerRef} className="footer common-footer" id="contact"><svg className="footer-bounce-line" viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><path ref={lineRef} d={FOOTER_LINE_CENTER}/></svg><div className="wrap"><div className="common-footer-grid"><div><h2>다음 화면을 함께<br/>디자인할 준비가 되어 있습니다.</h2><p className="contact-intro">프로젝트 제안이나 협업 문의를 남겨 주세요.<br/>확인 후 입력하신 이메일로 답변드리겠습니다.</p><div className="common-contact-list"><div className="common-contact-item common-email-row"><a href={GMAIL} target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5h18v13H3z"/><path d="m4 7 8 6 8-6"/></svg><span>{EMAIL}</span></a><button className="common-copy-email" type="button" aria-label="이메일 주소 복사" aria-describedby="email-copy-status" disabled={copyStatus==='pending'} onClick={copy}><span className="common-copy-label">{copyStatus==='success'?'복사됨':copyStatus==='error'?'복사 실패':copyStatus==='pending'?'복사 중':'복사'}</span></button><span id="email-copy-status" role="status" className="email-copy-status" data-state={copyStatus}>{copyStatus==='error'?'복사하지 못했습니다. 이메일 주소를 직접 선택해 복사해 주세요.':copyStatus==='success'?'이메일 주소가 복사되었습니다.':''}</span></div><div className="common-contact-item"><a href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true" className="github-icon"><path d="M12 .7A11.5 11.5 0 0 0 8.36 23.1c.58.1.79-.25.79-.56v-2.2c-3.23.7-3.91-1.37-3.91-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.58-.3-5.3-1.29-5.3-5.74 0-1.27.45-2.3 1.2-3.12-.12-.3-.52-1.48.11-3.08 0 0 .98-.31 3.2 1.2A11.1 11.1 0 0 1 12 6.04c.98 0 1.98.13 2.9.39 2.22-1.5 3.2-1.2 3.2-1.2.63 1.6.23 2.79.11 3.08.74.81 1.2 1.85 1.2 3.12 0 4.46-2.73 5.44-5.32 5.73.42.36.79 1.07.79 2.15v3.23c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg><span>GitHub ↗</span></a></div></div></div><div className="common-footer-contact"><h3>CONTACT FORM</h3><ContactForm/></div></div><div className="common-copyright"><span>© 2026 Kang Donggyun. All rights reserved.</span><span>Web Publishing · Responsive UI · Design System</span></div></div></footer>;
 }
 
 function ScrollProgress(){

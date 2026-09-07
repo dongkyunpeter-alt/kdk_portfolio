@@ -210,9 +210,7 @@ function AnimatedProjectGrid(){
     if(distance<=4||distance>hold.offsetHeight+innerHeight)return;
     skippingHoldRef.current=true;
     lenis.scrollTo(Math.max(0,rangeEnd-1),{
-      duration:.46,
-      easing:value=>1-Math.pow(1-value,3),
-      lock:true,
+      immediate:true,
       force:true,
       onComplete:()=>{skippingHoldRef.current=false}
     });
