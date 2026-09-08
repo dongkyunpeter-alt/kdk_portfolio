@@ -22,5 +22,5 @@ export const portfolioProjects = [
     ],
     tags:['AI Video','Storyboarding','Editing'],
   },
-  { slug:'next-project-02', status:'coming-soon', requiresUnlock:true, title:'프로젝트 추가 예정', category:'Web Project', period:'Coming Soon', description:'완성 후 이 데이터의 제목·이미지·주소·상태만 교체하면 카드가 자동으로 연결됩니다.', thumbnail:null, href:null, tags:['Responsive','Accessible','Reusable'] },
+  { slug:'next-project-02', status:'coming-soon', requiresUnlock:true, title:'프로젝트 추가 예정', category:'Web Project', period:'Coming Soon', description:'완성 후 이 데이터의 제목·이미지·주소·상태만 교체하면 카드가 자동으로 연결됩니다.', showSkiperCredit:false, thumbnail:null, href:null, tags:['Responsive','Accessible','Reusable'] },
 ];
