@@ -9,8 +9,30 @@ MOBILE_SCREEN = ROOT / "assets/images/pulmuone-mobile-screen.png"
 OUTPUT = ROOT / "assets/images/pulmuone-project-mockup.png"
 
 
-# Keep the supplied 4x browser mockup at its original 7424x4980 resolution.
-canvas = Image.open(DESKTOP_MOCKUP).convert("RGBA")
+# Keep the supplied 4x browser mockup at its original 7424x4980 resolution,
+# while removing its textured outer background. Transparency lets the card's
+# own paper color show through without a visible color mismatch.
+source = Image.open(DESKTOP_MOCKUP).convert("RGBA")
+canvas = Image.new("RGBA", source.size, (0, 0, 0, 0))
+browser_box = (256, 96, 7168, 4722)
+browser_size = (browser_box[2] - browser_box[0], browser_box[3] - browser_box[1])
+browser = source.crop(browser_box)
+browser_mask = Image.new("L", browser_size, 0)
+ImageDraw.Draw(browser_mask).rounded_rectangle(
+    (0, 0, browser_size[0] - 1, browser_size[1] - 1),
+    radius=72,
+    fill=255,
+)
+
+browser_shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+ImageDraw.Draw(browser_shadow).rounded_rectangle(
+    (browser_box[0] + 26, browser_box[1] + 34, browser_box[2] + 26, browser_box[3] + 34),
+    radius=82,
+    fill=(0, 0, 0, 88),
+)
+browser_shadow = browser_shadow.filter(ImageFilter.GaussianBlur(30))
+canvas.alpha_composite(browser_shadow)
+canvas.paste(browser, (browser_box[0], browser_box[1]), browser_mask)
 mobile = Image.open(MOBILE_SCREEN).convert("RGB")
 
 # Phone placement follows the Figma composition: lower-right overlap with a
