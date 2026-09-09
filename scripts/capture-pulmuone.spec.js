@@ -2,7 +2,7 @@ const { test } = require('@playwright/test');
 
 const target = 'https://icerence.github.io/kiwik-project/';
 
-async function capture(page, viewport, output) {
+async function capture(page, viewport, output, zoom) {
   await page.setViewportSize(viewport);
   await page.goto(target, { waitUntil: 'networkidle' });
 
@@ -11,6 +11,9 @@ async function capture(page, viewport, output) {
     await closeButton.click();
   }
 
+  await page.evaluate((value) => {
+    document.documentElement.style.zoom = String(value);
+  }, zoom);
   await page.waitForTimeout(800);
   await page.screenshot({ path: output });
 }
@@ -18,6 +21,6 @@ async function capture(page, viewport, output) {
 test.use({ channel: 'chrome', deviceScaleFactor: 2 });
 
 test('capture clean responsive Pulmuone screens', async ({ page }) => {
-  await capture(page, { width: 1728, height: 1117 }, 'assets/images/pulmuone-desktop-screen.png');
-  await capture(page, { width: 393, height: 852 }, 'assets/images/pulmuone-mobile-screen.png');
+  await capture(page, { width: 1728, height: 1117 }, 'assets/images/pulmuone-desktop-screen.png', 1.28);
+  await capture(page, { width: 393, height: 852 }, 'assets/images/pulmuone-mobile-screen.png', 1.14);
 });

@@ -57,8 +57,9 @@ device_mask_draw.rounded_rectangle((2930, 1330, 3890, 3190), radius=170, fill=25
 device_mask = device_mask.filter(ImageFilter.GaussianBlur(12))
 base = Image.composite(base, green_background, device_mask)
 
-# Keep the Figma frame's original 4000px export resolution so small UI text
-# remains sharp on high-density displays.
-base = base.convert("RGB")
+# Pre-size the thumbnail close to its real display density. A light unsharp
+# mask after downsampling keeps small UI labels from looking washed out.
+base = base.convert("RGB").resize((1600, 1600), Image.Resampling.LANCZOS)
+base = base.filter(ImageFilter.UnsharpMask(radius=0.8, percent=115, threshold=3))
 base.save(OUTPUT, "PNG", optimize=True)
 print(OUTPUT)
