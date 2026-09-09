@@ -157,7 +157,6 @@ function ProjectCardContent({project,index}){
           <div><dt>사용 기술</dt><dd>{project.technologies||'추가 예정'}{project.showSkiperCredit!==false&&<a className="project-tech-source" href="https://skiper-ui.com/v1/skiper16" target="_blank" rel="noopener noreferrer">Skiper UI ↗</a>}</dd></div>
           <div><dt>기여도</dt><dd className="project-contributions">{project.contributions?.map(({page,percent})=><span key={page}>{page}<strong>{percent}%</strong></span>)||'추가 예정'}</dd></div>
         </dl>
-        {published&&project.portfolio&&<p className="project-portfolio-note">자세한 작업 내용과 과정은 포트폴리오에서 확인해 주세요.</p>}
         {!published&&<div className="project-tags">{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>}
       </div>
       {published&&<a className="project-link" href={project.href} target="_blank" rel="noopener noreferrer" aria-label={`${project.title} 사이트 보기 (새 탭)`}/>}
