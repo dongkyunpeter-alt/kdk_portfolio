@@ -20,7 +20,6 @@ async function capture(page, viewport, output, zoom) {
 
 test.use({ channel: 'chrome', deviceScaleFactor: 2 });
 
-test('capture clean responsive Pulmuone screens', async ({ page }) => {
-  await capture(page, { width: 1728, height: 1117 }, 'assets/images/pulmuone-desktop-screen.png', 1.28);
+test('capture clean mobile Pulmuone screen', async ({ page }) => {
   await capture(page, { width: 393, height: 852 }, 'assets/images/pulmuone-mobile-screen.png', 1.14);
 });
