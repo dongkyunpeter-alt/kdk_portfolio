@@ -6,13 +6,14 @@
 /* 넓은 화면에서는 소개문과 인물을 가까이 모으고, 빈 중앙을 낮은 대비의 직무 타이포로 채웁니다. */
 @media(min-width:1201px){
   .hero-grid{position:relative;isolation:isolate;grid-template-columns:minmax(500px,1fr) minmax(520px,1fr);gap:clamp(0px,1vw,14px)}
-  .hero-grid>div:first-child{width:min(100%,570px)}
+  .hero-grid>div:first-child{width:min(100%,520px);justify-self:end}
   .hero-grid .display{font-size:clamp(76px,7.2vw,104px);line-height:.98;letter-spacing:-.045em}
   .hero-designer-type{display:block;position:absolute;z-index:0;left:50%;top:50%;translate:-50% -46%;pointer-events:none;color:rgba(21,21,21,.025);-webkit-text-stroke:1.4px rgba(21,21,21,.17);font:800 clamp(92px,9.2vw,142px)/.8 'IBM Plex Mono',monospace;letter-spacing:-.09em;text-align:center}
   .hero-designer-line{display:block;white-space:nowrap}
   .hero-designer-char{display:inline-block;opacity:0;transform:translateY(.14em);animation:hero-designer-char .12s ease-out calc(.05s + var(--char-index)*.055s) forwards}
   .hero-grid>div{z-index:1}
   .hero-grid>div:first-child{position:relative;left:24px}
+  .hero-grid .hero-actions{justify-content:center}
 }
 @keyframes hero-designer-char{to{opacity:1;transform:none}}
 .hero-grid>div:first-child.motion-ready .eyebrow,
@@ -137,7 +138,7 @@
 .project-grid .project-card[data-status=coming-soon]{box-shadow:4px 5px 0 var(--ink)}
 .project-grid .project-card .project-media{grid-column:1;grid-row:1/3;height:100%;min-height:clamp(320px,30vw,420px)}
 .project-card[data-slug="pulmuone"] .project-media{background:var(--paper)}
-.project-card[data-slug="pulmuone"] .project-media img{object-fit:contain;object-position:center}
+.project-card[data-slug="pulmuone"] .project-media img{object-fit:contain;object-position:center;transform:scale(.9)}
 .project-grid .project-card .project-body{grid-column:2;padding:clamp(20px,2.2vw,28px)}
 .project-card .project-body h3{margin:8px 0 0;font-size:clamp(26px,2.3vw,30px);line-height:1.3;font-weight:700;letter-spacing:-.025em;color:var(--ink)}
 .project-grid .project-card .project-card-actions{grid-column:2;padding:clamp(16px,1.6vw,20px) clamp(20px,2.2vw,28px)}
