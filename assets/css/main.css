@@ -6,6 +6,8 @@
 /* 넓은 화면에서는 소개문과 인물을 가까이 모으고, 빈 중앙을 낮은 대비의 직무 타이포로 채웁니다. */
 @media(min-width:1201px){
   .hero-grid{position:relative;isolation:isolate;grid-template-columns:minmax(500px,1fr) minmax(520px,1fr);gap:clamp(0px,1vw,14px)}
+  .hero-grid>div:first-child{width:min(100%,570px)}
+  .hero-grid .display{font-size:clamp(76px,7.2vw,104px);line-height:.98;letter-spacing:-.045em}
   .hero-designer-type{display:block;position:absolute;z-index:0;left:50%;top:50%;translate:-50% -46%;pointer-events:none;color:rgba(21,21,21,.025);-webkit-text-stroke:1.4px rgba(21,21,21,.17);font:800 clamp(92px,9.2vw,142px)/.8 'IBM Plex Mono',monospace;letter-spacing:-.09em;text-align:center}
   .hero-designer-line{display:block;white-space:nowrap}
   .hero-designer-char{display:inline-block;opacity:0;transform:translateY(.14em);animation:hero-designer-char .12s ease-out calc(.05s + var(--char-index)*.055s) forwards}

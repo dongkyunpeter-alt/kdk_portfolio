@@ -1,5 +1,5 @@
 export const portfolioProjects = [
-  { slug:'pulmuone', status:'published', requiresUnlock:true, title:'풀무원 웹 리뉴얼', category:'팀 프로젝트 · Web Publishing', period:'2026.07.21–08.14', description:'메인페이지 공동 제작과 바른먹거리 하위 5개 페이지의\n구조 설계·반응형 UI 구현을 담당했습니다.', technologies:'HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper', contributions:[{page:'메인페이지',percent:25},{page:'바른먹거리 페이지',percent:100}], thumbnail:'assets/images/hero.webp', href:'https://icerence.github.io/kiwik-project/', github:'https://github.com/icerence/kiwik-project', portfolio:'pulmuone.html', tags:['6 Pages','Design System','Performance'] },
+  { slug:'pulmuone', status:'published', requiresUnlock:true, title:'풀무원 웹 리뉴얼', category:'팀 프로젝트 · Web Publishing', period:'2026.07.21–08.14', description:'메인페이지 공동 제작과 바른먹거리 하위 5개 페이지의\n구조 설계·반응형 UI 구현을 담당했습니다.', technologies:'HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper', contributions:[{page:'메인페이지',percent:25},{page:'바른먹거리 페이지',percent:100}], thumbnail:'assets/images/pulmuone-project-mockup.png', href:'https://icerence.github.io/kiwik-project/', github:'https://github.com/icerence/kiwik-project', portfolio:'pulmuone.html', tags:['6 Pages','Design System','Performance'] },
   {
     slug:'coca-cola-ai-ad',
     status:'published',
