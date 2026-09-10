@@ -11,7 +11,7 @@ export const portfolioProjects = [
     technologies:'Google Flow · Flow Music · Figma · Adobe Premiere Pro · Adobe Photoshop · Adobe After Effects',
     showSkiperCredit:false,
     contributions:[{page:'전체 제작',percent:100}],
-    thumbnail:'assets/images/coca-cola-ad-21s.webp',
+    thumbnail:'assets/images/coca-cola-mobile-browser-mockup.png',
     href:'assets/videos/coca-cola-final-web.mp4',
     storyboard:'https://www.figma.com/design/d7q76XdzmmkjBBHIxQ4Z5N/%EC%98%81%EC%83%81%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C-%EC%BD%94%EC%B9%B4%EC%BD%9C%EB%9D%BC?node-id=2533-726&t=TgYjBfpmQ3RObq89-4',
     benchmark:'https://match.dropshot.io/portfolio/NCaNmKEn5AsU8IlWkbiY',
