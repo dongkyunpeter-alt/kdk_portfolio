@@ -17,10 +17,10 @@ export const portfolioProjects = [
     benchmark:'https://match.dropshot.io/portfolio/NCaNmKEn5AsU8IlWkbiY',
     concept:'이니스프리 쿠션 광고의 인물 군집 표현을 벤치마킹해 콜라색과 흰색 타이즈를 입은 사람들로 탄산의 기포를 시각화했습니다. 일상에서 김이 빠지고 답답한 순간, 코카콜라의 청량함으로 감정을 해소하는 흐름을 담았습니다.',
     actions:[
-      {label:'영상',href:'assets/videos/coca-cola-final-web.mp4',external:true},
       {label:'스토리보드',href:'https://www.figma.com/design/d7q76XdzmmkjBBHIxQ4Z5N/%EC%98%81%EC%83%81%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C-%EC%BD%94%EC%B9%B4%EC%BD%9C%EB%9D%BC?node-id=2533-726&t=TgYjBfpmQ3RObq89-4',external:true},
+      {label:'영상',href:'assets/videos/coca-cola-final-web.mp4',external:true},
     ],
     tags:['AI Video','Storyboarding','Editing'],
   },
-  { slug:'next-project-02', status:'coming-soon', requiresUnlock:true, title:'프로젝트 추가 예정', category:'Web Project', period:'Coming Soon', description:'완성 후 이 데이터의 제목·이미지·주소·상태만 교체하면 카드가 자동으로 연결됩니다.', showSkiperCredit:false, thumbnail:null, href:null, tags:['Responsive','Accessible','Reusable'] },
+  { slug:'next-project-02', visible:false, status:'coming-soon', requiresUnlock:true, title:'프로젝트 추가 예정', category:'Web Project', period:'Coming Soon', description:'완성 후 이 데이터의 제목·이미지·주소·상태만 교체하면 카드가 자동으로 연결됩니다.', showSkiperCredit:false, thumbnail:null, href:null, tags:['Responsive','Accessible','Reusable'] },
 ];

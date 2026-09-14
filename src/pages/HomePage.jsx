@@ -5,6 +5,8 @@ import ReactLenis, { useLenis } from 'lenis/react';
 import 'lenis/dist/lenis.css';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { portfolioProjects } from '../data/projects.js';
+
+const visibleProjects=portfolioProjects.filter(project=>project.visible!==false);
 import { createParkWorld, moveInPark, safeParkPosition } from '../game/parkPhysics.mjs';
 import { useReducedMotion } from '../hooks/useReducedMotion.js';
 import profileCodeUrl from '../../assets/animations/code-profile.json?url';
@@ -117,7 +119,7 @@ function useCardFadeRange(index,total){
 }
 
 function StickyProjectCard({project,index,progress}){
-  const total=portfolioProjects.length;
+  const total=visibleProjects.length;
   const targetScale=Math.max(.72,1-(total-index-1)*.08);
   const rangeStart=index/total;
   const scaleProgress=useTransform(progress,[rangeStart,1],[1,targetScale]);
@@ -171,7 +173,7 @@ function ProjectGrid(){
   const reducedMotion=useReducedMotion();
   if(!reducedMotion)return <AnimatedProjectGrid/>;
   return <div className="project-grid project-grid-static">
-    {portfolioProjects.map((project,index)=><div className="project-sticky-card" key={project.slug} data-project-index={index}>
+    {visibleProjects.map((project,index)=><div className="project-sticky-card" key={project.slug} data-project-index={index}>
       <div className="project-card-layer">
         <h2 className="project-card-heading">Project<span>0{index+1}</span></h2>
         <ProjectCardContent project={project} index={index}/>
@@ -205,7 +207,7 @@ function AnimatedProjectGrid(){
   return <ReactLenis root options={{lerp:.12,smoothWheel:true}}>
     <div className="project-grid project-skipper" id="project-grid">
       <div ref={gridRef} className="project-progress-range" aria-hidden="true"/>
-      {portfolioProjects.map((project,index)=><StickyProjectCard key={project.slug} project={project} index={index} progress={scrollYProgress}/>)}
+      {visibleProjects.map((project,index)=><StickyProjectCard key={project.slug} project={project} index={index} progress={scrollYProgress}/>)}
       <div ref={holdRef} className="project-stack-hold" aria-hidden="true"/>
     </div>
   </ReactLenis>;
@@ -362,11 +364,11 @@ export default function HomePage(){
   useEffect(()=>{if(complete){setGameOpen(false);setLauncherDismissed(true)}else{setLauncherDismissed(false)}},[complete]);
   return <main id="main">
     <section className="hero wrap" id="top"><div className="hero-grid">
-      <div className={`motion-ready${heroVisible?' is-visible':''}`}><p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p><h1 className="display"><span className="display-kicker">균형 잡힌 인재</span><span className="display-name-line"><span className="display-name">강동균</span><span className="display-suffix">입니다.</span></span></h1><p className="hero-desc">디자인을 이해하고,<br />사용하기 편한 웹 화면으로 구현합니다.</p><div className="hero-actions"><a className="pill dark" href="assets/documents/강동균_이력서.pdf" target="_blank" rel="noreferrer"><span className="magnetic-label">이력서 보기</span></a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">깃허브 보기</span></a></div></div>
+      <div className={`motion-ready${heroVisible?' is-visible':''}`}><p className="eyebrow">〈 WEB PUBLISHER · PORTFOLIO 〉</p><h1 className="display"><span className="display-kicker">균형 잡힌 인재</span><span className="display-name-line"><span className="display-name">강동균</span><span className="display-suffix">입니다.</span></span></h1><p className="hero-desc">디자인을 이해하고,<br />사용하기 편한 웹 화면으로 구현합니다.</p><div className="hero-actions"><a className="pill dark" href="assets/documents/강동균_이력서.pdf" target="_blank" rel="noreferrer"><span className="magnetic-label">이력서 보기</span></a><a className="pill" href="https://github.com/dongkyunpeter-alt" target="_blank" rel="noreferrer"><span className="magnetic-label">깃허브 보기</span></a></div></div>
       <div ref={heroPortraitRef} className={`hero-profile-visual${heroVisible?' is-visible':''}`}><img ref={heroImageRef} src="assets/images/profile-kang-donggyun.webp" fetchPriority="high" loading="eager" decoding="async" alt="강동균 프로필 사진" width="1086" height="1448" /></div>
       <HeroDesignerType/>
     </div></section>
-    <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><ProfileCode active={profileVisible}/><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="#contact"><span className="magnetic-label">이메일 보내기</span></a><a className="pill" href="https://github.com/dongkyunpeter-alt/kdk_portfolio" target="_blank" rel="noreferrer"><span className="magnetic-label">GitHub ↗</span></a></div></div></div></section>
+    <section ref={profileRef} className={`profile${profileVisible?' is-visible':''}`} id="profile"><div className="wrap profile-card home-reveal"><ProfileCode active={profileVisible}/><div className="profile-copy"><p className="eyebrow">〈 ABOUT ME 〉</p><h2 className="profile-name">강동균</h2><ul className="profile-list"><li><strong>BIRTH</strong><span><time dateTime="2003-01-03">2003.01.03</time></span></li><li><strong>LOCATION</strong><span>서울특별시 노원구</span></li><li><strong>EDUCATION</strong><span>서울 청원고등학교 졸업</span></li><li><strong>CERTIFICATIONS</strong><span>컴퓨터활용능력 2급 · 자동차운전면허 1종 보통</span></li><li><strong>TOOLS</strong><span>HTML5 · CSS3 · JavaScript · Tailwind CSS · GSAP · Swiper · Figma · AI CLI Tools</span></li></ul><div className="profile-contact"><a className="pill dark" href="#contact"><span className="magnetic-label">이메일 보내기</span></a><a className="pill" href="https://github.com/dongkyunpeter-alt" target="_blank" rel="noreferrer"><span className="magnetic-label">GitHub ↗</span></a></div></div></div></section>
     <section className="projects" id="projects"><div className="wrap projects-shell"><div className="section-head projects-intro home-reveal"><p className="eyebrow">〈 SELECTED PROJECTS 〉</p></div><ProjectGrid/></div></section>
     <MongiLauncher hidden={gameOpen||launcherDismissed} onOpen={()=>setGameOpen(true)} onDismiss={()=>setLauncherDismissed(true)}/>
     {launcherDismissed&&!gameOpen&&<button className="mongi-launch-restore" type="button" onClick={()=>setGameOpen(true)} aria-label="몽이 게임 열기"><span aria-hidden="true">🦴</span> 게임 열기</button>}
