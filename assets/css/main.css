@@ -115,7 +115,7 @@
 .project-facts{display:grid;gap:clamp(18px,1.7vw,24px);margin:clamp(18px,1.7vw,24px) 0 0;font-size:16px;line-height:1.75}
 .project-card .project-facts dt{margin-bottom:5px;font-size:clamp(17px,1.3vw,18px);font-weight:700;color:var(--accent)}
 .project-facts dd{margin:0;font-weight:400;color:var(--muted);overflow-wrap:anywhere}
-.project-contributions{display:grid;gap:8px}.project-contributions>span{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.project-contributions strong{flex-shrink:0;font-size:20px;font-weight:700;color:var(--ink)}
+.project-contributions{display:flex;gap:8px}.project-contributions strong{font-size:20px;font-weight:700;color:var(--ink)}
 .project-card-actions{position:relative;z-index:3;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(16px,1.8vw,24px);padding:16px;border-top:1px solid var(--line)}
 .project-card-actions a,.project-card-actions button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:44px;padding:0 19px;border:1.5px solid var(--line);border-radius:999px;background:var(--paper);font-size:16px;line-height:1.5;font-weight:700;text-align:center}
 .project-card-actions a:hover,.project-card-actions a:focus-visible{background:var(--ink);color:var(--paper)}
