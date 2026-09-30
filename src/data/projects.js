@@ -22,5 +22,23 @@ export const portfolioProjects = [
     ],
     tags:['AI Video','Storyboarding','Editing'],
   },
+  {
+    slug:'project-03-0929-v1',
+    status:'published',
+    requiresUnlock:true,
+    title:'프로젝트 3 — 0929_v1',
+    category:'개인 프로젝트 · Video',
+    period:'2026.09.29',
+    description:'최종 편집본 영상 프로젝트입니다.',
+    technologies:'Video Editing',
+    showSkiperCredit:false,
+    contributions:[{page:'전체 제작',percent:100}],
+    thumbnail:'assets/images/project-03-0929-v1-thumb.jpg',
+    href:'assets/videos/0929_v1.mp4',
+    actions:[
+      {label:'영상',href:'assets/videos/0929_v1.mp4',external:false},
+    ],
+    tags:['Video','Final Cut'],
+  },
   { slug:'next-project-02', visible:false, status:'coming-soon', requiresUnlock:true, title:'프로젝트 추가 예정', category:'Web Project', period:'Coming Soon', description:'완성 후 이 데이터의 제목·이미지·주소·상태만 교체하면 카드가 자동으로 연결됩니다.', showSkiperCredit:false, thumbnail:null, href:null, tags:['Responsive','Accessible','Reusable'] },
 ];
