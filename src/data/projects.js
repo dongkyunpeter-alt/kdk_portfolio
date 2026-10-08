@@ -26,7 +26,7 @@ export const portfolioProjects = [
     slug:'project-03-1006-1',
     status:'published',
     requiresUnlock:true,
-    title:'CU홍보영상',
+    title:'CU AI 광고 영상',
     category:'개인 프로젝트 · Video',
     period:'2026.10.06',
     description:'스토리라인 기획, 공통 에셋 생성, AI 영상 생성, 영상 편집을 담당했습니다.',
