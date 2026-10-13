@@ -52,9 +52,10 @@ export const portfolioProjects = [
     showSkiperCredit:false,
     contributions:[{page:'전체 제작',percent:100}],
     thumbnail:'assets/images/chatbot-db-thumb.svg',
-    href:'https://github.com/dongkyunpeter-alt/chatbot-db',
+    href:'https://dongkyunpeter-alt.github.io/chatbot-db/',
     github:'https://github.com/dongkyunpeter-alt/chatbot-db',
     actions:[
+      {label:'챗봇 열기',href:'https://dongkyunpeter-alt.github.io/chatbot-db/',external:true},
       {label:'깃허브',href:'https://github.com/dongkyunpeter-alt/chatbot-db',external:true},
     ],
     tags:['FastAPI','SQLite','LLM Chatbot'],
