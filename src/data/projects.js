@@ -37,6 +37,7 @@ export const portfolioProjects = [
     href:'assets/videos/1006_1.mp4',
     actions:[
       {label:'영상',href:'assets/videos/1006_1.mp4',external:false},
+      {label:'스토리보드',href:'https://drive.google.com/file/d/1UM6O4spli-86LEpzAkHJQl70PyEuIIL_/view?usp=drive_link',external:true},
     ],
     tags:['Video','Final Cut'],
   },
