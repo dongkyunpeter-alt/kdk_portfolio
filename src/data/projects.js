@@ -52,7 +52,7 @@ export const portfolioProjects = [
     technologies:'Python · FastAPI · React · Vite · SQLite · Hugging Face Qwen',
     showSkiperCredit:false,
     contributions:[{page:'전체 제작',percent:100}],
-    thumbnail:'assets/images/chatbot-db-live.jpg',
+    thumbnail:'assets/images/chatbot-db-mockup-live.jpg',
     href:'https://dongkyunpeter-alt.github.io/chatbot-db/',
     github:'https://github.com/dongkyunpeter-alt/chatbot-db',
     actions:[
