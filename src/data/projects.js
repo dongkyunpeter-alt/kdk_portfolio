@@ -36,8 +36,8 @@ export const portfolioProjects = [
     thumbnail:'assets/images/project-03-1006-1-mockup-v2.png',
     href:'assets/videos/1006_1.mp4',
     actions:[
-      {label:'영상',href:'assets/videos/1006_1.mp4',external:false},
       {label:'스토리보드',href:'https://drive.google.com/file/d/1UM6O4spli-86LEpzAkHJQl70PyEuIIL_/view?usp=drive_link',external:true},
+      {label:'영상',href:'assets/videos/1006_1.mp4',external:false},
     ],
     tags:['Video','Final Cut'],
   },
