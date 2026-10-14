@@ -33,7 +33,7 @@ export const portfolioProjects = [
     technologies:'Adobe Premiere Pro · Adobe After Effects · Adobe Illustrator · Higgsfield Seedance 2.5',
     showSkiperCredit:false,
     contributions:[{page:'전체 제작',percent:100}],
-    thumbnail:'assets/images/project-03-1006-1-thumb.jpg',
+    thumbnail:'assets/images/project-03-1006-1-mockup-v2.png',
     href:'assets/videos/1006_1.mp4',
     actions:[
       {label:'영상',href:'assets/videos/1006_1.mp4',external:false},
@@ -51,7 +51,7 @@ export const portfolioProjects = [
     technologies:'Python · FastAPI · React · Vite · SQLite · Hugging Face Qwen',
     showSkiperCredit:false,
     contributions:[{page:'전체 제작',percent:100}],
-    thumbnail:'assets/images/chatbot-db-thumb.svg',
+    thumbnail:'assets/images/chatbot-db-mockup-v2.png',
     href:'https://dongkyunpeter-alt.github.io/chatbot-db/',
     github:'https://github.com/dongkyunpeter-alt/chatbot-db',
     actions:[
